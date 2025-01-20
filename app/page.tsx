@@ -1,3 +1,12 @@
-export default function Home() {
-  return <div>GBC</div>;
-}
+import Navbar from "@/components/Navbar";
+import React from "react";
+
+const Home = () => {
+  return (
+    <div>
+      <Navbar />
+    </div>
+  );
+};
+
+export default Home;
