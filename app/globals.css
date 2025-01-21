@@ -1,3 +1,9 @@
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
+
+:root {
+  --body: 225, 215, 203;
+  --primary: 11, 53, 66;
+  --secondary: 195, 94, 72;
+}

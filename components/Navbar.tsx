@@ -6,12 +6,12 @@ import imgSrc from "@/public/logo.png";
 
 const Navbar = () => {
   return (
-    <nav className="flex justify-between items-center bg-[#0B3542] font-outfit py-3 px-5 lg:px-10">
+    <nav className="flex justify-between items-center bg-primary font-outfit py-3 px-5 lg:px-10">
       <ul className="hidden lg:flex justify-between items-center text-white">
-        <li className="cursor-pointer text-lg mr-14 xl:mr-20 2xl:mr-28">
+        <li className="cursor-pointer text-lg mr-14 xl:mr-20 2xl:mr-28 hover:text-secondary">
           About us
         </li>
-        <li className="cursor-pointer text-lg mr-14 xl:mr-20 2xl:mr-28">
+        <li className="cursor-pointer text-lg mr-14 xl:mr-20 2xl:mr-28 hover:text-secondary">
           Our dishes
         </li>
         <li className="cursor-pointer text-lg hidden xl:block mr-20 2xl:mr-28">
@@ -25,17 +25,20 @@ const Navbar = () => {
         priority
       />
       <ul className="hidden sm:flex justify-between items-center text-white">
+        <li className="hidden md:block lg:hidden cursor-pointer text-lg ml-9 xl:ml-20 2xl:ml-28 hover:text-secondary">
+          About us
+        </li>
         <li className="cursor-pointer block lg:hidden xl:block ml-20 2xl:ml-28 text-lg">
           Our dishes
         </li>
         <li className="cursor-pointer ml-9 md:ml-14 xl:ml-20 2xl:ml-28 md:text-lg">
           Where to find us
         </li>
-        <li className="cursor-pointer bg-[#C35E48] font-semibold ml-9 md:ml-14 xl:ml-20 2xl:ml-28 px-5 py-1 rounded-none rounded-r-2xl">
+        <li className="cursor-pointer bg-secondary font-semibold ml-9 md:ml-14 xl:ml-20 2xl:ml-28 px-5 py-1 rounded-none rounded-r-2xl">
           Sign up
         </li>
       </ul>
-      <RxHamburgerMenu className="text-[#C35E48] text-3xl sm:hidden cursor-pointer" />
+      <RxHamburgerMenu className="text-secondary text-3xl sm:hidden cursor-pointer" />
     </nav>
   );
 };

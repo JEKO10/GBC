@@ -8,6 +8,11 @@ export default {
   ],
   theme: {
     extend: {
+      colors: {
+        body: "rgba(var(--body))",
+        primary: "rgba(var(--primary))",
+        secondary: "rgba(var(--secondary))",
+      },
       fontFamily: {
         outfit: ["var(--font-outfit)", "sans-serif"],
       },
