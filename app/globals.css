@@ -7,3 +7,7 @@
   --primary: 11, 53, 66;
   --secondary: 195, 94, 72;
 }
+
+body {
+  background-color: rgba(var(--body));
+}

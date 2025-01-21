@@ -1,40 +1,43 @@
 import Image from "next/image";
+import Link from "next/link";
 import React from "react";
 import { RxHamburgerMenu } from "react-icons/rx";
 
-import imgSrc from "@/public/logo.png";
+import Logo from "@/public/logo.png";
 
 const Navbar = () => {
   return (
     <nav className="flex justify-between items-center bg-primary font-outfit py-3 px-5 lg:px-10">
       <ul className="hidden lg:flex justify-between items-center text-white">
-        <li className="cursor-pointer text-lg mr-14 xl:mr-20 2xl:mr-28 hover:text-secondary">
+        <li className="cursor-pointer text-lg mr-14 xl:mr-20 2xl:mr-28 transition hover:text-secondary">
           About us
         </li>
-        <li className="cursor-pointer text-lg mr-14 xl:mr-20 2xl:mr-28 hover:text-secondary">
+        <li className="cursor-pointer text-lg mr-14 xl:mr-20 2xl:mr-28 transition hover:text-secondary">
           Our dishes
         </li>
-        <li className="cursor-pointer text-lg hidden xl:block mr-20 2xl:mr-28">
+        <li className="cursor-pointer text-lg hidden xl:block mr-20 2xl:mr-28 transition hover:text-secondary">
           Our dishes
         </li>
       </ul>
-      <Image
-        className="w-[100px] lg:w-[150px] xl:w-[170px]"
-        src={imgSrc}
-        alt="Logo for General Bilimoria's Canteen, featuring a vintage-style design with text reading 'GENERAL' curved at the top, 'BILIMORIA'S CANTEEN' in bold capital letters, and 'ESTD. 2023, LONDON, UK' at the bottom."
-        priority
-      />
+      <Link href="/">
+        <Image
+          className="w-[100px] lg:w-[150px] xl:w-[170px] cursor-pointer"
+          src={Logo}
+          alt="Logo for General Bilimoria's Canteen, featuring a vintage-style design with text reading 'GENERAL' curved at the top, 'BILIMORIA'S CANTEEN' in bold capital letters, and 'ESTD. 2023, LONDON, UK' at the bottom."
+          priority
+        />
+      </Link>
       <ul className="hidden sm:flex justify-between items-center text-white">
-        <li className="hidden md:block lg:hidden cursor-pointer text-lg ml-9 xl:ml-20 2xl:ml-28 hover:text-secondary">
+        <li className="hidden md:block lg:hidden cursor-pointer text-lg ml-9 xl:ml-20 2xl:ml-28 transition hover:text-secondary">
           About us
         </li>
-        <li className="cursor-pointer block lg:hidden xl:block ml-20 2xl:ml-28 text-lg">
+        <li className="cursor-pointer block lg:hidden xl:block ml-20 2xl:ml-28 text-lg transition hover:text-secondary">
           Our dishes
         </li>
-        <li className="cursor-pointer ml-9 md:ml-14 xl:ml-20 2xl:ml-28 md:text-lg">
+        <li className="cursor-pointer ml-9 md:ml-14 xl:ml-20 2xl:ml-28 md:text-lg transition hover:text-secondary">
           Where to find us
         </li>
-        <li className="cursor-pointer bg-secondary font-semibold ml-9 md:ml-14 xl:ml-20 2xl:ml-28 px-5 py-1 rounded-none rounded-r-2xl">
+        <li className="cursor-pointer bg-secondary font-semibold ml-9 md:ml-14 xl:ml-20 2xl:ml-28 px-5 py-1 rounded-none rounded-r-2xl transition hover:text-primary hover:bg-body">
           Sign up
         </li>
       </ul>
