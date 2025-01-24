@@ -12,3 +12,29 @@ datasource db {
   provider = "sqlite"
   url      = env("DATABASE_URL")
 }
+
+
+model Ad {
+  id        String   @id @default(cuid())
+  discount  String
+  name      String
+  date      String
+  image     String   
+  createdAt DateTime @default(now())
+}
+
+model Post {
+  id  String  @id @default(cuid())
+  createdAt DateTime @default(now())
+  description String   
+  price Float    
+  name  String 
+  images      Image[]  
+
+}
+model Image {
+  id        String   @id @default(cuid())
+  url       String
+  postId    String
+  post      Post     @relation(fields: [postId], references: [id])
+}
