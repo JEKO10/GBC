@@ -1,5 +1,6 @@
 import Image from "next/image";
 import React from "react";
+import { IoCloseOutline } from "react-icons/io5";
 
 import Logo from "@/public/logo.png";
 
@@ -10,7 +11,7 @@ const SignUpModal = ({
 }) => {
   return (
     <aside className="flex justify-center items-start bg-black/80 h-screen w-full">
-      <article className="w-full md:w-1/2 xl:w-1/3 flex justify-center items-center flex-col bg-secondary text-center mt-10 mx-5 px-5 py-2 pb-5 rounded-md">
+      <article className="relative w-full md:w-1/2 xl:w-1/3 flex justify-center items-center flex-col bg-secondary text-center mt-10 mx-5 px-5 py-2 pb-5 rounded-md">
         <Image
           className="w-[250px]"
           src={Logo}
@@ -35,8 +36,11 @@ const SignUpModal = ({
             Submit
           </button>
         </form>
+        <IoCloseOutline
+          className="text-4xl text-body absolute top-3 right-3 cursor-pointer transition-colors hover:text-primary"
+          onClick={() => setIsModalOpen(false)}
+        />
       </article>
-      <p onClick={() => setIsModalOpen(false)}>Close</p>
     </aside>
   );
 };

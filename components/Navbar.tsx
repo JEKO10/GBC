@@ -12,6 +12,12 @@ import SignUpModal from "./SignUpModal";
 const Navbar = () => {
   const [isModalOpen, setIsModalOpen] = useState(false);
 
+  if (isModalOpen) {
+    document.body.style.overflow = "hidden";
+  } else {
+    document.body.style.overflow = "auto";
+  }
+
   return (
     <>
       <nav className="flex justify-between items-center bg-primary font-outfit py-3 px-5 lg:px-10">
