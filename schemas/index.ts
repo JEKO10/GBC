@@ -19,4 +19,10 @@ export const PostSchema = z.object({
       message: "Image must be a valid file or a valid URL!",
     }),
   description: z.string().min(1, { message: "Description is required!" }),
+  restaurant: z
+    .object({
+      id: z.string().min(1, { message: "Restaurant ID is required!" }),
+      // name: z.string().optional(),
+    })
+    .optional(),
 });
