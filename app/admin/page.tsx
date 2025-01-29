@@ -1,13 +1,15 @@
 import React from "react";
 
-import Ads from "./components/Ads";
+import Discounts from "./components/Discounts";
+import Offers from "./components/Offers";
 import Posts from "./components/Posts";
 
 const AdminPage = () => {
   return (
     <section className="px-10 text-center">
       <h2>AdminPage</h2>
-      <Ads />
+      <Offers />
+      <Discounts />
       <Posts />
     </section>
   );

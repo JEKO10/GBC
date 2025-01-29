@@ -3,7 +3,7 @@ import React from "react";
 const Ads = () => {
   return (
     <article className="mt-28">
-      <h3 className="text-2xl">Add an ad</h3>
+      <h3 className="text-2xl">Add an offer</h3>
       <form className="flex justify-center items-center flex-col mt-5 w-1/2 mx-auto">
         <input
           type="text"
