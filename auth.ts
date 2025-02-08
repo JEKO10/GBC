@@ -5,10 +5,7 @@ import db from "@/prisma/db";
 
 import authConfig from "./auth.config";
 
-export const {
-  handlers: { GET, POST },
-  auth,
-} = NextAuth({
+export const { handlers, auth, signIn, signOut } = NextAuth({
   adapter: PrismaAdapter(db),
   session: { strategy: "jwt", maxAge: 7200 },
   ...authConfig,

@@ -1,7 +1,11 @@
 import React from "react";
 
-const AdminPage = () => {
-  return <div>AdminPage</div>;
+import { auth } from "@/auth";
+
+const AdminPage = async () => {
+  const session = await auth();
+
+  return <div>{JSON.stringify(session)}</div>;
 };
 
 export default AdminPage;
