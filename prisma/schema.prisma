@@ -7,38 +7,72 @@ datasource db {
   url      = env("DATABASE_URL")
 }
 
-model Ad {
-  id        String   @id @default(cuid())
-  discount  String
-  name      String
-  date      String
-  image     String   
-  isActive  Boolean
-  createdAt DateTime @default(now())
+
+model User {
+  id            String    @id @default(cuid())
+  name          String
+  email         String   @unique
+  emailVerified DateTime? @map("email_verified")
+  phone         String @unique
+  password      String?
+  accounts      Account[]
+  
+  @@map("users")
 }
 
-model Post {
-  id          String      @id @default(cuid())
-  name        String      
-  description String    
-  price       Float       
-  createdAt   DateTime    @default(now())
-  images      Image[]    
-  restaurantId String?    
-  restaurant   Restaurant? @relation(fields: [restaurantId], references: [id])
+model Account {
+  id                 String  @id @default(cuid())
+  userId             String  @map("user_id")
+  type               String
+  provider           String
+  providerAccountId  String  @map("provider_account_id")
+  refresh_token      String? 
+  access_token       String? 
+  expires_at         Int?
+  token_type         String?
+  scope              String?
+  id_token           String? 
+  session_state      String?
+ 
+  user User @relation(fields: [userId], references: [id], onDelete: Cascade)
+ 
+  @@unique([provider, providerAccountId])
+  @@map("accounts")
 }
 
-model Image {
-  id        String   @id @default(cuid())
-  url       String  
-  postId    String  
-  post      Post     @relation(fields: [postId], references: [id])
-}
 
-model Restaurant {
-  id        String   @id @default(cuid())
-  name      String   
-  location  String   
-  createdAt DateTime @default(now())
-  posts     Post[]   
-}
+// model Ad {
+//   id        String   @id @default(cuid())
+//   discount  String
+//   name      String
+//   date      String
+//   image     String   
+//   isActive  Boolean
+//   createdAt DateTime @default(now())
+// }
+
+// model Post {
+//   id          String      @id @default(cuid())
+//   name        String      
+//   description String    
+//   price       Float       
+//   createdAt   DateTime    @default(now())
+//   images      Image[]    
+//   restaurantId String?    
+//   restaurant   Restaurant? @relation(fields: [restaurantId], references: [id])
+// }
+
+// model Image {
+//   id        String   @id @default(cuid())
+//   url       String  
+//   postId    String  
+//   post      Post     @relation(fields: [postId], references: [id])
+// }
+
+// model Restaurant {
+//   id        String   @id @default(cuid())
+//   name      String   
+//   location  String   
+//   createdAt DateTime @default(now())
+//   posts     Post[]   
+// }

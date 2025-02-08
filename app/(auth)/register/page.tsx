@@ -9,6 +9,7 @@ import { MdAlternateEmail } from "react-icons/md";
 import { PiUserLight } from "react-icons/pi";
 import * as z from "zod";
 
+import { register as registerAction } from "@/actions/register";
 import { RegisterSchema } from "@/schemas/auth";
 
 import Form from "../components/Form";
@@ -33,15 +34,12 @@ const RegisterPage = () => {
 
   const onSubmit = (values: z.infer<typeof RegisterSchema>) => {
     startTransition(() => {
-      // registerAction(values).then((data) => {
-      //   if (data.error) setMessage(data.error);
-      //   if (data.success) {
-      //     setMessage(data.success);
-      //     setTimeout(() => {
-      //       router.push("/login");
-      //     }, 2000);
-      //   }
-      // });
+      registerAction(values).then((data) => {
+        if (data.error) setMessage(data.error);
+        if (data.success) {
+          setMessage(data.success);
+        }
+      });
       console.log("Register");
     });
   };
