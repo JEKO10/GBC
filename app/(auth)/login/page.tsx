@@ -52,7 +52,7 @@ const LoginPage = () => {
           />
           <p>{errors.email?.message}</p>
           <FormField
-            label="Šifra"
+            label="Password"
             type="password"
             registration={register("password")}
             placeholder="Unesi šifru"
