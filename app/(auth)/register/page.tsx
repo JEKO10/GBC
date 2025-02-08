@@ -13,6 +13,7 @@ import { RegisterSchema } from "@/schemas/auth";
 
 import Form from "../components/Form";
 import FormField from "../components/FormField";
+import Social from "../components/Social";
 
 const RegisterPage = () => {
   const [message, setMessage] = useState("");
@@ -99,6 +100,7 @@ const RegisterPage = () => {
         </button>
         {message && <p className="!mt-2 !text-white">{message}</p>}
       </form>
+      <Social />
     </Form>
   );
 };

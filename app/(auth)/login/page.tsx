@@ -11,7 +11,10 @@ import * as z from "zod";
 import { LoginSchema } from "@/schemas/auth";
 
 import Form from "../components/Form";
+import FormError from "../components/FormError";
 import FormField from "../components/FormField";
+import FormSuccess from "../components/FormSuccess";
+import Social from "../components/Social";
 
 const LoginPage = () => {
   const [message, setMessage] = useState<string | undefined>("");
@@ -75,7 +78,10 @@ const LoginPage = () => {
           </button>
           {message && <p className="!mt-2 !text-white">{message}</p>}
         </form>
+        <FormError message="Smth went wrong" />
+        <FormSuccess message="Email sent!" />
       </Form>
+      <Social />
     </div>
   );
 };
