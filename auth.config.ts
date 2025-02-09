@@ -8,6 +8,7 @@ import { LoginSchema } from "@/schemas/auth";
 
 export default {
   providers: [
+    Google,
     Credentials({
       async authorize(credentials) {
         const validatedFields = LoginSchema.safeParse(credentials);
@@ -26,6 +27,5 @@ export default {
         return null;
       },
     }),
-    Google,
   ],
 } satisfies NextAuthConfig;
