@@ -69,6 +69,9 @@ const LoginPage = () => {
             icon={<LuDoorClosed />}
           />
           <p>{errors.password?.message}</p>
+          <button className="text-md italic font-medium text-primary underline -mt-1 mb-5">
+            <Link href="/auth/reset">Forgot password?</Link>
+          </button>
           <Link
             href="/auth/register"
             className="text-md italic font-medium text-primary underline -mt-1"
