@@ -2,10 +2,10 @@ import React from "react";
 
 import { auth } from "@/auth";
 
-const AdminPage = async () => {
+const ProfilePage = async () => {
   const session = await auth();
 
   return <div>{JSON.stringify(session)}</div>;
 };
 
-export default AdminPage;
+export default ProfilePage;

@@ -1,17 +1,44 @@
-import { NextRequest, NextResponse } from "next/server";
+import NextAuth from "next-auth";
 
-import { auth } from "./auth";
+import authConfig from "@/auth.config";
 
-export async function middleware(req: NextRequest) {
-  const session = await auth();
+const { auth } = NextAuth(authConfig);
 
-  if (!session) {
-    return NextResponse.redirect(new URL("/login", req.url));
+import {
+  apiAuthPrefix,
+  authRoutes,
+  DEFAULT_LOGIN_REDIRECT,
+  publicRoutes,
+} from "@/routes";
+
+export default auth((req) => {
+  const { nextUrl } = req;
+  const isLoggedIn = !!req.auth;
+
+  const isApiAuthRoute = nextUrl.pathname.startsWith(apiAuthPrefix);
+  const isPublicRoute = publicRoutes.includes(nextUrl.pathname);
+  const isAuthRoute = authRoutes.includes(nextUrl.pathname);
+
+  if (isApiAuthRoute) return;
+
+  if (isAuthRoute) {
+    if (isLoggedIn) {
+      return Response.redirect(new URL(DEFAULT_LOGIN_REDIRECT, nextUrl));
+    }
+
+    return;
   }
 
-  return NextResponse.next();
-}
+  if (!isLoggedIn && !isPublicRoute) {
+    return Response.redirect(new URL("/login", nextUrl));
+  }
+
+  return;
+});
 
 export const config = {
-  matcher: "/admin/:path*",
+  matcher: [
+    "/((?!_next|[^?]*\\.(?:html?|css|js(?!on)|jpe?g|webp|png|gif|svg|ttf|woff2?|ico|csv|docx?|xlsx?|zip|webmanifest)).*)",
+    "/(api|trpc)(.*)",
+  ],
 };
