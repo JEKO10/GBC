@@ -4,7 +4,7 @@ import { zodResolver } from "@hookform/resolvers/zod";
 import Link from "next/link";
 import React, { useState, useTransition } from "react";
 import { useForm } from "react-hook-form";
-import { LuDoorClosed, LuDoorOpen, LuPhone } from "react-icons/lu";
+import { LuDoorClosed, LuDoorOpen } from "react-icons/lu";
 import { MdAlternateEmail } from "react-icons/md";
 import { PiUserLight } from "react-icons/pi";
 import * as z from "zod";
@@ -25,7 +25,7 @@ const RegisterPage = () => {
     defaultValues: {
       name: "",
       email: "",
-      phone: "",
+      // phone: "",
       password: "",
     },
   });
@@ -66,14 +66,14 @@ const RegisterPage = () => {
           icon={<MdAlternateEmail />}
         />
         <p>{errors.email?.message}</p>
-        <FormField
+        {/* <FormField
           label="Phone number"
           type="string"
           registration={register("phone")}
           placeholder="Enter your phone number"
           icon={<LuPhone />}
         />
-        <p>{errors.phone?.message}</p>
+        <p>{errors.phone?.message}</p> */}
         <FormField
           label="Password"
           type="password"

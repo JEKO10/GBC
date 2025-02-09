@@ -7,9 +7,9 @@ export const RegisterSchema = z.object({
   email: z.string().email({
     message: "Email is required!",
   }),
-  phone: z.string().regex(/^\+?[1-9]\d{1,14}$/, {
-    message: "Invalid phone number format!",
-  }),
+  // phone: z.string().regex(/^\+?[1-9]\d{1,14}$/, {
+  //   message: "Invalid phone number format!",
+  // }),
   password: z.string().min(6, {
     message: "Minimum 6 characters required!",
   }),
