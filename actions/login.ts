@@ -1,5 +1,6 @@
 "use server";
 
+import bcrypt from "bcryptjs";
 import { AuthError } from "next-auth";
 import * as z from "zod";
 
@@ -24,11 +25,18 @@ export const login = async (formData: z.infer<typeof LoginSchema>) => {
     return { error: "Invalid credentials!" };
   }
 
+  const isPasswordCorrect = await bcrypt.compare(
+    password,
+    existingUser.password
+  );
+  if (!isPasswordCorrect) {
+    return { error: "Invalid credentials!" };
+  }
+
   if (!existingUser.emailVerified) {
     const verificationToken = await generateVerificationToken(
       existingUser.email
     );
-
     await sendVerificationEmail(
       verificationToken.email,
       verificationToken.token
