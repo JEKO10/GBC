@@ -2,6 +2,7 @@
 
 import { zodResolver } from "@hookform/resolvers/zod";
 import Link from "next/link";
+import { useSearchParams } from "next/navigation";
 import React, { useState, useTransition } from "react";
 import { useForm } from "react-hook-form";
 import { LuDoorClosed, LuDoorOpen } from "react-icons/lu";
@@ -12,10 +13,16 @@ import { login } from "@/actions/login";
 import { LoginSchema } from "@/schemas/auth";
 
 import Form from "../components/Form";
+import FormError from "../components/FormError";
 import FormField from "../components/FormField";
-import Social from "../components/Social";
+import Social from "../components/Socials";
 
 const LoginPage = () => {
+  const searchParams = useSearchParams();
+  const urlError =
+    searchParams.get("error") === "OAuthAccountNotLinked"
+      ? "Email already in use with another provider!"
+      : "";
   const [message, setMessage] = useState<string | undefined>("");
   const [isPending, startTransition] = useTransition();
 
@@ -63,7 +70,7 @@ const LoginPage = () => {
           />
           <p>{errors.password?.message}</p>
           <Link
-            href="/register"
+            href="/auth/register"
             className="text-md italic font-medium text-primary underline -mt-1"
           >
             Create a new account
@@ -76,7 +83,8 @@ const LoginPage = () => {
             <span className="text-sm font-medium">Prijavi se</span>
             <LuDoorOpen />
           </button>
-          {message && <p className="!mt-2 !text-white">{message}</p>}
+          {/* {message && <p className="!mt-2 !text-white">{message}</p>} */}
+          <FormError message={message || urlError} />
         </form>
       </Form>
       <Social />

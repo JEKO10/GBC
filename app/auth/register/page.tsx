@@ -14,7 +14,7 @@ import { RegisterSchema } from "@/schemas/auth";
 
 import Form from "../components/Form";
 import FormField from "../components/FormField";
-import Social from "../components/Social";
+import Social from "../components/Socials";
 
 const RegisterPage = () => {
   const [message, setMessage] = useState("");
@@ -83,7 +83,7 @@ const RegisterPage = () => {
         />
         <p>{errors.password?.message}</p>
         <Link
-          href="/login"
+          href="/auth/login"
           className="text-md italic font-medium text-[#6eabda] underline -mt-1"
         >
           Sign in to an existing account
