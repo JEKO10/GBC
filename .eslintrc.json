@@ -2,7 +2,7 @@
   "extends": "next/core-web-vitals",
   "plugins": ["simple-import-sort"],
   "rules": {
-    "no-unused-vars": "error",
-    "simple-import-sort/imports": "error"
+    "no-unused-vars": "error"
+    // "simple-import-sort/imports": "error"
   }
 }

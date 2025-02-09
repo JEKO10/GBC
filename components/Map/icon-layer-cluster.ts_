@@ -1,0 +1,137 @@
+import { CompositeLayer } from "@deck.gl/core";
+import { IconLayer, IconLayerProps } from "@deck.gl/layers";
+
+import type { PickingInfo, UpdateParameters } from "@deck.gl/core";
+import type { ClusterFeature, ClusterProperties, PointFeature } from "supercluster";
+import Supercluster from "supercluster";
+import {
+  createSVGClusterIconWithText,
+  createSVGIcon,
+  maxMarkerCircleSize,
+  minMarkerCircleSize,
+  scalarCount,
+  svgToDataURL,
+} from "./model";
+
+export type IconClusterLayerPickingInfo<DataT> = PickingInfo<
+  DataT | (DataT & ClusterProperties),
+  { objects?: DataT[] }
+>;
+
+export default class IconClusterLayer<
+  DataT extends { [key: string]: any } = any,
+  ExtraProps extends {} = {},
+> extends CompositeLayer<Required<IconLayerProps<DataT>> & ExtraProps> {
+  declare state: {
+    data: (PointFeature<DataT> | ClusterFeature<DataT>)[];
+    index: Supercluster<DataT, DataT>;
+    z: number;
+  };
+
+  shouldUpdateState({ changeFlags }: UpdateParameters<this>) {
+    return changeFlags.somethingChanged;
+  }
+
+  updateState({ props, oldProps, changeFlags }: UpdateParameters<this>) {
+    const rebuildIndex = changeFlags.dataChanged;
+
+    if (rebuildIndex) {
+      const index = new Supercluster<DataT, DataT>({
+        maxZoom: 16,
+        // radius: props.sizeScale * Math.sqrt(2),
+        radius: 60,
+      });
+      index.load(
+        // @ts-ignore Supercluster expects proper GeoJSON feature
+        (props.data as DataT[]).map(d => ({
+          geometry: { coordinates: (props.getPosition as Function)(d) },
+          properties: d,
+        })),
+      );
+      this.setState({ index });
+    }
+
+    const z = Math.floor(this.context.viewport.zoom);
+    if (rebuildIndex || z !== this.state.z) {
+      this.setState({
+        data: this.state.index.getClusters([-180, -85, 180, 85], z),
+        z,
+      });
+    }
+  }
+
+  getPickingInfo({
+    info,
+    // mode,
+  }: {
+    info: PickingInfo<PointFeature<DataT> | ClusterFeature<DataT>>;
+    mode: string;
+  }): IconClusterLayerPickingInfo<DataT> {
+    const pickedObject = info.object?.properties;
+    if (pickedObject) {
+      let objects: DataT[] | undefined;
+      if (pickedObject.cluster) {
+        objects = this.state.index
+          .getLeaves(pickedObject.cluster_id, Infinity)
+          .map(f => f.properties);
+      }
+      return { ...info, object: pickedObject, objects } as any;
+    }
+    return { ...info, object: undefined, _object: pickedObject } as any;
+  }
+
+  renderLayers() {
+    const { data } = this.state;
+
+    /**
+     * We need to get scalar params for each organization
+     */
+    function getScalarParams(d: PointFeature<DataT> | ClusterFeature<DataT>) {
+      let scalarParams: number[] = (
+        [
+          d.properties.patientCount > 0
+            ? scalarCount([1, d.properties.patientCount])(d.properties.patientCount)
+            : undefined,
+          d.properties.patientCount > 0 && d.properties.patientRiskCount > 0
+            ? scalarCount([1, d.properties.patientCount])(d.properties.patientRiskCount)
+            : undefined,
+        ] as const
+      ).filter(param => param !== undefined) as number[];
+
+      /**
+       * When we have no patient nor Risky patients
+       */
+      if (scalarParams.length === 0) {
+        scalarParams = [minMarkerCircleSize];
+      }
+
+      return scalarParams;
+    }
+
+    return new IconLayer<PointFeature<DataT> | ClusterFeature<DataT>>(
+      {
+        data,
+        alphaCutoff: 0.1,
+        getPosition: d => d.geometry.coordinates as [number, number],
+        getIcon: (d, { index }) => {
+          const width = d.properties.cluster
+            ? maxMarkerCircleSize
+            : Math.max(...getScalarParams(d));
+
+          return {
+            url: d.properties.cluster
+              ? svgToDataURL(createSVGClusterIconWithText(d.properties.point_count))
+              : svgToDataURL(createSVGIcon(...getScalarParams(d))),
+            width,
+            height: width,
+          };
+        },
+        getSize: d =>
+          d.properties.cluster ? maxMarkerCircleSize : Math.max(...getScalarParams(d)),
+      },
+      this.getSubLayerProps({
+        id: "icon",
+      }),
+    );
+  }
+}
