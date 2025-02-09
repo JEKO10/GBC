@@ -41,7 +41,7 @@ const LoginPage = () => {
 
     startTransition(() => {
       login(values).then((data) => {
-        setMessage(data?.error);
+        setMessage(data?.error || data?.success);
       });
     });
   };

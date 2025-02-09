@@ -3,10 +3,12 @@
 import bcrypt from "bcryptjs";
 import * as z from "zod";
 
-import db from "@/prisma/db";
+import db from "@/lib/db";
+import { sendVerificationEmail } from "@/lib/mail";
+import { generateVerificationToken } from "@/lib/tokens";
 import { RegisterSchema } from "@/schemas/auth";
 
-import { getUserByEmail } from "./user";
+import { getUserByEmail } from "../data/user";
 
 export const register = async (formData: z.infer<typeof RegisterSchema>) => {
   const validateFields = RegisterSchema.safeParse(formData);
@@ -20,17 +22,18 @@ export const register = async (formData: z.infer<typeof RegisterSchema>) => {
   const existingEmail = await getUserByEmail(email);
   // const existingPhone = await getUserByPhone(phone);
 
-  if (existingEmail)
-    return { error: "E-mail address or phone number already in use!" };
+  if (existingEmail) return { error: "E-mail address already in use!" };
 
   await db.user.create({
     data: {
       name,
       email,
-      phone: "",
       password: hashedPassword,
     },
   });
 
-  return { success: "User created!" };
+  const verificationToken = await generateVerificationToken(email);
+  await sendVerificationEmail(verificationToken.email, verificationToken.token);
+
+  return { success: "Confirmation  email sent!" };
 };
