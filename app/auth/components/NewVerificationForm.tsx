@@ -3,7 +3,7 @@
 import { useSearchParams } from "next/navigation";
 import React, { useCallback, useEffect, useState } from "react";
 
-import { newVerification } from "@/actions/new-verification";
+import { newVerification } from "@/actions/newVerification";
 
 import FormError from "./FormError";
 
