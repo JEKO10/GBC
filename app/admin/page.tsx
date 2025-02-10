@@ -1,11 +1,18 @@
+import { UserRole } from "@prisma/client";
 import React from "react";
 
-import { currentRole } from "@/lib/auth";
+import FormSuccess from "@/components/Auth/FormSuccess";
+import RoleGate from "@/components/Auth/RoleGate";
 
 const AdminPage = async () => {
-  const role = await currentRole();
-
-  return <div>Cureent role {role}</div>;
+  return (
+    <div>
+      <RoleGate allowedRole={UserRole.ADMIN}>
+        <FormSuccess message="You are admin" />
+        ALofoasf
+      </RoleGate>
+    </div>
+  );
 };
 
 export default AdminPage;
