@@ -82,7 +82,6 @@ interface MapProps {
 
 export function Map({ containerRef }: MapProps) {
   const deckGlRef = useRef<DeckGLRef<any> | null>(null);
-  // const [hoverInfo, setHoverInfo] = useState<PickingInfo<MapData> | null>(null);
   const [markers, setMarkers] = useState<Marker[] | null>(null);
 
   const [viewState, setViewState] = useState<{

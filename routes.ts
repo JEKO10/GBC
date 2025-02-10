@@ -6,6 +6,7 @@ export const publicRoutes = [
   "/auth/login",
   "/auth/register",
   "/map",
+  "/map2",
 ];
 
 export const authRoutes = ["/auth/register", "/auth/login", "/auth/error"];
