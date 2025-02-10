@@ -1,11 +1,17 @@
 import React from "react";
 
-import { auth } from "@/auth";
+import { currentUser } from "@/lib/auth";
 
 const ProfilePage = async () => {
-  const session = await auth();
+  const user = await currentUser();
 
-  return <div>{JSON.stringify(session)}</div>;
+  return (
+    <div className="flex flex-col gap-10">
+      {JSON.stringify(user)}
+
+      <button>Two factor auth {user?.isTwoFactorEnabled ? "ON" : "OFF"}</button>
+    </div>
+  );
 };
 
 export default ProfilePage;
