@@ -1,41 +1,35 @@
-"use client";
-
 import { zodResolver } from "@hookform/resolvers/zod";
 import Link from "next/link";
-import { useSearchParams } from "next/navigation";
 import React, { useState, useTransition } from "react";
 import { useForm } from "react-hook-form";
 import { LuDoorOpen } from "react-icons/lu";
 import { MdAlternateEmail } from "react-icons/md";
 import * as z from "zod";
 
-import { newPassword } from "@/actions/newPassword";
-import { NewPasswordSchema } from "@/schemas/auth";
+import { reset } from "@/actions/reset";
+import Form from "@/components/Auth/Form";
+import FormError from "@/components/Auth/FormError";
+import FormField from "@/components/Auth/FormField";
+import { ResetSchema } from "@/schemas/auth";
 
-import Form from "../components/Form";
-import FormError from "../components/FormError";
-import FormField from "../components/FormField";
-
-const NewPasswordForm = () => {
+const ResetPasswordForm = () => {
   const [message, setMessage] = useState<string | undefined>("");
   const [isPending, startTransition] = useTransition();
-  const searchParams = useSearchParams();
-  const token = searchParams.get("token");
 
-  const form = useForm<z.infer<typeof NewPasswordSchema>>({
-    resolver: zodResolver(NewPasswordSchema),
+  const form = useForm<z.infer<typeof ResetSchema>>({
+    resolver: zodResolver(ResetSchema),
     defaultValues: {
-      password: "",
+      email: "",
     },
   });
   const { register, handleSubmit, formState } = form;
   const { errors } = formState;
 
-  const onSubmit = async (values: z.infer<typeof NewPasswordSchema>) => {
+  const onSubmit = async (values: z.infer<typeof ResetSchema>) => {
     setMessage("");
 
     startTransition(() => {
-      newPassword(values, token).then((data) => {
+      reset(values).then((data) => {
         setMessage(data?.success || data?.error);
       });
     });
@@ -48,13 +42,13 @@ const NewPasswordForm = () => {
         onSubmit={handleSubmit(onSubmit)}
       >
         <FormField
-          label="Password"
-          type="password"
-          registration={register("password")}
-          placeholder="Enter new password"
+          label="E-mail"
+          type="email"
+          registration={register("email")}
+          placeholder="Unesi e-mail adresu"
           icon={<MdAlternateEmail />}
         />
-        <p>{errors.password?.message}</p>
+        <p>{errors.email?.message}</p>
         <Link
           href="/auth/login"
           className="text-md italic font-medium text-primary underline -mt-1"
@@ -66,7 +60,7 @@ const NewPasswordForm = () => {
           className="flex items-center justify-between bg-primary mt-8 w-full text-white text-lg py-2 px-3 rounded-md transition hover:bg-primary/65"
           disabled={isPending}
         >
-          <span className="text-sm font-medium">Reset password</span>
+          <span className="text-sm font-medium">Send reset email</span>
           <LuDoorOpen />
         </button>
         <FormError message={message} />
@@ -75,4 +69,4 @@ const NewPasswordForm = () => {
   );
 };
 
-export default NewPasswordForm;
+export default ResetPasswordForm;
