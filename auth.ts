@@ -5,6 +5,7 @@ import NextAuth from "next-auth";
 import db from "@/lib/db";
 
 import authConfig from "./auth.config";
+import { getTwoFactorConfirmationByUserId } from "./data/twoFactorConfirmation";
 import { getUserById } from "./data/user";
 
 export const { handlers, auth, signIn, signOut } = NextAuth({
@@ -23,10 +24,22 @@ export const { handlers, auth, signIn, signOut } = NextAuth({
   callbacks: {
     async signIn({ user, account }) {
       if (account?.provider !== "credentials") return true;
+      if (!user.id) return false;
 
-      const existingUser = user.id && (await getUserById(user.id));
-
+      const existingUser = await getUserById(user.id);
       if (existingUser && !existingUser?.emailVerified) return false;
+
+      if (existingUser?.isTwoFactorEnabled) {
+        const twoFactorConfirmation = await getTwoFactorConfirmationByUserId(
+          existingUser.id
+        );
+
+        if (!twoFactorConfirmation) return false;
+
+        await db.twoFactorConfirmation.delete({
+          where: { id: twoFactorConfirmation.id },
+        });
+      }
 
       return true;
     },
