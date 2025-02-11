@@ -9,6 +9,7 @@ declare module "next-auth" {
       phone: string;
       role: UserRole;
       isTwoFactorEnabled: boolean;
+      isOAuth: boolean;
     };
   }
 }

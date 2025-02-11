@@ -9,7 +9,7 @@ const AdminPage = async () => {
     <div>
       <RoleGate allowedRole={UserRole.ADMIN}>
         <FormSuccess message="You are admin" />
-        ALofoasf
+        Admin content
       </RoleGate>
     </div>
   );
