@@ -1,0 +1,298 @@
+[
+  {
+    "name": "GBC -Beaconsfield HP9 2HW",
+    "coordinates": [51.6022828, -0.6337615]
+  },
+  {
+    "name": "GBC Clifton -RG41 1NQ",
+    "coordinates": [51.4227689, -0.8503883]
+  },
+  {
+    "name": "GBC - Chilsehurst -BR7 5AN",
+    "coordinates": [51.418222, 0.0678785]
+  },
+  {
+    "name": "GBC - Hogarth -SW5 0QQ",
+    "coordinates": [51.4938459, -0.1918002]
+  },
+  {
+    "name": "GBC - Granby St -LE1 6FE",
+    "coordinates": [52.6320312, -1.1271914]
+  },
+  {
+    "name": "GBC - Ilford -IG1 2LR",
+    "coordinates": [51.549782, 0.0748212]
+  },
+  {
+    "name": "GBC Paddington -W2 3HH",
+    "coordinates": [51.5145313, -0.1791624]
+  },
+  {
+    "name": "GBC - Southall -UB1 1LX",
+    "coordinates": [51.5122247, -0.3845637]
+  },
+  {
+    "name": "GBC - Isleworth -TW7 4QG",
+    "coordinates": [51.4829696, -0.34759]
+  },
+  {
+    "name": "GBC - Leamington Spa -CV32 5EG",
+    "coordinates": [52.2901618, -1.5370343]
+  },
+  {
+    "name": "GBC -Thornbury Road -TW7 4QE",
+    "coordinates": [51.482743, -0.3481023]
+  },
+  {
+    "name": "GBC - Viking Way\u00a0- CB23 8EL",
+    "coordinates": [52.2540956, 0.017177]
+  },
+  {
+    "name": "GBC - Barnet -EN5 5UW",
+    "coordinates": [51.6527921, -0.1996765]
+  },
+  {
+    "name": "GBC - Milton Keynes -MK9 3XS",
+    "coordinates": [52.0420066, -0.74713]
+  },
+  {
+    "name": "GBC - Drummond -NW1 2PA",
+    "coordinates": [51.5267706, -0.1379329]
+  },
+  {
+    "name": "GBC - Harpenden -AL5 4ST",
+    "coordinates": [51.8155669, -0.352714]
+  },
+  {
+    "name": "GBC- Hanley on Thames -RG9 2AU",
+    "coordinates": [51.5375256, -0.9030246]
+  },
+  {
+    "name": "GBC CB2- CB2 1LA",
+    "coordinates": [52.1968619, 0.1292627]
+  },
+  {
+    "name": "GBC - Hounslow 2 -TW3 1RH",
+    "coordinates": [51.4704671, -0.3544202]
+  },
+  {
+    "name": "GBC - Broad Street -NG1 3AL",
+    "coordinates": [52.9541041, -1.143785]
+  },
+  {
+    "name": "GBC - Wembley -HA9 7UR",
+    "coordinates": [51.5664252, -0.3050889]
+  },
+  {
+    "name": "GBC - Milhill -NW7 3BU",
+    "coordinates": [51.6151642, -0.2463337]
+  },
+  {
+    "name": "GBC - West Byfleet -KT14 6NE",
+    "coordinates": [51.3387081, -0.5060413]
+  },
+  {
+    "name": "GBC - Belvedere Rd SE1 7GP",
+    "coordinates": [51.5014182, -0.118089]
+  },
+  {
+    "name": "GBC - High St- CB23 1HN",
+    "coordinates": [52.1635001, -0.008108]
+  },
+  {
+    "name": "GBC - Norbury -SW16 4BZ",
+    "coordinates": [51.4102187, -0.1223241]
+  },
+  {
+    "name": "GBC - Bedford -MK40 3PF",
+    "coordinates": [52.1342661, -0.4546329]
+  },
+  {
+    "name": "GBC - Belvedere Rd 1-SE1 7GQ",
+    "coordinates": [51.5021226, -0.1177142]
+  },
+  {
+    "name": "GBC - Bishop's Stortford -CM23 3UH",
+    "coordinates": [51.8702206, 0.1601213]
+  },
+  {
+    "name": "GBC - Church St- HP27 9AA",
+    "coordinates": [51.723984, -0.8336256]
+  },
+  {
+    "name": "GBC - Eastleigh -SO50 7AJ",
+    "coordinates": [50.9647316, -1.2980456]
+  },
+  {
+    "name": "GBC - Hackney -E9 6DA",
+    "coordinates": [51.5511655, -0.0433659]
+  },
+  {
+    "name": "GBC - Houndsditch -EC3A 7DB",
+    "coordinates": [51.5150275, -0.078368]
+  },
+  {
+    "name": "GBC - Tooting Road SW17 7TJ",
+    "coordinates": [51.4320247, -0.1636839]
+  },
+  {
+    "name": "GBC - Wellington TA21 8RA",
+    "coordinates": [50.978905, -3.2265288]
+  },
+  {
+    "name": "GBC - Walthamstow- E17 9BU",
+    "coordinates": [51.5791993, -0.010943]
+  },
+  {
+    "name": "GBC - East Molesey -KT8 9HA",
+    "coordinates": [51.4026015, -0.3442199]
+  },
+  {
+    "name": "GBC - Lower Dock Walk -E16 2GT",
+    "coordinates": [51.5055215, 0.0757066]
+  },
+  {
+    "name": "GBC- Reading -RG1 4RY",
+    "coordinates": [51.454698, -0.9691997]
+  },
+  {
+    "name": "GBC - Sawbridgeworth -CM21 0HY",
+    "coordinates": [51.8075417, 0.1231204]
+  },
+  {
+    "name": "GBC - South Grove -N6 6BS",
+    "coordinates": [51.5703497, -0.1482161]
+  },
+  {
+    "name": "GBC - Cleveland St - W1T 4JN",
+    "coordinates": [51.5205553, -0.1389793]
+  },
+  {
+    "name": "GBC - Tooting High St- SW17 0RN",
+    "coordinates": [51.42737, -0.1690924]
+  },
+  {
+    "name": "GBC - Watford - WD17 3EA",
+    "coordinates": [51.667322, -0.417314]
+  },
+  {
+    "name": "GBC- Belvedere Road 2 -\nSE1 7GP",
+    "coordinates": [51.5014182, -0.118089]
+  },
+  {
+    "name": "GBC - Westminster (Indo- Chinese) -SW1P 1SB",
+    "coordinates": [51.4965258, -0.1353422]
+  },
+  {
+    "name": "GBC - Ealing (Indian) -W13 9AU",
+    "coordinates": [51.5112433, -0.3160581]
+  },
+  {
+    "name": "GBC - St. Albans -AL3 4EH",
+    "coordinates": [51.7510812, -0.3409845]
+  },
+  {
+    "name": "GBC - Uxbridge - UB8 1GA",
+    "coordinates": [51.5455871, -0.4766914]
+  },
+  {
+    "name": "GBC - Maida Vale-W9 (Indian)",
+    "coordinates": [51.5252354, -0.1968129]
+  },
+  {
+    "name": "GBC - Putney -SW15 (Pan Asia)",
+    "coordinates": [51.4677824, -0.2210215]
+  },
+  {
+    "name": "GBC - Bahlam -SW12 (Indian)",
+    "coordinates": [51.4423217, -0.1533851]
+  },
+  {
+    "name": "GBC - Hammersmith -W6 (South Indian)",
+    "coordinates": [51.4930854, -0.2357535]
+  },
+  {
+    "name": "GBC - Orpington BR6 (Indian)",
+    "coordinates": [51.3745544, 0.0981544]
+  },
+  {
+    "name": "GBC - Marlow - SL7",
+    "coordinates": [51.5709636, -0.7780432]
+  },
+  {
+    "name": "GBC - Richmond TW10",
+    "coordinates": [51.457393, -0.304006]
+  },
+  {
+    "name": "GBC - Lewisham SE13",
+    "coordinates": [51.458513, 0.0045471]
+  },
+  {
+    "name": "GBC- Blackheath SE3",
+    "coordinates": [51.466858, 0.0087713]
+  },
+  {
+    "name": "GBC- Ilford IG1 1BP",
+    "coordinates": [51.5576365, 0.0740966]
+  },
+  {
+    "name": "GBC-Perivale UB6",
+    "coordinates": [51.5337909, -0.3200703]
+  },
+  {
+    "name": "GBC - Maidenhead SL6 (Indian)",
+    "coordinates": [51.5201165, -0.7209153]
+  },
+  {
+    "name": "GBC-Slough SL3",
+    "coordinates": [51.499685, -0.5631699]
+  },
+  {
+    "name": "GBC-Kingston Upon Thomas KT2",
+    "coordinates": [51.43077, -0.3073661]
+  },
+  {
+    "name": "GBC- Kingstonhill KT2",
+    "coordinates": [51.4147465, -0.2857827]
+  },
+  {
+    "name": "GBC - Barnet RD N11 (Indian)",
+    "coordinates": [51.614772, -0.149341]
+  },
+  {
+    "name": "GBC - W1(Turkish)",
+    "coordinates": [51.5218714, -0.1438519]
+  },
+  {
+    "name": "GBC - Harrow HA1(Turkish)",
+    "coordinates": [51.5816527, -0.3367955]
+  },
+  {
+    "name": "GBC- SW18 (Turkish)",
+    "coordinates": [51.4573523, -0.1969705]
+  },
+  {
+    "name": "GBC - SE11 (Indian)",
+    "coordinates": [51.4876156, -0.1108937]
+  },
+  {
+    "name": "GBC- Larkfield ME20 (Turkish)",
+    "coordinates": [51.2984716, 0.4435384]
+  },
+  {
+    "name": "GBC - Slough SL2 (Indian)",
+    "coordinates": [51.5560411, -0.6149105]
+  },
+  {
+    "name": "GBC- Farhnam SL2 (Indian)",
+    "coordinates": [51.5560411, -0.6149105]
+  },
+  {
+    "name": "GBC-Dartford DA1 (Indian)",
+    "coordinates": [51.4275011, 0.2260522]
+  },
+  {
+    "name": "GBC-Beckenham BR3 (Italian)",
+    "coordinates": [51.3920222, -0.0376011]
+  }
+]
