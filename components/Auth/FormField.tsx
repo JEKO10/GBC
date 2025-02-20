@@ -1,34 +1,51 @@
 import React from "react";
-import { UseFormRegister } from "react-hook-form";
+import { FieldError, UseFormRegister } from "react-hook-form";
 
 type FormFieldProps = {
   label: string;
-  type: string;
-  placeholder: string;
+  type: "text" | "email" | "password" | "checkbox" | "number";
+  placeholder?: string;
   icon?: React.ReactNode;
   registration: ReturnType<UseFormRegister<any>>;
+  error?: FieldError;
 };
 
 const FormField = ({
   label,
   type,
-  placeholder,
+  placeholder = "",
   icon,
   registration,
+  error,
 }: FormFieldProps) => {
   return (
-    <label className="flex items-start justify-center flex-col w-full mb-3">
-      <span className="mb-1.5 text-sm select-none">{label}</span>
-      <div className="w-full flex items-center justify-center bg-body px-2 border-2 rounded-md focus-within:border-primary">
-        {icon && <span className="text-[#8e8e8e] text-xl">{icon}</span>}
-        <input
-          type={type}
-          placeholder={placeholder}
-          className="w-full px-2 py-1 bg-transparent rounded-md outline-none"
-          {...registration}
-        />
+    <div className="flex flex-col w-full">
+      <label className="text-sm font-medium text-gray-700">{label}</label>
+      <div
+        className={`flex items-center bg-white border ${
+          error ? "border-red-500" : "border-gray-300"
+        } rounded-lg px-3 py-2 focus-within:border-primary`}
+      >
+        {icon && <span className="mr-2 text-gray-500">{icon}</span>}
+        {type === "checkbox" ? (
+          <input
+            type={type}
+            className="w-5 h-5 text-primary focus:ring-primary cursor-pointer"
+            {...registration}
+          />
+        ) : (
+          <input
+            type={type}
+            placeholder={placeholder}
+            className="w-full outline-none bg-transparent"
+            {...registration}
+          />
+        )}
       </div>
-    </label>
+      {error && (
+        <span className="text-red-500 text-xs mt-1">{error.message}</span>
+      )}
+    </div>
   );
 };
 

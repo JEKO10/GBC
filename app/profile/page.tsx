@@ -1,7 +1,7 @@
 "use client";
 
 import { zodResolver } from "@hookform/resolvers/zod";
-import { useSession } from "next-auth/react";
+import { signOut, useSession } from "next-auth/react";
 import React, { useState, useTransition } from "react";
 import { useForm } from "react-hook-form";
 import * as z from "zod";
@@ -11,7 +11,6 @@ import FormField from "@/components/Auth/FormField";
 import { useCurrentUser } from "@/hooks/useCurrentUser";
 import { SettingsSchema } from "@/schemas/auth";
 
-// TODO UPdate ne radi
 const ProfilePage = () => {
   const [message, setMessage] = useState("");
   const [isPending, startTransition] = useTransition();
@@ -66,47 +65,71 @@ const ProfilePage = () => {
         {user?.isOAuth === false && (
           <>
             <FormField
-              label="Update email"
+              label="Email"
               type="email"
-              registration={register("email")}
-              placeholder="Update email"
+              registration={register("email", {
+                required: "Email is required",
+              })}
+              placeholder="Enter your email"
+              error={errors.email}
             />
             <FormField
               label="Password"
               type="password"
-              registration={register("password")}
+              registration={register("password", {
+                minLength: {
+                  value: 6,
+                  message: "Must be at least 6 characters",
+                },
+              })}
               placeholder="******"
+              error={errors.password}
             />
             <FormField
               label="New password"
               type="password"
-              registration={register("newPassword")}
+              registration={register("newPassword", {
+                minLength: {
+                  value: 6,
+                  message: "Must be at least 6 characters",
+                },
+              })}
               placeholder="******"
+              error={errors.password}
             />
           </>
         )}
         <FormField
           label="Update phone nubmer"
           type="text"
-          registration={register("phone")}
+          registration={register("phone", {
+            minLength: {
+              value: 6,
+              message: "Must be at least 6 characters",
+            },
+          })}
           placeholder="Update phone nubmer"
+          error={errors.password}
         />
-        {/* TODO ROLE I 2FA */}
+        {/* TODO ROLE  */}
         {user?.isOAuth === false && (
           <FormField
-            label="Two factor enabled"
+            label="Two-Factor Authentication"
             type="checkbox"
             registration={register("isTwoFactorEnabled")}
-            placeholder=""
+            error={errors.isTwoFactorEnabled}
           />
         )}
-        <button type="submit">Save</button>
+        <button type="submit" disabled={isPending}>
+          {isPending ? "Saving..." : "Save"}
+        </button>
         <div className="flex flex-col gap-10">
           <p>{message}</p> <p>{errors.password?.message}</p>{" "}
           <p>{errors.newPassword?.message}</p>
         </div>
       </form>
       {/* <button>Two factor auth {user?.isTwoFactorEnabled ? "ON" : "OFF"}</button> */}
+      <button onClick={() => signOut()}>Sign Out</button>
     </div>
   );
 };

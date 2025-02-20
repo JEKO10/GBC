@@ -42,7 +42,7 @@ const RegisterForm = () => {
   };
 
   return (
-    <Form label="Napravi nalog">
+    <Form label="Sign up">
       <form
         className="flex items-start justify-center flex-col bg-secondary mt-2 px-5 sm:px-8 pt-7 pb-5 rounded-lg [&>p]:-mt-2 [&>p]:mb-3 [&>p]:text-white"
         onSubmit={handleSubmit(onSubmit)}
@@ -90,7 +90,7 @@ const RegisterForm = () => {
           className="flex items-center justify-between bg-primary mt-8 w-full text-white text-lg py-2 px-3 rounded-md transition hover:bg-primary/65"
           disabled={isPending}
         >
-          <span className="text-sm font-medium">Prijavi se</span>
+          <span className="text-sm font-medium">Sign up</span>
           <LuDoorOpen />
         </button>
         {message && <p className="!mt-2 !text-white">{message}</p>}

@@ -43,6 +43,16 @@ export const settings = async (formData: z.infer<typeof SettingsSchema>) => {
     return { success: "Verification email sent!" };
   }
 
+  if (formData.phone && formData.phone !== dbUser.phone) {
+    const existingUserWithPhone = await db.user.findUnique({
+      where: { phone: formData.phone },
+    });
+
+    if (existingUserWithPhone && existingUserWithPhone.id !== dbUser.id) {
+      return { error: "Phone number is already in use!" };
+    }
+  }
+
   if (formData.password && formData.newPassword && dbUser.password) {
     const passwordsMatch = await bcrypt.compare(
       formData.password,
@@ -53,18 +63,8 @@ export const settings = async (formData: z.infer<typeof SettingsSchema>) => {
       return { error: "Incorrect password!" };
     }
 
-    const hashedPassword = await bcrypt.hash(formData.newPassword, 10);
-
-    await db.user.update({
-      where: { id: dbUser.id },
-      data: {
-        name: formData.name,
-        email: formData.email,
-        phone: formData.phone,
-        password: hashedPassword,
-        isTwoFactorEnabled: formData.isTwoFactorEnabled,
-      },
-    });
+    formData.password = await bcrypt.hash(formData.newPassword, 10);
+    formData.newPassword = undefined;
   }
 
   await db.user.update({
@@ -73,6 +73,7 @@ export const settings = async (formData: z.infer<typeof SettingsSchema>) => {
       name: formData.name,
       email: formData.email,
       phone: formData.phone,
+      password: formData.password,
       isTwoFactorEnabled: formData.isTwoFactorEnabled,
     },
   });
