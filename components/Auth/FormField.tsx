@@ -1,14 +1,14 @@
 import React from "react";
 import { FieldError, UseFormRegister } from "react-hook-form";
 
-type FormFieldProps = {
+interface FormFieldProps {
   label: string;
   type: "text" | "email" | "password" | "checkbox" | "number";
   placeholder?: string;
   icon?: React.ReactNode;
   registration: ReturnType<UseFormRegister<any>>;
   error?: FieldError;
-};
+}
 
 const FormField = ({
   label,

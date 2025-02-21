@@ -1,7 +1,7 @@
 import React from "react";
 
 interface FormSuccessProps {
-  message: string;
+  message: string | undefined;
 }
 
 const FormSuccess = ({ message }: FormSuccessProps) => {

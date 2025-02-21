@@ -33,28 +33,25 @@ const ProfilePage = () => {
   const { errors } = formState;
 
   const onSubmit = (formData: z.infer<typeof SettingsSchema>) => {
-    startTransition(() => {
-      settings(formData)
-        .then((data) => {
-          if (data.error) {
-            setMessage(data.error);
-          }
-
-          if (data.success) {
-            update();
-            setMessage(data.success);
-          }
-        })
-        .catch((error) => {
-          console.error("Something went wrong!", error);
-          setMessage("Something went wrong!");
-        });
+    startTransition(async () => {
+      try {
+        const data = await settings(formData);
+        setMessage(data.error ?? data.success);
+        if (data.success) {
+          update();
+        }
+      } catch (error) {
+        setMessage(
+          error instanceof Error ? error.message : "Something went wrong!"
+        );
+      }
     });
   };
 
   return (
     <div className="flex flex-col gap-10">
-      {user?.name}
+      {/* {user?.name && <span>{user.name}</span>} */}
+      <span>{user?.name ?? "No name available"}</span>
       <form onSubmit={handleSubmit(onSubmit)}>
         <FormField
           label="Update name"
@@ -62,7 +59,7 @@ const ProfilePage = () => {
           registration={register("name")}
           placeholder="Update name"
         />
-        {user?.isOAuth === false && (
+        {user?.isOAuth === false ? (
           <>
             <FormField
               label="Email"
@@ -95,10 +92,10 @@ const ProfilePage = () => {
                 },
               })}
               placeholder="******"
-              error={errors.password}
+              error={errors.newPassword}
             />
           </>
-        )}
+        ) : null}
         <FormField
           label="Update phone nubmer"
           type="text"
@@ -109,17 +106,17 @@ const ProfilePage = () => {
             },
           })}
           placeholder="Update phone nubmer"
-          error={errors.password}
+          error={errors.phone}
         />
         {/* TODO ROLE  */}
-        {user?.isOAuth === false && (
+        {user?.isOAuth === false ? (
           <FormField
             label="Two-Factor Authentication"
             type="checkbox"
             registration={register("isTwoFactorEnabled")}
             error={errors.isTwoFactorEnabled}
           />
-        )}
+        ) : null}
         <button type="submit" disabled={isPending}>
           {isPending ? "Saving..." : "Save"}
         </button>

@@ -1,7 +1,7 @@
 "use client";
 
 import { useSearchParams } from "next/navigation";
-import React, { useCallback, useEffect, useState } from "react";
+import React, { useEffect, useState } from "react";
 
 import { newVerification } from "@/actions/newVerification";
 
@@ -12,7 +12,7 @@ const NewVerificationForm = () => {
   const searchParams = useSearchParams();
   const token = searchParams.get("token");
 
-  const onSubmit = useCallback(() => {
+  useEffect(() => {
     if (message) return;
 
     if (!token) {
@@ -27,11 +27,8 @@ const NewVerificationForm = () => {
       .catch(() => {
         setMessage("Something went wrong!");
       });
-  }, [token, message]);
-
-  useEffect(() => {
-    onSubmit();
-  }, [onSubmit]);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [token]);
 
   return (
     <div>

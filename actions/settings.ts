@@ -13,12 +13,12 @@ import { SettingsSchema } from "@/schemas/auth";
 export const settings = async (formData: z.infer<typeof SettingsSchema>) => {
   const user = await currentUser();
   if (!user) {
-    return { error: "Unauthorized!" };
+    return { error: "Unauthorized!" } as const;
   }
 
   const dbUser = await getUserById(user.id);
   if (!dbUser) {
-    return { error: "Unauthorized!" };
+    return { error: "Unauthorized!" } as const;
   }
 
   if (user.isOAuth) {
@@ -67,15 +67,16 @@ export const settings = async (formData: z.infer<typeof SettingsSchema>) => {
     formData.newPassword = undefined;
   }
 
+  const updatedData = Object.fromEntries(
+    Object.entries(formData).filter(
+      // eslint-disable-next-line no-unused-vars
+      ([_, value]) => value !== "" && value !== undefined
+    )
+  );
+
   await db.user.update({
     where: { id: dbUser.id },
-    data: {
-      name: formData.name,
-      email: formData.email,
-      phone: formData.phone,
-      password: formData.password,
-      isTwoFactorEnabled: formData.isTwoFactorEnabled,
-    },
+    data: updatedData,
   });
 
   return { success: "Settings updated!" };

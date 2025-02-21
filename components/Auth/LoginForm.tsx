@@ -1,7 +1,7 @@
 import { zodResolver } from "@hookform/resolvers/zod";
 import Link from "next/link";
 import { useSearchParams } from "next/navigation";
-import React, { useState, useTransition } from "react";
+import React, { useCallback, useMemo, useState, useTransition } from "react";
 import { useForm } from "react-hook-form";
 import { LuDoorClosed, LuDoorOpen } from "react-icons/lu";
 import { MdAlternateEmail } from "react-icons/md";
@@ -16,10 +16,11 @@ import { LoginSchema } from "@/schemas/auth";
 
 const LoginForm = () => {
   const searchParams = useSearchParams();
-  const urlError =
-    searchParams.get("error") === "OAuthAccountNotLinked"
+  const urlError = useMemo(() => {
+    return searchParams.get("error") === "OAuthAccountNotLinked"
       ? "Email already in use with another provider!"
       : "";
+  }, [searchParams]);
   const [isTwoFactor, setIsTwoFactor] = useState(false);
   const [message, setMessage] = useState<string | undefined>("");
   const [isPending, startTransition] = useTransition();
@@ -34,29 +35,27 @@ const LoginForm = () => {
   const { register, handleSubmit, formState } = form;
   const { errors } = formState;
 
-  const onSubmit = async (values: z.infer<typeof LoginSchema>) => {
-    setMessage("");
+  const onSubmit = useCallback(
+    async (values: z.infer<typeof LoginSchema>) => {
+      setMessage("");
 
-    startTransition(() => {
-      login(values)
-        .then((data) => {
-          if (data?.error) {
-            form.reset();
-            setMessage(data.error);
-          }
+      startTransition(() => {
+        login(values)
+          .then((data) => {
+            if (data?.error || data?.success) {
+              form.reset();
+              setMessage(data?.error ?? data?.success);
+            }
 
-          if (data?.success) {
-            form.reset();
-            setMessage(data.success);
-          }
-
-          if (data?.twoFactor) {
-            setIsTwoFactor(true);
-          }
-        })
-        .catch(() => setMessage("Something went wrong!"));
-    });
-  };
+            if (data?.twoFactor) {
+              setIsTwoFactor(true);
+            }
+          })
+          .catch(() => setMessage("Something went wrong!"));
+      });
+    },
+    [form]
+  );
 
   return (
     <div>
@@ -83,7 +82,7 @@ const LoginForm = () => {
                 placeholder="Unesi e-mail adresu"
                 icon={<MdAlternateEmail />}
               />
-              <p>{errors.email?.message}</p>
+              <p>{errors.email?.message ?? ""}</p>
               <FormField
                 label="Password"
                 type="password"
@@ -91,7 +90,7 @@ const LoginForm = () => {
                 placeholder="Unesi šifru"
                 icon={<LuDoorClosed />}
               />
-              <p>{errors.password?.message}</p>
+              <p>{errors.password?.message ?? ""}</p>
             </>
           )}
           <button className="text-md italic font-medium text-primary underline -mt-1 mb-5">
