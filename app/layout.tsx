@@ -5,6 +5,7 @@ import { Outfit } from "next/font/google";
 import { SessionProvider } from "next-auth/react";
 
 import { auth } from "@/auth";
+import Navbar from "@/components/Navbar";
 
 const outfit = Outfit({
   variable: "--font-outfit",
@@ -26,7 +27,10 @@ export default async function RootLayout({
   return (
     <SessionProvider session={session}>
       <html lang="en">
-        <body className={`${outfit.variable} antialiased`}>{children}</body>
+        <body className={`${outfit.variable} antialiased`}>
+          <Navbar />
+          {children}
+        </body>
       </html>
     </SessionProvider>
   );
