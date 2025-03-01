@@ -3,6 +3,7 @@ import { Resend } from "resend";
 const resend = new Resend(process.env.RESEND_API_KEY);
 const BASE_URL = process.env.NEXT_PUBLIC_BASE_URL || "http://localhost:3000";
 
+// @TODO base url domain
 export const getEmailUrlWithToken = (token: string) => {
   return `${BASE_URL}/auth/new-verification?token=${encodeURIComponent(token)}`;
 };

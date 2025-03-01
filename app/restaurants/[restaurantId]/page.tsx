@@ -2,13 +2,15 @@ import Link from "next/link";
 import React from "react";
 
 import { getRestaurantWithMenu } from "@/actions/restaurants";
+import Menu from "@/components/Restaurant/Menu";
 
 const SingleRestaurantsPage = async ({
   params,
 }: {
   params: { restaurantId: string };
 }) => {
-  const parsedId = Number(params.restaurantId);
+  const { restaurantId } = await params;
+  const parsedId = Number(restaurantId);
   const invalidId = Number.isNaN(parsedId) || parsedId > 2147483647;
   const restaurant = invalidId ? null : await getRestaurantWithMenu(parsedId);
 
@@ -22,12 +24,11 @@ const SingleRestaurantsPage = async ({
       </div>
     );
   }
-
   return (
     <div>
       <h2 className="text-2xl pt-14 px-14">{restaurant.name}</h2>
       <p className="px-14">{restaurant.address}</p>
-      {/* <p className="text-xl p-14">Menu</p> */}
+      <Menu menu={restaurant?.menus} />
     </div>
   );
 };
