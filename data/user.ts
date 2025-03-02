@@ -37,3 +37,23 @@ export const getUserById = async (id: string) => {
     return null;
   }
 };
+
+export async function getUserOrders(userId: string) {
+  if (!userId) {
+    return [];
+  }
+
+  try {
+    const orders = await db.order.findMany({
+      where: { userId },
+      orderBy: { createdAt: "desc" },
+      include: {
+        restaurant: { select: { name: true, id: true } },
+      },
+    });
+
+    return orders;
+  } catch {
+    return [];
+  }
+}
