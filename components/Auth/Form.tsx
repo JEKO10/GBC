@@ -2,10 +2,10 @@
 
 import React from "react";
 
-type FormAuthProps = {
+interface FormAuthProps {
   label: string;
   children: React.ReactNode;
-};
+}
 
 const FormAuth = ({ label, children }: FormAuthProps) => {
   return (

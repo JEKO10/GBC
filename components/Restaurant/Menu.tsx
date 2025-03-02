@@ -24,6 +24,7 @@ const Menu = ({ menu }: MenuProps) => {
       return saved ? JSON.parse(saved) : {};
     }
   );
+  // @TODO error na serveru
 
   const handleQuantityChange = (itemName: string, quantity: number) => {
     setBasketItems((prev) => ({

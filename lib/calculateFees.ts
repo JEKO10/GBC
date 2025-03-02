@@ -45,5 +45,10 @@ export const calculateFees = (
   const vat = totalCost * 0.2;
   const finalTotal = totalCost + vat;
 
-  return { deliveryFee, serviceFee, vat, finalTotal };
+  return {
+    deliveryFee: parseFloat(deliveryFee.toFixed(2)),
+    serviceFee: parseFloat(serviceFee.toFixed(2)),
+    vat: parseFloat(vat.toFixed(2)),
+    finalTotal: parseFloat(finalTotal.toFixed(2)),
+  };
 };

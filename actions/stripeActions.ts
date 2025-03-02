@@ -58,6 +58,9 @@ export async function createPaymentIntent(
         restaurantId: restaurantId.toString(),
         orderNote: orderNote || "",
       },
+      // @TODO desc if they want
+      // description: ,
+      receipt_email: user.email || "",
     });
 
     await db.order.create({

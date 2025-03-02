@@ -29,10 +29,14 @@ const Basket = ({ items, menu, setBasketItems }: BasketProps) => {
     (acc, quantity) => acc + quantity,
     0
   );
-  const totalPrice = Object.entries(items).reduce((acc, [title, quantity]) => {
-    const price = menu?.find((item) => item.title === title)?.price || 0;
-    return Math.ceil((acc + price * quantity) * 100) / 100;
-  }, 0);
+  const totalPrice = parseFloat(
+    Object.entries(items)
+      .reduce((acc, [title, quantity]) => {
+        const price = menu?.find((item) => item.title === title)?.price || 0;
+        return acc + price * quantity;
+      }, 0)
+      .toFixed(2)
+  );
 
   // @TODO izracunaj nekako distancu od restorana...
   const deliveryDistance = 1.5;
@@ -87,13 +91,11 @@ const Basket = ({ items, menu, setBasketItems }: BasketProps) => {
           ))}
           <hr className="my-3" />
           <p className="font-semibold">Total Items: {totalItems}</p>
-          <p className="font-semibold">Total Price: £{totalPrice.toFixed(2)}</p>
-          <p className="font-semibold">
-            Delivery Fee: £{deliveryFee.toFixed(2)}
-          </p>
-          <p className="font-semibold">Service Fee: £{serviceFee.toFixed(2)}</p>
-          <p className="font-semibold">VAT (20%): £{vat.toFixed(2)}</p>
-          <p className="font-semibold">Final Price: £{finalTotal.toFixed(2)}</p>
+          <p className="font-semibold">Total Price: £{totalPrice}</p>
+          <p className="font-semibold">Delivery Fee: £{deliveryFee}</p>
+          <p className="font-semibold">Service Fee: £{serviceFee}</p>
+          <p className="font-semibold">VAT (20%): £{vat}</p>
+          <p className="font-semibold">Final Price: £{finalTotal}</p>
           <textarea
             className="w-full p-2 border rounded-md mt-4"
             placeholder="Add a note for the restaurant..."
