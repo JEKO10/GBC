@@ -73,7 +73,7 @@ const GoogleButton = ({
   return (
     <article>
       <GooglePayButton
-        environment="TEST" // @TODO prodution
+        environment="PRODUCTION" // @TODO prodution
         paymentRequest={{
           apiVersion: 2,
           apiVersionMinor: 0,

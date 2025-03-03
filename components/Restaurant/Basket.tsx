@@ -105,7 +105,7 @@ const Basket = ({ items, menu, setBasketItems }: BasketProps) => {
         </div>
       )}
       <div className="w-full absolute bottom-2 left-0 text-center">
-        {totalPrice > 8 ? (
+        {totalPrice > 1 ? (
           <GoogleButton
             menu={menu}
             items={items}
