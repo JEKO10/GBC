@@ -13,7 +13,7 @@ export const RegisterSchema = z.object({
   captchaToken: z.string().min(1, {
     message: "Captcha verification is required!",
   }),
-  honeypot: z.string().optional(),
+  nickname: z.string().optional(),
 });
 
 export const LoginSchema = z.object({

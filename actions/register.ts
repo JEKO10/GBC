@@ -17,9 +17,9 @@ export const register = async (formData: z.infer<typeof RegisterSchema>) => {
     return { error: "Invalid fields!" };
   }
 
-  const { name, email, password, captchaToken, honeypot } = validateFields.data;
+  const { name, email, password, captchaToken, nickname } = validateFields.data;
 
-  if (honeypot) {
+  if (nickname) {
     return { error: "Bot detected. Registration blocked." };
   }
 

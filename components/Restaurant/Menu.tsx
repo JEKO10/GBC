@@ -1,6 +1,5 @@
 "use client";
-
-import React, { useEffect, useState } from "react";
+import React, { useCallback, useEffect, useMemo, useState } from "react";
 
 import Basket from "./Basket";
 import MenuCard from "./MenuCard";
@@ -26,12 +25,15 @@ const Menu = ({ menu }: MenuProps) => {
     }
   );
 
-  const handleQuantityChange = (itemName: string, quantity: number) => {
-    setBasketItems((prev) => ({
-      ...prev,
-      [itemName]: (prev[itemName] || 0) + quantity,
-    }));
-  };
+  const handleQuantityChange = useCallback(
+    (itemName: string, quantity: number) => {
+      setBasketItems((prev) => ({
+        ...prev,
+        [itemName]: (prev[itemName] || 0) + quantity,
+      }));
+    },
+    [setBasketItems]
+  );
 
   useEffect(() => {
     const filteredItems = Object.fromEntries(
@@ -52,13 +54,20 @@ const Menu = ({ menu }: MenuProps) => {
     }
   }, [menu]);
 
-  const uniqueCategories = [
-    ...new Set(menu?.map((menuItem) => menuItem.category).filter(Boolean)),
-  ];
-  const filteredMenu =
-    selectedCategory && selectedCategory !== "All"
-      ? menu?.filter((item) => item.category === selectedCategory)
-      : menu;
+  const uniqueCategories = useMemo(
+    () => [
+      ...new Set(menu?.map((menuItem) => menuItem.category).filter(Boolean)),
+    ],
+    [menu]
+  );
+
+  const filteredMenu = useMemo(
+    () =>
+      selectedCategory && selectedCategory !== "All"
+        ? menu?.filter((item) => item.category === selectedCategory)
+        : menu,
+    [menu, selectedCategory]
+  );
 
   return (
     <div>

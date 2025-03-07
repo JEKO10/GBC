@@ -2,7 +2,7 @@
 
 import Link from "next/link";
 import { JsonValue } from "next-auth/adapters";
-import React from "react";
+import React, { useCallback } from "react";
 import { BiTrash } from "react-icons/bi";
 
 import { OrderedItem } from "@/app/profile/orders/page";
@@ -30,9 +30,12 @@ interface OrderProps {
 }
 
 const Order = ({ order, orderedItems }: OrderProps) => {
-  const removeOrder = async (id: string) => {
-    await deleteOrder(id);
-  };
+  const removeOrder = useCallback(
+    async (id: string) => {
+      await deleteOrder(id);
+    },
+    [deleteOrder]
+  );
 
   return (
     <div key={order.id} className="border-2 border-white rounded-md p-3 my-3">

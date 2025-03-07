@@ -54,7 +54,7 @@ const RegisterForm = () => {
       >
         <input
           type="text"
-          {...register("honeypot")}
+          {...register("nickname")}
           className="hidden"
           autoComplete="off"
           tabIndex={-1}
