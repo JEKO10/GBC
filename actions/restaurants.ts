@@ -31,7 +31,7 @@ export const getRestaurantWithMenu = async (id: number) => {
     ...restaurant,
     menus: restaurant.menus.map((menu) => ({
       ...menu,
-      price: menu.price.toNumber(),
+      price: menu.price ? menu.price.toNumber() : 0,
     })),
   };
 };

@@ -14,15 +14,34 @@ export const register = async (formData: z.infer<typeof RegisterSchema>) => {
   const validateFields = RegisterSchema.safeParse(formData);
 
   if (!validateFields.success) {
-    return { error: "Nevažeća polja!" };
+    return { error: "Invalid fields!" };
   }
 
-  const { name, email, password } = validateFields.data;
+  const { name, email, password, captchaToken, honeypot } = validateFields.data;
+
+  if (honeypot) {
+    return { error: "Bot detected. Registration blocked." };
+  }
+
   const hashedPassword = await bcrypt.hash(password, 10);
   const existingEmail = await getUserByEmail(email);
   // const existingPhone = await getUserByPhone(phone);
 
   if (existingEmail) return { error: "E-mail address already in use!" };
+
+  const captchaRes = await fetch("https://api.hcaptcha.com/siteverify", {
+    method: "POST",
+    headers: { "Content-Type": "application/x-www-form-urlencoded" },
+    body: new URLSearchParams({
+      response: captchaToken,
+      secret: process.env.HCAPTCHA_SECRET!,
+    }).toString(),
+  });
+
+  const captchaData = await captchaRes.json();
+  if (!captchaData.success) {
+    return { error: "Captcha verification failed. Please try again." };
+  }
 
   await db.user.create({
     data: {

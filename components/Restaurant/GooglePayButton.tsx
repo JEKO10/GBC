@@ -1,4 +1,5 @@
 import GooglePayButton from "@google-pay/button-react";
+import { loadStripe } from "@stripe/stripe-js";
 import { useRouter } from "next/navigation";
 import React, { useState } from "react";
 
@@ -18,7 +19,11 @@ interface GoogleButtonProps {
   finalTotal: number;
 }
 
-// @TODO to fixed
+const stripePromise = loadStripe(
+  process.env.NEXT_PUBLIC_STRIPE_PUBLISHABLE_KEY || ""
+);
+
+// @TODO .toFixed(2)
 const GoogleButton = ({
   items,
   menu,
@@ -26,11 +31,15 @@ const GoogleButton = ({
   finalTotal,
 }: GoogleButtonProps) => {
   const [errorMessage, setErrorMessage] = useState<string | undefined>("");
+  const [loading, setLoading] = useState<boolean>(false);
   const router = useRouter();
 
   const handlePayment = async (
     paymentData: google.payments.api.PaymentData
   ) => {
+    setLoading(true);
+    setErrorMessage("");
+
     try {
       const token = paymentData.paymentMethodData.tokenizationData.token;
       const restaurantId = menu?.[0]?.restaurant_id || 0;
@@ -44,6 +53,49 @@ const GoogleButton = ({
           price: menu?.find((item) => item.title === title)?.price || 0,
         }));
 
+      // @TODO check
+      // const response = await createPaymentIntent(
+      //   finalTotal,
+      //   token,
+      //   orderedItems,
+      //   restaurantId,
+      //   orderNote
+      // );
+
+      // if (response.clientSecret) {
+      //   // setErrorMessage("Success! Redirecting you...");
+      //   // router.push(`/payment-success`);
+      //   // localStorage.setItem("basketItems", JSON.stringify({}));
+      // } else if (response.error) {
+      //   setErrorMessage(response.message);
+      // } else {
+      //   setErrorMessage("An unexpected error occurred. Please try again.");
+      // }
+
+      // await createPaymentIntent(
+      //   finalTotal,
+      //   token,
+      //   orderedItems,
+      //   restaurantId,
+      //   orderNote
+      // ).then((data) => {
+      //   setErrorMessage(data.message);
+
+      //   if (data.nextActionUrl) {
+      //     window.location.href = data.nextActionUrl;
+      //     return;
+      //   }
+
+      //   if (data.clientSecret) {
+      //     // setErrorMessage("Success! Redirecting you...");
+      //     // router.push(`/payment-success`);
+      //     // localStorage.setItem("basketItems", JSON.stringify({}));
+      //   } else if (data.error) {
+      //     setErrorMessage(data.message);
+      //   } else {
+      //     setErrorMessage("An unexpected error occurred. Please try again.");
+      //   }
+      // });
       const response = await createPaymentIntent(
         finalTotal,
         token,
@@ -52,21 +104,31 @@ const GoogleButton = ({
         orderNote
       );
 
-      if (response.clientSecret) {
-        setErrorMessage("Success! Redirecting you...");
-        router.push(`/profile/orders`);
-        localStorage.setItem("basketItems", JSON.stringify({}));
-      } else if (response.error) {
-        setErrorMessage(response.message);
-      } else {
-        setErrorMessage("An unexpected error occurred. Please try again.");
+      if (!response.clientSecret) {
+        setErrorMessage(response.message || "An unexpected error occurred.");
+        setLoading(false);
+        return;
+      }
+
+      const stripeInstance = await stripePromise;
+      const result = await stripeInstance?.confirmCardPayment(
+        response.clientSecret
+      );
+
+      if (result?.paymentIntent?.status === "succeeded") {
+        setErrorMessage("Payment successful! Redirecting...");
+        setTimeout(() => {
+          router.push(`/payment-success`);
+        }, 1500);
+      } else if (result?.error) {
+        setErrorMessage(result.error.message || "Payment failed. Try again.");
       }
     } catch (error) {
-      if (error instanceof Error) {
-        setErrorMessage(error.message);
-      } else {
-        setErrorMessage("An unexpected error occurred. Please try again.");
-      }
+      setErrorMessage(
+        error instanceof Error ? error.message : "An unexpected error occurred."
+      );
+    } finally {
+      setLoading(false);
     }
   };
 
@@ -78,12 +140,15 @@ const GoogleButton = ({
           apiVersion: 2,
           apiVersionMinor: 0,
           shippingAddressRequired: true,
+          shippingAddressParameters: {
+            phoneNumberRequired: true,
+          },
           allowedPaymentMethods: [
             {
               type: "CARD",
               parameters: {
                 allowedAuthMethods: ["PAN_ONLY", "CRYPTOGRAM_3DS"],
-                allowedCardNetworks: ["MASTERCARD", "VISA"],
+                allowedCardNetworks: ["MASTERCARD", "VISA", "AMEX"],
               },
               tokenizationSpecification: {
                 type: "PAYMENT_GATEWAY",
@@ -97,8 +162,8 @@ const GoogleButton = ({
             },
           ],
           merchantInfo: {
-            merchantId: process.env.NEXT_PUBLIC_GOOGLE_MERCHANT_ID || "", // @TODO change it
-            merchantName: process.env.NEXT_PUBLIC_GOOGLE_MERCHANT_NAME || "", // @TODO change it
+            merchantId: process.env.NEXT_PUBLIC_GOOGLE_MERCHANT_ID || "",
+            merchantName: process.env.NEXT_PUBLIC_GOOGLE_MERCHANT_NAME || "",
           },
           transactionInfo: {
             totalPriceStatus: "FINAL",
@@ -109,11 +174,19 @@ const GoogleButton = ({
           },
         }}
         onLoadPaymentData={(paymentRequest) => handlePayment(paymentRequest)}
-        buttonColor="white"
+        buttonColor="black"
         existingPaymentMethodRequired={false}
       />
       {/* @TODO succes i error */}
-      {errorMessage && <p className="text-red-500">{errorMessage}</p>}
+      {loading && <p className="text-blue-500 mt-2">Processing payment...</p>}
+      {errorMessage && (
+        <p
+          className={`mt-2 ${errorMessage.includes("successful") ? "text-green-500" : "text-red-500"}`}
+        >
+          {errorMessage}
+        </p>
+      )}
+      {/* {errorMessage && <p className="text-red-500">{errorMessage}</p>} */}
     </article>
   );
 };

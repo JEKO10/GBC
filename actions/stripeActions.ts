@@ -51,10 +51,18 @@ export async function createPaymentIntent(
       payment_method: paymentMethod.id,
       confirmation_method: "automatic",
       confirm: true,
-      return_url: `http://www.localhost:3000/orders`, //@TODO change url
+      return_url: `https://www.gbcanteen.com/payment-success`, //@TODO change url
+      //@TODO check this
+      payment_method_options: {
+        card: {
+          request_three_d_secure: "any",
+        },
+      },
       metadata: {
         orderId: orderId.toString(),
         userId: user.id.toString(),
+        // @TODO add phone
+        // phone: user.phone,
         restaurantId: restaurantId.toString(),
         orderNote: orderNote || "",
       },
@@ -63,20 +71,37 @@ export async function createPaymentIntent(
       receipt_email: user.email || "",
     });
 
-    await db.order.create({
-      data: {
-        orderNumber: Number(orderId),
-        amount: amount * 100,
-        stripeId: paymentIntent.id,
-        status: "pending",
-        userId: user.id,
-        restaurantId,
-        items,
-        orderNote: orderNote || "",
-      },
-    });
+    if (
+      paymentIntent.status === "requires_action" &&
+      paymentIntent.next_action?.redirect_to_url
+    ) {
+      return {
+        clientSecret: paymentIntent.client_secret,
+        orderId,
+        nextActionUrl: paymentIntent.next_action.redirect_to_url.url,
+      };
+    }
 
-    return { clientSecret: paymentIntent.client_secret, orderId };
+    if (paymentIntent.status === "succeeded") {
+      await db.order.create({
+        data: {
+          orderNumber: Number(orderId),
+          amount: amount * 100,
+          stripeId: paymentIntent.id,
+          status: "pending",
+          userId: user.id,
+          restaurantId,
+          items,
+          orderNote: orderNote || "",
+        },
+      });
+    }
+
+    return {
+      clientSecret: paymentIntent.client_secret,
+      orderId,
+      message: paymentIntent.status,
+    };
   } catch (error) {
     let errorMessage = "An unknown error occurred. Please try again.";
 

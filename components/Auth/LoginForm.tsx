@@ -64,7 +64,7 @@ const LoginForm = () => {
           className="flex items-start justify-center flex-col bg-secondary mt-2 px-5 sm:px-8 pt-7 pb-5 rounded-lg [&>p]:-mt-2 [&>p]:mb-3 [&>p]:text-white"
           onSubmit={handleSubmit(onSubmit)}
         >
-          {isTwoFactor && (
+          {isTwoFactor ? (
             <FormField
               label="Two factor code"
               type="text"
@@ -72,6 +72,8 @@ const LoginForm = () => {
               placeholder="123456"
               icon={<MdAlternateEmail />}
             />
+          ) : (
+            ""
           )}
           {!isTwoFactor && (
             <>
@@ -108,7 +110,7 @@ const LoginForm = () => {
             disabled={isPending}
           >
             <span className="text-sm font-medium">
-              {isTwoFactor ? "Confirm" : "Log in"}
+              {isTwoFactor ? "Confirm" : isPending ? "Loging in..." : "Log in"}
             </span>
             <LuDoorOpen />
           </button>

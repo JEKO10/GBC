@@ -18,13 +18,13 @@ interface MenuProps {
 
 const Menu = ({ menu }: MenuProps) => {
   const [selectedCategory, setSelectedCategory] = useState<string | null>(null);
+  // @TODO error na serveru
   const [basketItems, setBasketItems] = useState<{ [key: string]: number }>(
     () => {
       const saved = localStorage.getItem("basketItems");
       return saved ? JSON.parse(saved) : {};
     }
   );
-  // @TODO error na serveru
 
   const handleQuantityChange = (itemName: string, quantity: number) => {
     setBasketItems((prev) => ({

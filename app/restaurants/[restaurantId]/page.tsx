@@ -4,15 +4,18 @@ import React from "react";
 import { getRestaurantWithMenu } from "@/actions/restaurants";
 import Menu from "@/components/Restaurant/Menu";
 
-interface PageProps {
-  searchParams: Promise<{
-    [key: string]: string | string[] | undefined;
-  }>;
-}
+// interface PageProps {
+//   searchParams: {
+//     restaurantId: string;
+//   };
+// }
 
-const SingleRestaurantPage = async ({ searchParams }: PageProps) => {
-  const resolvedSearchParams = await searchParams;
-  const { restaurantId } = resolvedSearchParams;
+const SingleRestaurantPage = async ({
+  params,
+}: {
+  params: Promise<{ restaurantId: string }>;
+}) => {
+  const { restaurantId } = await params;
   const parsedId = Number(restaurantId);
   const invalidId = Number.isNaN(parsedId) || parsedId > 2147483647;
   const restaurant = invalidId ? null : await getRestaurantWithMenu(parsedId);
@@ -37,3 +40,5 @@ const SingleRestaurantPage = async ({ searchParams }: PageProps) => {
 };
 
 export default SingleRestaurantPage;
+
+export const revalidate = 60;

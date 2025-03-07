@@ -1,7 +1,8 @@
 import type { NextConfig } from "next";
 
+// @TODO check this
 const nextConfig: NextConfig = {
-  runtime: "nodejs",
+  output: "standalone",
 };
 
 export default nextConfig;

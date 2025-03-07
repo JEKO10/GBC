@@ -10,6 +10,10 @@ export const RegisterSchema = z.object({
   password: z.string().trim().min(6, {
     message: "Minimum 6 characters required!",
   }),
+  captchaToken: z.string().min(1, {
+    message: "Captcha verification is required!",
+  }),
+  honeypot: z.string().optional(),
 });
 
 export const LoginSchema = z.object({

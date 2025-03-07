@@ -104,6 +104,7 @@ export const login = async (formData: z.infer<typeof LoginSchema>) => {
         case "CredentialsSignin":
           return { error: "Invalid credentials!" };
         default:
+          // @TODO ovo vraca stalno
           return { error: "Something went wrong!" };
       }
     }
