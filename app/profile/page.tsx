@@ -8,7 +8,6 @@ import * as z from "zod";
 
 import { settings } from "@/actions/settings";
 import FormField from "@/components/Auth/FormField";
-import formatPhoneNumber from "@/helpers/formatPhoneNumber";
 import parseAddress from "@/helpers/parseAddress";
 import { useCurrentUser } from "@/hooks/useCurrentUser";
 import { SettingsSchema } from "@/schemas/auth";
@@ -25,7 +24,8 @@ const ProfilePage = () => {
     defaultValues: {
       name: user?.name || undefined,
       email: user?.email || undefined,
-      phone: user?.phone || undefined,
+      // @TOOD remove
+      // phone: user?.phone || undefined,
       houseNumber: houseNumber,
       address: address,
       postcode: postcode,
@@ -39,7 +39,8 @@ const ProfilePage = () => {
   const { errors } = formState;
 
   const onSubmit = (formData: z.infer<typeof SettingsSchema>) => {
-    const formattedPhone = formatPhoneNumber(formData.phone);
+    // @TODO remove
+    // const formattedPhone = formatPhoneNumber(formData.phone);
     const formattedAddress =
       formData.houseNumber && formData.address && formData.postcode
         ? `${formData.houseNumber} ${formData.address}, ${formData.postcode}`
@@ -49,7 +50,7 @@ const ProfilePage = () => {
       try {
         const data = await settings({
           ...formData,
-          phone: formattedPhone,
+          // phone: formattedPhone,
           address: formattedAddress,
         });
         setMessage(data.error ?? data.success);
@@ -113,13 +114,14 @@ const ProfilePage = () => {
             />
           </>
         ) : null}
-        <FormField
+        {/* @TODO remove */}
+        {/* <FormField
           label="Update phone nubmer"
           type="text"
           registration={register("phone")}
           placeholder="+44 XXXXX XXXXXX"
           error={errors.phone}
-        />
+        /> */}
         <FormField
           label="House Number"
           type="text"
@@ -141,7 +143,7 @@ const ProfilePage = () => {
           placeholder="XXXX XXX"
           error={errors.postcode}
         />
-        {/* TODO ROLE  */}
+        {/* @TODO ROLE  */}
         {user?.isOAuth === false ? (
           <FormField
             label="Two-Factor Authentication"
@@ -158,6 +160,7 @@ const ProfilePage = () => {
           <p>{errors.newPassword?.message}</p>
         </div>
       </form>
+      {/* @TODO */}
       {/* <button>Two factor auth {user?.isTwoFactorEnabled ? "ON" : "OFF"}</button> */}
       <button onClick={() => signOut()}>Sign Out</button>
     </div>

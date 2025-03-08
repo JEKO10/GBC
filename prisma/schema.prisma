@@ -57,7 +57,8 @@ model User {
   email                 String                 @unique
   emailVerified         DateTime?              @map("email_verified")
   phone                 String?                @unique
-  address               String?                
+  address               String?      
+  googleAddress         String?                
   password              String?
   createdAt             DateTime               @default(now())
   role                  UserRole               @default(USER)

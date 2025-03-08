@@ -26,7 +26,7 @@ export const LoginSchema = z.object({
   code: z.optional(z.string().trim()),
 });
 
-const ukPhoneNumberRegex = /^\+44\s?\d{3,5}[\s-]?\d{6,7}$/;
+// const ukPhoneNumberRegex = /^\+44\s?\d{3,5}[\s-]?\d{6,7}$/;
 const ukPostcodeRegex = /^[A-Z]{1,2}\d[A-Z\d]? \d[A-Z]{2}$/i;
 
 export const SettingsSchema = z
@@ -45,12 +45,13 @@ export const SettingsSchema = z
       }),
     isTwoFactorEnabled: z.optional(z.boolean()),
 
+    // @TODO remove phone
     // phone and address
-    phone: z.optional(
-      z.string().trim().regex(ukPhoneNumberRegex, {
-        message: "Invalid UK phone number format. Use +44 XXXXX XXXXXX",
-      })
-    ),
+    // phone: z.optional(
+    //   z.string().trim().regex(ukPhoneNumberRegex, {
+    //     message: "Invalid UK phone number format. Use +44 XXXXX XXXXXX",
+    //   })
+    // ),
     houseNumber: z.optional(
       z.string().trim().min(1, { message: "House number is required!" })
     ),
