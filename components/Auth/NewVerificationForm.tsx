@@ -7,7 +7,6 @@ import { newVerification } from "@/actions/newVerification";
 
 import FormError from "./FormError";
 
-// @TODO DB INDEXES
 const NewVerificationForm = () => {
   const [message, setMessage] = useState<string | undefined>("");
   const searchParams = useSearchParams();

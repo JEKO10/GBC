@@ -64,6 +64,7 @@ const ProfilePage = () => {
     });
   };
 
+  // @TODO DB INDEXES
   return (
     <div className="flex flex-col gap-10">
       <span>{user?.name ?? "No name available"}</span>

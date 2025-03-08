@@ -11,10 +11,16 @@ export async function GET(req: Request) {
   try {
     const now = new Date();
 
-    const deletedTokens = await db.verificationToken.deleteMany({
+    const deletedVerificationTokens = await db.verificationToken.deleteMany({
       where: {
         expires: { lt: now },
       },
+    });
+    const deletedTwoFactorTokens = await db.twoFactorToken.deleteMany({
+      where: { expires: { lt: now } },
+    });
+    const deletedPasswordResetTokens = await db.passwordResetToken.deleteMany({
+      where: { expires: { lt: now } },
     });
 
     const twentyFourHoursAgo = new Date();
@@ -27,15 +33,13 @@ export async function GET(req: Request) {
       },
     });
 
-    console.log(
-      `Deleted ${deletedTokens.count} expired tokens and ${deletedUsers.count} unverified users.`
-    );
-
     return NextResponse.json({
-      message: `Deleted ${deletedTokens.count} expired tokens and ${deletedUsers.count} unverified users.`,
+      message: `Deleted ${deletedVerificationTokens.count} verification tokens, 
+      ${deletedTwoFactorTokens.count} two-factor tokens, 
+      ${deletedPasswordResetTokens.count} password reset tokens, 
+      ${deletedUsers.count} unverified users.`,
     });
-  } catch (error) {
-    console.error("Error deleting expired tokens or unverified users:", error);
+  } catch {
     return NextResponse.json(
       { error: "Failed to clean expired tokens and unverified users." },
       { status: 500 }

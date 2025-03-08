@@ -6,6 +6,7 @@ export const publicRoutes = [
   "/auth/login",
   "/auth/register",
   "/auth/new-verification",
+  "/api/cron",
 ];
 
 export const authRoutes = [
