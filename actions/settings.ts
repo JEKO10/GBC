@@ -3,7 +3,7 @@
 import bcrypt from "bcryptjs";
 import * as z from "zod";
 
-import { getUserByEmail, getUserById } from "@/data/user";
+import { getUserByEmail, getUserById, getUserByPhone } from "@/data/user";
 import { filterPrismaFields } from "@/helpers/filterPrismaFields";
 import { currentUser } from "@/lib/auth";
 import db from "@/lib/db";
@@ -11,7 +11,7 @@ import { sendVerificationEmail } from "@/lib/mail";
 import { generateVerificationToken } from "@/lib/tokens";
 import { SettingsSchema } from "@/schemas/auth";
 
-// @TODO IMPORTANT verify phone number and number already in use
+// @TODO IMPORTANT verify phone number
 export const settings = async (formData: z.infer<typeof SettingsSchema>) => {
   const user = await currentUser();
   if (!user) {
@@ -46,9 +46,7 @@ export const settings = async (formData: z.infer<typeof SettingsSchema>) => {
   }
 
   if (formData.phone && formData.phone !== dbUser.phone) {
-    const existingUserWithPhone = await db.user.findUnique({
-      where: { phone: formData.phone },
-    });
+    const existingUserWithPhone = await getUserByPhone(formData.phone);
 
     if (existingUserWithPhone && existingUserWithPhone.id !== dbUser.id) {
       return { error: "Phone number is already in use!" };

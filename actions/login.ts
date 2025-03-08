@@ -98,13 +98,13 @@ export const login = async (formData: z.infer<typeof LoginSchema>) => {
       password,
       redirectTo: DEFAULT_LOGIN_REDIRECT,
     });
+    return { success: "You are logged in!" };
   } catch (error) {
     if (error instanceof AuthError) {
       switch (error.type) {
         case "CredentialsSignin":
           return { error: "Invalid credentials!" };
         default:
-          // @TODO ovo vraca stalno
           return { error: "Something went wrong!" };
       }
     }

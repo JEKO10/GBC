@@ -40,18 +40,16 @@ const LoginForm = () => {
       setMessage("");
 
       startTransition(() => {
-        login(values)
-          .then((data) => {
-            if (data?.error || data?.success) {
-              form.reset();
-              setMessage(data?.error ?? data?.success);
-            }
+        login(values).then((data) => {
+          if (data?.success || data?.error) {
+            form.reset();
+            setMessage(data?.error ?? data?.success);
+          }
 
-            if (data?.twoFactor) {
-              setIsTwoFactor(true);
-            }
-          })
-          .catch(() => setMessage("Something went wrong!"));
+          if (data?.twoFactor) {
+            setIsTwoFactor(true);
+          }
+        });
       });
     },
     [form]

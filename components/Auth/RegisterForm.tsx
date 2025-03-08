@@ -41,7 +41,7 @@ const RegisterForm = () => {
 
     startTransition(() => {
       registerAction({ ...values, captchaToken }).then((data) => {
-        setMessage(data?.error || data?.success);
+        setMessage(data?.success || data?.error);
       });
     });
   };

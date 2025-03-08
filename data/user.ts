@@ -16,17 +16,17 @@ export const getUserByEmail = async (email: string) => {
   }
 };
 
-// export const getUserByPhone = async (phone: string) => {
-//   try {
-//     const user = await db.user.findUnique({
-//       where: { phone },
-//     });
+export const getUserByPhone = async (phone: string) => {
+  try {
+    const user = await db.user.findUnique({
+      where: { phone },
+    });
 
-//     return user;
-//   } catch {
-//     return null;
-//   }
-// };
+    return user;
+  } catch {
+    return null;
+  }
+};
 
 export const getUserById = async (id: string) => {
   try {
