@@ -45,14 +45,14 @@ export async function createPaymentIntent(
       },
     });
 
+    // @TODO price reciving, front end or from db directyle
     const paymentIntent = await stripe.paymentIntents.create({
       amount: amount * 100,
       currency: "GBP",
       payment_method: paymentMethod.id,
       confirmation_method: "automatic",
       confirm: true,
-      return_url: `https://www.gbcanteen.com/payment-success`, //@TODO change url
-      //@TODO check this
+      return_url: `https://www.gbcanteen.com/payment-success`,
       payment_method_options: {
         card: {
           request_three_d_secure: "any",
@@ -61,13 +61,11 @@ export async function createPaymentIntent(
       metadata: {
         orderId: orderId.toString(),
         userId: user.id.toString(),
-        // @TODO add phone
-        // phone: user.phone,
+        phone: user.phone,
         restaurantId: restaurantId.toString(),
         orderNote: orderNote || "",
+        orderedItems: JSON.stringify(items),
       },
-      // @TODO desc if they want
-      // description: ,
       receipt_email: user.email || "",
     });
 
@@ -80,21 +78,6 @@ export async function createPaymentIntent(
         orderId,
         nextActionUrl: paymentIntent.next_action.redirect_to_url.url,
       };
-    }
-
-    if (paymentIntent.status === "succeeded") {
-      await db.order.create({
-        data: {
-          orderNumber: Number(orderId),
-          amount: amount * 100,
-          stripeId: paymentIntent.id,
-          status: "pending",
-          userId: user.id,
-          restaurantId,
-          items,
-          orderNote: orderNote || "",
-        },
-      });
     }
 
     return {
@@ -132,6 +115,55 @@ export async function createPaymentIntent(
     return {
       error: true,
       message: errorMessage,
+    };
+  }
+}
+
+export async function createOrder(paymentIntentId: string) {
+  try {
+    const paymentIntent = await stripe.paymentIntents.retrieve(paymentIntentId);
+
+    if (paymentIntent.status !== "succeeded") {
+      return { error: true, message: "Payment not completed yet." };
+    }
+
+    if (!paymentIntent.metadata) {
+      return { error: true, message: "Metadata is missing in payment intent." };
+    }
+
+    if (!paymentIntent.metadata.orderedItems) {
+      return { error: true, message: "Ordered items not found in metadata." };
+    }
+
+    // @TODO metadata or front end for items
+    const orderId = Number(paymentIntent.metadata.orderId);
+    const userId = paymentIntent.metadata.userId;
+    const restaurantId = Number(paymentIntent.metadata.restaurantId);
+    const orderNote = paymentIntent.metadata.orderNote || "";
+    const items = JSON.parse(paymentIntent.metadata.orderedItems);
+
+    if (!Array.isArray(items)) {
+      return { error: true, message: "Ordered items format is incorrect." };
+    }
+
+    const newOrder = await db.order.create({
+      data: {
+        orderNumber: Number(orderId),
+        amount: paymentIntent.amount,
+        stripeId: paymentIntent.id,
+        status: "pending",
+        userId,
+        restaurantId,
+        items,
+        orderNote,
+      },
+    });
+
+    return { success: true, orderId: newOrder.orderNumber };
+  } catch {
+    return {
+      error: true,
+      message: "Failed to verify payment or create order.",
     };
   }
 }

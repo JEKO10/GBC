@@ -11,7 +11,6 @@ import { sendVerificationEmail } from "@/lib/mail";
 import { generateVerificationToken } from "@/lib/tokens";
 import { SettingsSchema } from "@/schemas/auth";
 
-// @TODO IMPORTANT verify phone number
 export const settings = async (formData: z.infer<typeof SettingsSchema>) => {
   const user = await currentUser();
   if (!user) {

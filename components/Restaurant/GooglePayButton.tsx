@@ -4,7 +4,7 @@ import { useRouter } from "next/navigation";
 import React, { useState } from "react";
 
 import { setUserGoogleAddress, setUserPhoneNumber } from "@/actions/settings";
-import { createPaymentIntent } from "@/actions/stripeActions";
+import { createOrder, createPaymentIntent } from "@/actions/stripeActions";
 import { useCurrentUser } from "@/hooks/useCurrentUser";
 
 interface GoogleButtonProps {
@@ -89,6 +89,8 @@ const GoogleButton = ({
       );
 
       if (result?.paymentIntent?.status === "succeeded") {
+        await createOrder(result.paymentIntent.id);
+
         setErrorMessage("Payment successful! Redirecting...");
         localStorage.setItem("basketItems", JSON.stringify({}));
         setTimeout(() => {
@@ -151,7 +153,6 @@ const GoogleButton = ({
         buttonColor="black"
         existingPaymentMethodRequired={false}
       />
-      {/* @TODO succes i error */}
       {loading && <p className="text-blue-500 mt-2">Processing payment...</p>}
       {errorMessage && (
         <p
@@ -160,7 +161,6 @@ const GoogleButton = ({
           {errorMessage}
         </p>
       )}
-      {/* {errorMessage && <p className="text-red-500">{errorMessage}</p>} */}
     </article>
   );
 };

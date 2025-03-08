@@ -14,8 +14,6 @@ import FormField from "@/components/Auth/FormField";
 import Social from "@/components/Auth/Socials";
 import { RegisterSchema } from "@/schemas/auth";
 
-// @TODO give people a day to verify or it gets deleted. Don't let them use the app until verified.
-
 const RegisterForm = () => {
   const [message, setMessage] = useState<string | undefined>("");
   const [isPending, startTransition] = useTransition();
