@@ -4,12 +4,14 @@ import bcrypt from "bcryptjs";
 import * as z from "zod";
 
 import { getUserByEmail, getUserById } from "@/data/user";
+import { filterPrismaFields } from "@/helpers/filterPrismaFields";
 import { currentUser } from "@/lib/auth";
 import db from "@/lib/db";
 import { sendVerificationEmail } from "@/lib/mail";
 import { generateVerificationToken } from "@/lib/tokens";
 import { SettingsSchema } from "@/schemas/auth";
 
+// @TODO IMPORTANT verify phone number and number already in use
 export const settings = async (formData: z.infer<typeof SettingsSchema>) => {
   const user = await currentUser();
   if (!user) {
@@ -67,12 +69,7 @@ export const settings = async (formData: z.infer<typeof SettingsSchema>) => {
     formData.newPassword = undefined;
   }
 
-  const updatedData = Object.fromEntries(
-    Object.entries(formData).filter(
-      // eslint-disable-next-line no-unused-vars
-      ([_, value]) => value !== "" && value !== undefined
-    )
-  );
+  const updatedData = filterPrismaFields(formData, ["houseNumber", "postcode"]);
 
   await db.user.update({
     where: { id: dbUser.id },

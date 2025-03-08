@@ -26,11 +26,13 @@ export const LoginSchema = z.object({
   code: z.optional(z.string().trim()),
 });
 
+const ukPhoneNumberRegex = /^\+44\s?\d{3,5}[\s-]?\d{6,7}$/;
+const ukPostcodeRegex = /^[A-Z]{1,2}\d[A-Z\d]? \d[A-Z]{2}$/i;
+
 export const SettingsSchema = z
   .object({
     name: z.optional(z.string().trim()),
     email: z.optional(z.string().trim().email()),
-    phone: z.optional(z.string().trim()),
     password: z
       .optional(z.string().trim())
       .refine((val) => !val || val.length >= 6, {
@@ -42,6 +44,28 @@ export const SettingsSchema = z
         message: "New password must be at least 6 characters",
       }),
     isTwoFactorEnabled: z.optional(z.boolean()),
+
+    // phone and address
+    phone: z.optional(
+      z.string().trim().regex(ukPhoneNumberRegex, {
+        message: "Invalid UK phone number format. Use +44 XXXXX XXXXXX",
+      })
+    ),
+    houseNumber: z.optional(
+      z.string().trim().min(1, { message: "House number is required!" })
+    ),
+    address: z.optional(
+      z
+        .string()
+        .trim()
+        .min(5, { message: "Address must be at least 5 characters!" })
+    ),
+    postcode: z.optional(
+      z
+        .string()
+        .trim()
+        .regex(ukPostcodeRegex, { message: "Invalid UK postcode format!" })
+    ),
   })
   .refine(
     (data) => {

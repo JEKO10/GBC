@@ -25,7 +25,6 @@ export const register = async (formData: z.infer<typeof RegisterSchema>) => {
 
   const hashedPassword = await bcrypt.hash(password, 10);
   const existingEmail = await getUserByEmail(email);
-  // const existingPhone = await getUserByPhone(phone);
 
   if (existingEmail) return { error: "E-mail address already in use!" };
 

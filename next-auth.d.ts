@@ -10,6 +10,7 @@ declare module "next-auth" {
       role: UserRole;
       isTwoFactorEnabled: boolean;
       isOAuth: boolean;
+      address: string;
     };
   }
 }

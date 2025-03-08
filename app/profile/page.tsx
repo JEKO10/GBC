@@ -8,6 +8,8 @@ import * as z from "zod";
 
 import { settings } from "@/actions/settings";
 import FormField from "@/components/Auth/FormField";
+import formatPhoneNumber from "@/helpers/formatPhoneNumber";
+import parseAddress from "@/helpers/parseAddress";
 import { useCurrentUser } from "@/hooks/useCurrentUser";
 import { SettingsSchema } from "@/schemas/auth";
 
@@ -16,6 +18,7 @@ const ProfilePage = () => {
   const [isPending, startTransition] = useTransition();
   const { update } = useSession();
   const user = useCurrentUser();
+  const { houseNumber, address, postcode } = parseAddress(user?.address);
 
   const form = useForm<z.infer<typeof SettingsSchema>>({
     resolver: zodResolver(SettingsSchema),
@@ -23,6 +26,9 @@ const ProfilePage = () => {
       name: user?.name || undefined,
       email: user?.email || undefined,
       phone: user?.phone || undefined,
+      houseNumber: houseNumber,
+      address: address,
+      postcode: postcode,
       password: undefined,
       newPassword: undefined,
       isTwoFactorEnabled: user?.isTwoFactorEnabled || undefined,
@@ -33,9 +39,19 @@ const ProfilePage = () => {
   const { errors } = formState;
 
   const onSubmit = (formData: z.infer<typeof SettingsSchema>) => {
+    const formattedPhone = formatPhoneNumber(formData.phone);
+    const formattedAddress =
+      formData.houseNumber && formData.address && formData.postcode
+        ? `${formData.houseNumber} ${formData.address}, ${formData.postcode}`
+        : "";
+
     startTransition(async () => {
       try {
-        const data = await settings(formData);
+        const data = await settings({
+          ...formData,
+          phone: formattedPhone,
+          address: formattedAddress,
+        });
         setMessage(data.error ?? data.success);
         if (data.success) {
           update();
@@ -50,8 +66,8 @@ const ProfilePage = () => {
 
   return (
     <div className="flex flex-col gap-10">
-      {/* {user?.name && <span>{user.name}</span>} */}
       <span>{user?.name ?? "No name available"}</span>
+      <span>{user?.address ?? ""}</span>
       <form onSubmit={handleSubmit(onSubmit)}>
         <FormField
           label="Update name"
@@ -99,14 +115,30 @@ const ProfilePage = () => {
         <FormField
           label="Update phone nubmer"
           type="text"
-          registration={register("phone", {
-            minLength: {
-              value: 6,
-              message: "Must be at least 6 characters",
-            },
-          })}
-          placeholder="Update phone nubmer"
+          registration={register("phone")}
+          placeholder="+44 XXXXX XXXXXX"
           error={errors.phone}
+        />
+        <FormField
+          label="House Number"
+          type="text"
+          registration={register("houseNumber")}
+          placeholder="Enter your house number"
+          error={errors.houseNumber}
+        />
+        <FormField
+          label="Address"
+          type="text"
+          registration={register("address")}
+          placeholder="Enter your street address"
+          error={errors.address}
+        />
+        <FormField
+          label="Postcode"
+          type="text"
+          registration={register("postcode")}
+          placeholder="XXXX XXX"
+          error={errors.postcode}
         />
         {/* TODO ROLE  */}
         {user?.isOAuth === false ? (
