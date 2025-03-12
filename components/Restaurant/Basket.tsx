@@ -38,13 +38,8 @@ const Basket = ({ items, menu, setBasketItems }: BasketProps) => {
       .toFixed(2)
   );
 
-  // @TODO izracunaj nekako distancu od restorana...
-  const deliveryDistance = 1.5;
-
-  const { deliveryFee, serviceFee, vat, finalTotal } = calculateFees(
-    totalPrice,
-    deliveryDistance
-  );
+  const { deliveryFee, serviceFee, vat, finalTotal } =
+    calculateFees(totalPrice);
 
   const handleQuantityChange = (itemName: string, quantity: number) => {
     setBasketItems((prev) => {
@@ -105,7 +100,7 @@ const Basket = ({ items, menu, setBasketItems }: BasketProps) => {
         </div>
       )}
       <div className="w-full absolute bottom-2 left-0 text-center">
-        {totalPrice > 1 ? (
+        {totalPrice > 8 ? (
           <GoogleButton
             menu={menu}
             items={items}
@@ -113,7 +108,7 @@ const Basket = ({ items, menu, setBasketItems }: BasketProps) => {
             finalTotal={finalTotal}
           />
         ) : (
-          ""
+          <p>Minimum order price is 8£.</p>
         )}
       </div>
     </section>

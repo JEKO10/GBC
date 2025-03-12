@@ -62,7 +62,7 @@ const Order = ({ order, orderedItems }: OrderProps) => {
       <p>
         <strong>Estimated delivery time: </strong>
         {new Date(
-          new Date(order.createdAt).getTime() + 60 * 60 * 1000
+          new Date(order.createdAt).getTime() + 45 * 60 * 1000
         ).toLocaleString()}
       </p>
       <p>

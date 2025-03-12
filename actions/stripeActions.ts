@@ -47,7 +47,8 @@ export async function createPaymentIntent(
 
     // @TODO price reciving, front end or from db directyle
     const paymentIntent = await stripe.paymentIntents.create({
-      amount: amount * 100,
+      // @TODO check this
+      amount: Math.round(amount * 100),
       currency: "GBP",
       payment_method: paymentMethod.id,
       confirmation_method: "automatic",

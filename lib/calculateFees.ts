@@ -1,32 +1,20 @@
-import feeTable from "@/config/feeTable";
-
 export interface FeeCalculationResult {
   deliveryFee: number;
   serviceFee: number;
-  // totalCost: number;
   vat: number;
   finalTotal: number;
 }
 
-export const calculateFees = (
-  orderValue: number,
-  distance: number
-): FeeCalculationResult => {
-  let deliveryFee = 0;
+export const calculateFees = (orderValue: number): FeeCalculationResult => {
+  const deliveryFee = 1.8;
   let serviceFee = 0;
 
-  for (let row of feeTable) {
-    if (orderValue >= row.range[0] && orderValue <= row.range[1]) {
-      deliveryFee =
-        distance <= 1 ? row.fees[0] : distance <= 2 ? row.fees[1] : row.fees[2];
-      serviceFee = row.serviceFee;
-      break;
-    }
-  }
-
-  if (orderValue > 50) {
-    serviceFee = 0.8;
-    deliveryFee = distance <= 1 ? 0 : distance <= 2 ? 0.5 : 0.79;
+  if (orderValue >= 8 && orderValue <= 15) {
+    serviceFee = orderValue * 0.1;
+  } else if (orderValue >= 16 && orderValue <= 50) {
+    serviceFee = orderValue * 0.07;
+  } else if (orderValue >= 51) {
+    serviceFee = orderValue * 0.05;
   }
 
   const totalCost = orderValue + deliveryFee + serviceFee;
@@ -38,5 +26,5 @@ export const calculateFees = (
     serviceFee: parseFloat(serviceFee.toFixed(2)),
     vat: parseFloat(vat.toFixed(2)),
     finalTotal: parseFloat(finalTotal.toFixed(2)),
-  } as const;
+  };
 };

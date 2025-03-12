@@ -34,6 +34,7 @@ const SingleRestaurantPage = async ({
     <div>
       <h2 className="text-2xl pt-14 px-14">{restaurant.name}</h2>
       <p className="px-14">{restaurant.address}</p>
+      <p className="px-14 text-secondary">Estimated order time 30-45 mins</p>
       <Menu menu={restaurant?.menus} />
     </div>
   );
