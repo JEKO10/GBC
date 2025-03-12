@@ -19,8 +19,6 @@ export interface Restaurant {
   lng: number;
 }
 
-// @TODO no restaurants found condition
-// @TODO previse loaduje
 // @TODO prevent user from going /restaunrants/:id, only from map
 const MapPage = () => {
   const [restaurants, setRestaurants] = useState<Restaurant[]>([]);

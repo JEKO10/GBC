@@ -5,9 +5,13 @@ import React from "react";
 import bilimoria from "@/public/bilimoria.png";
 
 const RestaurantCard = ({ name, id }: { name: string; id: number }) => {
+  const handleRestaurantClick = () => {
+    document.cookie = "cameFromMap=true; path=/; max-age=1";
+  };
+
   return (
     <article className="bg-white w-72 p-3 rounded-md cursor-pointer">
-      <Link href={`/restaurants/${id}`}>
+      <Link href={`/restaurants/${id}`} onClick={() => handleRestaurantClick()}>
         <Image
           className="w-full rounded-md"
           src={bilimoria}

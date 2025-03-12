@@ -4,12 +4,6 @@ import React from "react";
 import { getRestaurantWithMenu } from "@/actions/restaurants";
 import Menu from "@/components/Restaurant/Menu";
 
-// interface PageProps {
-//   searchParams: {
-//     restaurantId: string;
-//   };
-// }
-
 const SingleRestaurantPage = async ({
   params,
 }: {

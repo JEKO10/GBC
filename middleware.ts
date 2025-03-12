@@ -4,6 +4,8 @@ import authConfig from "@/auth.config";
 
 const { auth } = NextAuth(authConfig);
 
+import { NextResponse } from "next/server";
+
 import {
   apiAuthPrefix,
   authRoutes,
@@ -31,6 +33,18 @@ export default auth((req) => {
 
   if (!isLoggedIn && !isPublicRoute) {
     return Response.redirect(new URL("/auth/login", nextUrl));
+  }
+
+  if (nextUrl.pathname.startsWith("/restaurants/")) {
+    const cameFromMap = req.cookies.get("cameFromMap")?.value;
+
+    if (!cameFromMap) {
+      return Response.redirect(new URL("/restaurants", nextUrl));
+    }
+
+    const response = NextResponse.next();
+    response.cookies.delete("cameFromMap");
+    return response;
   }
 
   return;
