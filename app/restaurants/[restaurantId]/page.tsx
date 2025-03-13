@@ -4,6 +4,7 @@ import React from "react";
 import { getRestaurantWithMenu } from "@/actions/restaurants";
 import Menu from "@/components/Restaurant/Menu";
 
+// @TODO probaj ime
 const SingleRestaurantPage = async ({
   params,
 }: {

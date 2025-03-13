@@ -5,8 +5,9 @@ import React from "react";
 import bilimoria from "@/public/bilimoria.png";
 
 const RestaurantCard = ({ name, id }: { name: string; id: number }) => {
-  const handleRestaurantClick = () => {
-    document.cookie = "cameFromMap=true; path=/; max-age=1";
+  const handleRestaurantClick = async () => {
+    await fetch(`/api/cameFromMap?restaurantId=${id}`);
+    window.location.href = `/restaurants/${id}`;
   };
 
   return (

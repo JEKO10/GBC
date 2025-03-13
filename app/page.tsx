@@ -9,6 +9,7 @@ const Home = () => {
         <Link href="/auth/register">Register</Link>
         <Link href="/profile">profile</Link>
         <Link href="/map">Restaurants near you</Link>
+        <Link href="/restaurants/8">Restaurants </Link>
       </div>
     </div>
   );
