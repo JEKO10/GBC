@@ -4,15 +4,16 @@ import React from "react";
 
 import bilimoria from "@/public/bilimoria.png";
 
-const RestaurantCard = ({ name, id }: { name: string; id: number }) => {
-  const handleRestaurantClick = async () => {
-    await fetch(`/api/cameFromMap?restaurantId=${id}`);
-    window.location.href = `/restaurants/${id}`;
-  };
+const RestaurantCard = ({ name }: { name: string }) => {
+  // @TODO middleware
+  // const handleRestaurantClick = async () => {
+  //   await fetch(`/api/cameFromMap?restaurantId=${id}`);
+  //   window.location.href = `/restaurants/${id}`;
+  // };
 
   return (
     <article className="bg-white w-72 p-3 rounded-md cursor-pointer">
-      <Link href={`/restaurants/${id}`} onClick={() => handleRestaurantClick()}>
+      <Link href={`/restaurants/${encodeURIComponent(name)}`}>
         <Image
           className="w-full rounded-md"
           src={bilimoria}

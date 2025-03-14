@@ -19,9 +19,9 @@ export const getRestaurantById = async (id: number) => {
   return restaurant?.name || "Unknown Restaurant";
 };
 
-export const getRestaurantWithMenu = async (id: number) => {
+export const getRestaurantWithMenu = async (name: string) => {
   const restaurant = await db.restaurant.findUnique({
-    where: { id },
+    where: { name },
     include: { menus: true },
   });
 

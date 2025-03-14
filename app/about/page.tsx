@@ -1,5 +1,4 @@
 import Image from "next/image";
-import Link from "next/link";
 import React from "react";
 import { SiDeliveroo, SiJusteat, SiUbereats } from "react-icons/si";
 
@@ -37,6 +36,7 @@ const AboutPage = () => {
             title="General Faridoon Bilimoria - The Inspiration Behind GBC"
             alt="Lieutenant General Faridoon Bilimoria (center) standing in full ceremonial military uniform, flanked by two high-ranking officers."
             className="w-full h-auto rounded-lg shadow-xl"
+            loading="lazy"
           />
         </div>
       </article>
@@ -94,6 +94,7 @@ const AboutPage = () => {
             title="Traditional Indian Food at General Bilimoria’s Canteen"
             alt="An assortment of authentic Indian dishes from General Bilimoria's Canteen, featuring butter chicken, dal, chana masala, biryani, crispy samosas, pakoras, parathas, and flavorful chutneys, served on traditional enamel plates."
             className="w-full h-auto rounded-lg shadow-xl"
+            loading="lazy"
           />
         </div>
       </article>
@@ -108,15 +109,27 @@ const AboutPage = () => {
           Order now on
         </p>
         <div className="flex justify-around lg:justify-between items-center">
-          <Link href="https://www.just-eat.co.uk/" target="_blank">
+          <a
+            href="https://www.just-eat.co.uk/"
+            target="_blank"
+            rel="noopener noreferrer"
+          >
             <SiJusteat className="text-secondary text-4xl lg:text-6xl cursor-pointer" />
-          </Link>
-          <Link href="https://deliveroo.co.uk/" target="_blank">
+          </a>
+          <a
+            href="https://www.ubereats.com/gb/"
+            target="_blank"
+            rel="noopener noreferrer"
+          >
             <SiUbereats className="text-secondary text-4xl lg:text-6xl cursor-pointer" />
-          </Link>
-          <Link href="https://www.ubereats.com/gb/" target="_blank">
+          </a>
+          <a
+            href="https://www.deliveroo.co.uk/"
+            target="_blank"
+            rel="noopener noreferrer"
+          >
             <SiDeliveroo className="text-secondary text-4xl lg:text-6xl cursor-pointer" />
-          </Link>
+          </a>
         </div>
       </article>
     </section>

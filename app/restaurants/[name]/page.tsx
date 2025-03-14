@@ -4,18 +4,15 @@ import React from "react";
 import { getRestaurantWithMenu } from "@/actions/restaurants";
 import Menu from "@/components/Restaurant/Menu";
 
-// @TODO probaj ime
 const SingleRestaurantPage = async ({
   params,
 }: {
-  params: Promise<{ restaurantId: string }>;
+  params: { name: string };
 }) => {
-  const { restaurantId } = await params;
-  const parsedId = Number(restaurantId);
-  const invalidId = Number.isNaN(parsedId) || parsedId > 2147483647;
-  const restaurant = invalidId ? null : await getRestaurantWithMenu(parsedId);
+  const decodedName = decodeURIComponent(params.name);
+  const restaurant = await getRestaurantWithMenu(decodedName);
 
-  if (invalidId || !restaurant || restaurant?.menus.length === 0) {
+  if (!decodedName || !restaurant || restaurant?.menus.length === 0) {
     return (
       <div className="text-center">
         <p className="my-10 text-4xl">There is no such restaurant!</p>
@@ -25,6 +22,7 @@ const SingleRestaurantPage = async ({
       </div>
     );
   }
+
   return (
     <div>
       <h2 className="text-2xl pt-14 px-14">{restaurant.name}</h2>
@@ -37,4 +35,5 @@ const SingleRestaurantPage = async ({
 
 export default SingleRestaurantPage;
 
+// @TODO check
 export const revalidate = 60;

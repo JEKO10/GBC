@@ -15,10 +15,7 @@ const Restaurants = ({ restaurants, selectedRestaurant }: RestaurantsProps) => {
       {selectedRestaurant?.name && (
         <div className="flex flex-col flex-wrap gap-10 justify-center items-center mt-5 mb-10">
           <h3>Selected Restaurant:</h3>
-          <RestaurantCard
-            name={selectedRestaurant.name}
-            id={selectedRestaurant.id}
-          />
+          <RestaurantCard name={selectedRestaurant.name} />
         </div>
       )}
       Restaurants within 3 miles from your address:
@@ -26,7 +23,7 @@ const Restaurants = ({ restaurants, selectedRestaurant }: RestaurantsProps) => {
         <section className="flex flex-wrap gap-10 justify-center my-10">
           {restaurants.map((restaurant) => (
             <div key={restaurant.id}>
-              <RestaurantCard name={restaurant.name} id={restaurant.id} />
+              <RestaurantCard name={restaurant.name} />
             </div>
           ))}
         </section>
