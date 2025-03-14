@@ -7,9 +7,10 @@ import Menu from "@/components/Restaurant/Menu";
 const SingleRestaurantPage = async ({
   params,
 }: {
-  params: { name: string };
+  params: Promise<{ name: string }>;
 }) => {
-  const decodedName = decodeURIComponent(params.name);
+  const { name } = await params;
+  const decodedName = decodeURIComponent(name);
   const restaurant = await getRestaurantWithMenu(decodedName);
 
   if (!decodedName || !restaurant || restaurant?.menus.length === 0) {
