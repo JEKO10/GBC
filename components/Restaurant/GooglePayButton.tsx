@@ -64,7 +64,7 @@ const GoogleButton = ({
 
       if (googlePayAddress && !user?.address) {
         await setUserGoogleAddress(
-          `${googlePayAddress.address1}, ${googlePayAddress.postalCode}`
+          `${googlePayAddress.address2} ${googlePayAddress.address1}, ${googlePayAddress.postalCode}`
         );
       }
 
@@ -118,6 +118,7 @@ const GoogleButton = ({
           shippingAddressRequired: true,
           shippingAddressParameters: {
             phoneNumberRequired: true,
+            allowedCountryCodes: ["GB"],
           },
           allowedPaymentMethods: [
             {

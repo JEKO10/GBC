@@ -44,14 +44,6 @@ export const settings = async (formData: z.infer<typeof SettingsSchema>) => {
     return { success: "Verification email sent!" };
   }
 
-  // if (formData.phone && formData.phone !== dbUser.phone) {
-  //   const existingUserWithPhone = await getUserByPhone(formData.phone);
-
-  //   if (existingUserWithPhone && existingUserWithPhone.id !== dbUser.id) {
-  //     return { error: "Phone number is already in use!" };
-  //   }
-  // }
-
   if (formData.password && formData.newPassword && dbUser.password) {
     const passwordsMatch = await bcrypt.compare(
       formData.password,
@@ -78,13 +70,9 @@ export const settings = async (formData: z.infer<typeof SettingsSchema>) => {
 
 export const setUserPhoneNumber = async (phoneNumber: string | undefined) => {
   const user = await currentUser();
-  if (!user) {
-    return { error: "Unauthorized!" } as const;
-  }
+  if (!user) return { error: "Unauthorized!" } as const;
 
-  if (!phoneNumber) {
-    return { error: "No phone number!" } as const;
-  }
+  if (!phoneNumber) return { error: "No phone number!" } as const;
 
   try {
     const dbUser = await getUserById(user.id);
@@ -109,13 +97,9 @@ export const setUserGoogleAddress = async (
   googleAddress: string | undefined
 ) => {
   const user = await currentUser();
-  if (!user) {
-    return { error: "Unauthorized!" } as const;
-  }
+  if (!user) return { error: "Unauthorized!" } as const;
 
-  if (!googleAddress) {
-    return { error: "No google address!" } as const;
-  }
+  if (!googleAddress) return { error: "No google address!" } as const;
 
   try {
     const dbUser = await getUserById(user.id);
@@ -133,5 +117,28 @@ export const setUserGoogleAddress = async (
     });
   } catch {
     return null;
+  }
+};
+
+export const setUserAddress = async (googleAddress: string | undefined) => {
+  const user = await currentUser();
+  if (!user) return { error: "Unauthorized!" } as const;
+
+  if (!googleAddress) return { error: "No google address!" } as const;
+
+  try {
+    const dbUser = await getUserById(user.id);
+    if (!dbUser) {
+      return { error: "Unauthorized!" } as const;
+    }
+
+    await db.user.update({
+      where: { id: dbUser.id },
+      data: { address: googleAddress },
+    });
+
+    return { success: "Address updated!" } as const;
+  } catch {
+    return { error: "Failed to update address!" } as const;
   }
 };

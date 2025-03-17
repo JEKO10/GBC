@@ -13,6 +13,7 @@ import Link from "next/link";
 import { useEffect, useMemo, useRef, useState } from "react";
 import { HiOutlineLocationMarker } from "react-icons/hi";
 
+import { setUserAddress } from "@/actions/settings";
 import { Restaurant } from "@/app/map/page";
 import marker from "@/public/marker.png";
 
@@ -114,6 +115,13 @@ function Location({
         localStorage.setItem("userLocation", JSON.stringify(latLngLiteral));
         map?.setCenter(latLngLiteral);
         map?.setZoom(14);
+
+        (async () => {
+          if (place.formatted_address) {
+            // @TODO mozda da prikazem poruku, success address
+            await setUserAddress(place.formatted_address);
+          }
+        })();
       }
     });
   }, [placesLib, map]);
