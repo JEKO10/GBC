@@ -8,6 +8,7 @@ import * as z from "zod";
 
 import { settings } from "@/actions/settings";
 import FormField from "@/components/Auth/FormField";
+import UserReviews from "@/components/Reviews/UserReviews";
 import parseAddress from "@/helpers/parseAddress";
 import { useCurrentUser } from "@/hooks/useCurrentUser";
 import { SettingsSchema } from "@/schemas/auth";
@@ -156,10 +157,11 @@ const ProfilePage = () => {
           {isPending ? "Saving..." : "Save"}
         </button>
         <div className="flex flex-col gap-10">
-          <p>{message}</p> <p>{errors.password?.message}</p>{" "}
+          <p>{message}</p> <p>{errors.password?.message} </p>
           <p>{errors.newPassword?.message}</p>
         </div>
       </form>
+      <UserReviews />
       {/* @TODO */}
       {/* <button>Two factor auth {user?.isTwoFactorEnabled ? "ON" : "OFF"}</button> */}
       <button onClick={() => signOut()}>Sign Out</button>

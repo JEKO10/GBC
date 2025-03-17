@@ -1,25 +1,22 @@
 import { NextResponse } from "next/server";
 
-export function GET(req: Request) {
+export async function GET(req: Request) {
   const url = new URL(req.url);
-  const restaurantId = url.searchParams.get("restaurantId");
+  const restaurantName = url.searchParams.get("name");
 
-  if (!restaurantId) {
+  if (!restaurantName) {
     return NextResponse.json(
-      { error: "Missing restaurant ID" },
+      { error: "Missing restaurant name" },
       { status: 400 }
     );
   }
 
   const response = NextResponse.json({ success: true });
 
-  response.cookies.set("cameFromMap", restaurantId, {
-    httpOnly: true,
-    secure: process.env.NODE_ENV === "production",
-    maxAge: 600,
-    path: "/",
-    sameSite: "strict",
-  });
+  response.headers.append(
+    "Set-Cookie",
+    `cameFromMap=${encodeURIComponent(restaurantName)}; Path=/; HttpOnly; Secure; Max-Age=600; SameSite=Strict`
+  );
 
   return response;
 }

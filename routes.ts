@@ -1,19 +1,12 @@
-export const publicRoutes = [
-  "/",
-  //   "/contact",
-  //   "/faq",
-  "/auth/login",
-  "/auth/register",
-  "/auth/new-verification",
-  "/about",
-];
+export const publicRoutes = ["/", "/about"];
 
 export const authRoutes = [
-  // "/auth/register",
-  // "/auth/login",
+  "/auth/register",
+  "/auth/login",
   "/auth/error",
   "/auth/reset",
   "/auth/new-password",
+  "/auth/new-verification",
 ];
 
 export const apiAuthPrefix = [

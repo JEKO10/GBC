@@ -67,6 +67,7 @@ const MapPage = () => {
         <div className="loading" />
       ) : restaurants.length > 0 ? (
         <>
+          {/* @TODO nadji nacin da ovo ne bude PUBLIC */}
           <APIProvider apiKey={process.env.NEXT_PUBLIC_GOOGLE_MAP_API_KEY}>
             <Map
               restaurants={restaurants}

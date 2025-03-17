@@ -13,6 +13,10 @@ import {
   publicRoutes,
 } from "@/routes";
 
+async function delay(ms: number) {
+  return new Promise((resolve) => setTimeout(resolve, ms));
+}
+
 export default auth(async (req) => {
   const { nextUrl } = req;
   const isLoggedIn = !!req.auth;
@@ -38,30 +42,36 @@ export default auth(async (req) => {
   }
 
   // @TODO check for optimal answer, prikazuje /restaurants prije /:id
-  // if (nextUrl.pathname.startsWith("/restaurants/")) {
-  //   const requestedRestaurantId = nextUrl.pathname.split("/restaurants/")[1];
-  //   const cameFromMap = req.cookies.get("cameFromMap")?.value;
-  //   const refererHeader = req.headers.get("referer");
+  if (nextUrl.pathname.startsWith("/restaurants/")) {
+    await delay(1000);
 
-  //   try {
-  //     setTimeout(() => {
-  //       if (!refererHeader) throw new Error("Missing referer");
-  //       const refererURL = new URL(refererHeader);
+    const requestedRestaurantName = decodeURIComponent(
+      nextUrl.pathname.split("/restaurants/")[1]
+    );
+    const cameFromMap = req.cookies.get("cameFromMap")?.value;
+    const refererHeader = req.headers.get("referer");
 
-  //       if (refererURL.origin !== nextUrl.origin) {
-  //         throw new Error("Origin mismatch");
-  //       }
+    if (cameFromMap === requestedRestaurantName) {
+      return NextResponse.next();
+    }
 
-  //       if (cameFromMap === requestedRestaurantId) {
-  //         return NextResponse.next();
-  //       }
+    if (refererHeader) {
+      const refererURL = new URL(refererHeader);
+      if (refererURL.pathname === "/map") {
+        const response = NextResponse.next();
+        response.cookies.set("cameFromMap", requestedRestaurantName, {
+          httpOnly: true,
+          secure: process.env.NODE_ENV === "production",
+          maxAge: 600,
+          path: "/",
+          sameSite: "strict",
+        });
+        return response;
+      }
+    }
 
-  //       throw new Error("Invalid access");
-  //     }, 2000);
-  //   } catch {
-  //     return NextResponse.redirect(new URL("/restaurants", nextUrl));
-  //   }
-  // }
+    return NextResponse.redirect(new URL("/restaurants", nextUrl));
+  }
 
   return NextResponse.next();
 });

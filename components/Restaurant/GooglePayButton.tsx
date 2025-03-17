@@ -25,7 +25,7 @@ const stripePromise = loadStripe(
   process.env.NEXT_PUBLIC_STRIPE_PUBLISHABLE_KEY || ""
 );
 
-// @TODO .toFixed(2)
+// @TODO .toFixed(2) loader za google button
 const GoogleButton = ({
   items,
   menu,

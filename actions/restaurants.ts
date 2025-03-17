@@ -10,14 +10,15 @@ export const getRestaurants = async () => {
   return restaurants;
 };
 
-export const getRestaurantById = async (id: number) => {
-  const restaurant = await db.restaurant.findUnique({
-    where: { id },
-    select: { name: true },
-  });
+// @TODO useless as for now
+// export const getRestaurantById = async (id: number) => {
+//   const restaurant = await db.restaurant.findUnique({
+//     where: { id },
+//     select: { name: true },
+//   });
 
-  return restaurant?.name || "Unknown Restaurant";
-};
+//   return restaurant?.name || "Unknown Restaurant";
+// };
 
 export const getRestaurantWithMenu = async (name: string) => {
   const restaurant = await db.restaurant.findUnique({

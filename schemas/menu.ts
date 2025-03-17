@@ -26,3 +26,15 @@ export const PostSchema = z.object({
     })
     .optional(),
 });
+
+export const ReviewSchema = z.object({
+  rating: z.preprocess(
+    (val) => Number(val),
+    z
+      .number()
+      .int()
+      .min(1, { message: "Rating must be at least 1." })
+      .max(5, { message: "Rating cannot be more than 5." })
+  ),
+  comment: z.string().trim().optional(),
+});

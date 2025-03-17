@@ -92,7 +92,7 @@ const Basket = ({ items, menu, setBasketItems }: BasketProps) => {
           <p className="font-semibold">VAT (20%): £{vat}</p>
           <p className="font-semibold">Final Price: £{finalTotal}</p>
           <textarea
-            className="w-full p-2 border rounded-md mt-4"
+            className="w-full max-h-20 p-2 border rounded-md mt-4"
             placeholder="Add a note for the restaurant..."
             value={orderNote}
             onChange={(e) => setOrderNote(e.target.value)}

@@ -7,16 +7,18 @@ datasource db {
   url      = env("DATABASE_URL")
 }
 
+// @TODO check if autoinc works
 model Restaurant {
-  id       Int     @id @default(autoincrement())
-  name     String  @db.VarChar(255) @unique
+  id       Int      @id @default(autoincrement())
+  name     String   @unique @db.VarChar(255)
   address  String
-  postcode String? @db.VarChar(20)
-  isActive Boolean @default(true)
+  postcode String?  @db.VarChar(20)
+  isActive Boolean  @default(true)
   lat      Float?
   lng      Float?
   menus    Menu[]
   orders   Order[]
+  reviews  Review[]
 
   @@map("restaurants")
 }
@@ -57,14 +59,15 @@ model User {
   email                 String                 @unique
   emailVerified         DateTime?              @map("email_verified")
   phone                 String?                @unique
-  address               String?      
-  googleAddress         String?                
+  address               String?
+  googleAddress         String?
   password              String?
   createdAt             DateTime               @default(now())
   role                  UserRole               @default(USER)
-  isTwoFactorEnabled    Boolean                @default(false)
   accounts              Account[]
   orders                Order[]
+  reviews               Review[]
+  isTwoFactorEnabled    Boolean                @default(false)
   twoFactorConfirmation TwoFactorConfirmation?
 
   @@map("users")
@@ -130,4 +133,19 @@ model TwoFactorConfirmation {
 enum UserRole {
   ADMIN
   USER
+}
+
+model Review {
+  id           String   @id @default(cuid())
+  userId       String
+  restaurantId Int
+  rating       Int      @default(1)
+  comment      String?
+  createdAt    DateTime @default(now())
+
+  user       User       @relation(fields: [userId], references: [id], onDelete: Cascade)
+  restaurant Restaurant @relation(fields: [restaurantId], references: [id], onDelete: Cascade)
+
+  @@unique([userId, restaurantId])
+  @@map("reviews")
 }

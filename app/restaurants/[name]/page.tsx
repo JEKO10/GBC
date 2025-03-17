@@ -3,6 +3,7 @@ import React from "react";
 
 import { getRestaurantWithMenu } from "@/actions/restaurants";
 import Menu from "@/components/Restaurant/Menu";
+import ReviewsWrapper from "@/components/Reviews/ReviewsWrapper";
 
 const SingleRestaurantPage = async ({
   params,
@@ -30,6 +31,7 @@ const SingleRestaurantPage = async ({
       <p className="px-14">{restaurant.address}</p>
       <p className="px-14 text-secondary">Estimated order time 30-45 mins</p>
       <Menu menu={restaurant?.menus} />
+      <ReviewsWrapper restaurantId={restaurant.id} />
     </div>
   );
 };
