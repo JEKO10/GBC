@@ -25,14 +25,36 @@ const Menu = ({ menu }: MenuProps) => {
     }
   );
 
+  const uniqueCategories = useMemo(
+    () => [
+      ...new Set(menu?.map((menuItem) => menuItem.category).filter(Boolean)),
+    ],
+    [menu]
+  );
+  const filteredMenu = useMemo(
+    () =>
+      selectedCategory && selectedCategory !== "All"
+        ? menu?.filter((item) => item.category === selectedCategory)
+        : menu,
+    [menu, selectedCategory]
+  );
+
   const handleQuantityChange = useCallback(
     (itemName: string, quantity: number) => {
-      setBasketItems((prev) => ({
-        ...prev,
-        [itemName]: (prev[itemName] || 0) + quantity,
-      }));
+      setBasketItems((prev) => {
+        const updatedBasket = {
+          ...prev,
+          [itemName]: (prev[itemName] || 0) + quantity,
+        };
+
+        if (updatedBasket[itemName] <= 0) {
+          delete updatedBasket[itemName];
+        }
+
+        return updatedBasket;
+      });
     },
-    [setBasketItems]
+    []
   );
 
   useEffect(() => {
@@ -53,21 +75,6 @@ const Menu = ({ menu }: MenuProps) => {
       setBasketItems({});
     }
   }, [menu]);
-
-  const uniqueCategories = useMemo(
-    () => [
-      ...new Set(menu?.map((menuItem) => menuItem.category).filter(Boolean)),
-    ],
-    [menu]
-  );
-
-  const filteredMenu = useMemo(
-    () =>
-      selectedCategory && selectedCategory !== "All"
-        ? menu?.filter((item) => item.category === selectedCategory)
-        : menu,
-    [menu, selectedCategory]
-  );
 
   return (
     <div>
@@ -110,9 +117,9 @@ const Menu = ({ menu }: MenuProps) => {
           ))}
         </section>
         <Basket
-          setBasketItems={setBasketItems}
           items={basketItems}
           menu={menu}
+          handleQuantityChange={handleQuantityChange}
         />
       </div>
     </div>

@@ -30,12 +30,11 @@ interface OrderProps {
 }
 
 const Order = ({ order, orderedItems }: OrderProps) => {
-  const removeOrder = useCallback(
-    async (id: string) => {
-      await deleteOrder(id);
-    },
-    [deleteOrder]
-  );
+  const removeOrder = useCallback(async (id: string) => {
+    await deleteOrder(id);
+  }, []);
+
+  console.log(order);
 
   return (
     <div key={order.id} className="border-2 border-white rounded-md p-3 my-3">
@@ -82,8 +81,7 @@ const Order = ({ order, orderedItems }: OrderProps) => {
             className="border-2 border-white rounded-md p-3 my-3"
           >
             <p>
-              <strong>{item?.title}</strong> x{item?.quantity} - £
-              {item?.price.toFixed(2)}
+              <strong>{item?.title}</strong> x{item?.quantity} - £{item?.price}
             </p>
           </div>
         ))

@@ -25,8 +25,6 @@ const ProfilePage = () => {
     defaultValues: {
       name: user?.name || undefined,
       email: user?.email || undefined,
-      // @TOOD remove
-      // phone: user?.phone || undefined,
       houseNumber: houseNumber,
       address: address,
       postcode: postcode,
@@ -40,8 +38,6 @@ const ProfilePage = () => {
   const { errors } = formState;
 
   const onSubmit = (formData: z.infer<typeof SettingsSchema>) => {
-    // @TODO remove
-    // const formattedPhone = formatPhoneNumber(formData.phone);
     const formattedAddress =
       formData.houseNumber && formData.address && formData.postcode
         ? `${formData.houseNumber} ${formData.address}, ${formData.postcode}`
@@ -115,14 +111,6 @@ const ProfilePage = () => {
             />
           </>
         ) : null}
-        {/* @TODO remove */}
-        {/* <FormField
-          label="Update phone nubmer"
-          type="text"
-          registration={register("phone")}
-          placeholder="+44 XXXXX XXXXXX"
-          error={errors.phone}
-        /> */}
         <FormField
           label="House Number"
           type="text"
@@ -144,7 +132,6 @@ const ProfilePage = () => {
           placeholder="XXXX XXX"
           error={errors.postcode}
         />
-        {/* @TODO ROLE  */}
         {user?.isOAuth === false ? (
           <FormField
             label="Two-Factor Authentication"

@@ -14,7 +14,6 @@ import {
   generateTwoFactorToken,
   generateVerificationToken,
 } from "@/lib/tokens";
-import { DEFAULT_LOGIN_REDIRECT } from "@/routes";
 import { LoginSchema } from "@/schemas/auth";
 
 export const login = async (formData: z.infer<typeof LoginSchema>) => {
@@ -96,9 +95,9 @@ export const login = async (formData: z.infer<typeof LoginSchema>) => {
     await signIn("credentials", {
       email,
       password,
-      redirectTo: DEFAULT_LOGIN_REDIRECT,
+      redirect: false,
     });
-    return { success: "You are logged in!" };
+    return { success: "You are logged in! Redirecting..." };
   } catch (error) {
     if (error instanceof AuthError) {
       switch (error.type) {

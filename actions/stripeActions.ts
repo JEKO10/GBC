@@ -3,6 +3,7 @@
 import Stripe from "stripe";
 
 import { currentUser } from "@/lib/auth";
+import { calculateFees } from "@/lib/calculateFees";
 import db from "@/lib/db";
 
 if (!process.env.STRIPE_SECRET) {
@@ -16,12 +17,10 @@ function generateOrderId() {
 }
 
 export async function createPaymentIntent(
-  amount: number,
   paymentToken: string,
   items: {
-    title: string;
+    id: number;
     quantity: number;
-    price: number;
   }[],
   restaurantId: number,
   orderNote: string
@@ -38,6 +37,36 @@ export async function createPaymentIntent(
   }
 
   try {
+    const orderedItems = await Promise.all(
+      items.map(async (item) => {
+        if (!Number.isInteger(item.id)) {
+          throw new Error(`Invalid item ID received: ${item.id}`);
+        }
+
+        const dbItem = await db.menu.findUnique({
+          where: { id: item.id },
+          select: { price: true, title: true },
+        });
+
+        if (!dbItem) {
+          throw new Error(`Item ${item.id} not found in the database.`);
+        }
+
+        return {
+          title: dbItem.title,
+          quantity: item.quantity,
+          price: dbItem.price.toNumber(),
+        };
+      })
+    );
+
+    const totalAmount = orderedItems.reduce(
+      (sum, item) => sum + item.price * item.quantity,
+      0
+    );
+
+    const { finalTotal } = calculateFees(totalAmount);
+
     const paymentMethod = await stripe.paymentMethods.create({
       type: "card",
       card: {
@@ -48,7 +77,7 @@ export async function createPaymentIntent(
     // @TODO price reciving, front end or from db directyle
     const paymentIntent = await stripe.paymentIntents.create({
       // @TODO check this
-      amount: Math.round(amount * 100),
+      amount: Math.round(finalTotal * 100),
       currency: "GBP",
       payment_method: paymentMethod.id,
       confirmation_method: "automatic",
@@ -65,7 +94,7 @@ export async function createPaymentIntent(
         phone: user.phone,
         restaurantId: restaurantId.toString(),
         orderNote: orderNote || "",
-        orderedItems: JSON.stringify(items),
+        orderedItems: JSON.stringify(orderedItems),
       },
       receipt_email: user.email || "",
     });
@@ -136,27 +165,26 @@ export async function createOrder(paymentIntentId: string) {
       return { error: true, message: "Ordered items not found in metadata." };
     }
 
-    // @TODO metadata or front end for items
     const orderId = Number(paymentIntent.metadata.orderId);
     const userId = paymentIntent.metadata.userId;
     const restaurantId = Number(paymentIntent.metadata.restaurantId);
     const orderNote = paymentIntent.metadata.orderNote || "";
-    const items = JSON.parse(paymentIntent.metadata.orderedItems);
+    const orderedItems = JSON.parse(paymentIntent.metadata.orderedItems);
 
-    if (!Array.isArray(items)) {
+    if (!Array.isArray(orderedItems)) {
       return { error: true, message: "Ordered items format is incorrect." };
     }
 
     const newOrder = await db.order.create({
       data: {
-        orderNumber: Number(orderId),
+        orderNumber: orderId,
         amount: paymentIntent.amount,
         stripeId: paymentIntent.id,
         status: "pending",
         userId,
         restaurantId,
-        items,
         orderNote,
+        items: orderedItems,
       },
     });
 

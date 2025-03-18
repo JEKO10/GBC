@@ -8,7 +8,7 @@ import { createOrder, createPaymentIntent } from "@/actions/stripeActions";
 import { useCurrentUser } from "@/hooks/useCurrentUser";
 
 interface GoogleButtonProps {
-  items: { [key: string]: number };
+  items: { id: number; quantity: number }[];
   menu?: {
     id: number;
     title: string;
@@ -47,14 +47,7 @@ const GoogleButton = ({
       const token = paymentData.paymentMethodData.tokenizationData.token;
       const restaurantId = menu?.[0]?.restaurant_id || 0;
 
-      const orderedItems = Object.entries(items)
-        // eslint-disable-next-line no-unused-vars
-        .filter(([_, quantity]) => quantity > 0)
-        .map(([title, quantity]) => ({
-          title,
-          quantity,
-          price: menu?.find((item) => item.title === title)?.price || 0,
-        }));
+      const orderedItems = items.filter((item) => item.quantity > 0);
 
       const googlePayAddress = paymentData.shippingAddress;
 
@@ -70,7 +63,6 @@ const GoogleButton = ({
 
       // @TODO check
       const response = await createPaymentIntent(
-        finalTotal,
         token,
         orderedItems,
         restaurantId,

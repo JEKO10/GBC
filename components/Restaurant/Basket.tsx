@@ -1,13 +1,8 @@
-import React, { useState } from "react";
+import React, { useMemo, useState } from "react";
 import { GrBasket } from "react-icons/gr";
 
 interface BasketProps {
   items: { [key: string]: number };
-  setBasketItems: React.Dispatch<
-    React.SetStateAction<{
-      [key: string]: number;
-    }>
-  >;
   menu?: {
     id: number;
     title: string;
@@ -16,42 +11,59 @@ interface BasketProps {
     price: number;
     description: string | null;
   }[];
+  // eslint-disable-next-line no-unused-vars
+  handleQuantityChange: (itemName: string, quantity: number) => void;
 }
 
 import { calculateFees } from "@/lib/calculateFees";
 
 import GoogleButton from "./GooglePayButton";
 
-const Basket = ({ items, menu, setBasketItems }: BasketProps) => {
+const Basket = ({ items, menu, handleQuantityChange }: BasketProps) => {
   const [orderNote, setOrderNote] = useState("");
 
-  const totalItems = Object.values(items).reduce(
-    (acc, quantity) => acc + quantity,
-    0
-  );
-  const totalPrice = parseFloat(
-    Object.entries(items)
-      .reduce((acc, [title, quantity]) => {
-        const price = menu?.find((item) => item.title === title)?.price || 0;
-        return acc + price * quantity;
-      }, 0)
-      .toFixed(2)
-  );
+  const menuLookup = useMemo(() => {
+    return (
+      menu?.reduce(
+        (acc, item) => {
+          acc[item.title.toLowerCase().trim()] = item;
+          return acc;
+        },
+        {} as Record<string, { id: number; price: number }>
+      ) || {}
+    );
+  }, [menu]);
+
+  const orderedItems = useMemo(() => {
+    return Object.entries(items).reduce(
+      (acc, [title, quantity]) => {
+        const menuItem = menuLookup[title.toLowerCase().trim()];
+        if (menuItem) {
+          acc.push({ id: menuItem.id, quantity });
+        }
+        return acc;
+      },
+      [] as { id: number; quantity: number }[]
+    );
+  }, [items, menuLookup]);
+
+  const totalPrice = useMemo(() => {
+    return parseFloat(
+      Object.entries(items)
+        .reduce((acc, [title, quantity]) => {
+          const menuItem = menuLookup[title.toLowerCase().trim()];
+          return acc + (menuItem?.price || 0) * quantity;
+        }, 0)
+        .toFixed(2)
+    );
+  }, [items, menuLookup]);
 
   const { deliveryFee, serviceFee, vat, finalTotal } =
     calculateFees(totalPrice);
 
-  const handleQuantityChange = (itemName: string, quantity: number) => {
-    setBasketItems((prev) => {
-      const updatedBasket = { ...prev, [itemName]: Math.max(0, quantity) };
-
-      if (updatedBasket[itemName] === 0) {
-        delete updatedBasket[itemName];
-      }
-
-      return updatedBasket;
-    });
-  };
+  const totalItems = useMemo(() => {
+    return orderedItems.reduce((acc, item) => acc + item.quantity, 0);
+  }, [orderedItems]);
 
   return (
     <section className="bg-white fixed top-0 right-0 h-full w-1/3 flex justify-center items-center shadow-2xl">
@@ -103,7 +115,7 @@ const Basket = ({ items, menu, setBasketItems }: BasketProps) => {
         {totalPrice > 8 ? (
           <GoogleButton
             menu={menu}
-            items={items}
+            items={orderedItems}
             orderNote={orderNote}
             finalTotal={finalTotal}
           />

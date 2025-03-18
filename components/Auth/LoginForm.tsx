@@ -1,6 +1,8 @@
 import { zodResolver } from "@hookform/resolvers/zod";
 import Link from "next/link";
 import { useSearchParams } from "next/navigation";
+import { useRouter } from "next/navigation";
+import { useSession } from "next-auth/react";
 import React, { useCallback, useMemo, useState, useTransition } from "react";
 import { useForm } from "react-hook-form";
 import { LuDoorClosed, LuDoorOpen } from "react-icons/lu";
@@ -24,6 +26,8 @@ const LoginForm = () => {
   const [isTwoFactor, setIsTwoFactor] = useState(false);
   const [message, setMessage] = useState<string | undefined>("");
   const [isPending, startTransition] = useTransition();
+  const { update } = useSession();
+  const router = useRouter();
 
   const form = useForm<z.infer<typeof LoginSchema>>({
     resolver: zodResolver(LoginSchema),
@@ -40,7 +44,7 @@ const LoginForm = () => {
       setMessage("");
 
       startTransition(() => {
-        login(values).then((data) => {
+        login(values).then(async (data) => {
           if (data?.success || data?.error) {
             form.reset();
             setMessage(data?.error ?? data?.success);
@@ -49,10 +53,15 @@ const LoginForm = () => {
           if (data?.twoFactor) {
             setIsTwoFactor(true);
           }
+
+          if (data?.success) {
+            await update();
+            router.push("/profile");
+          }
         });
       });
     },
-    [form]
+    [form, update, router]
   );
 
   return (
