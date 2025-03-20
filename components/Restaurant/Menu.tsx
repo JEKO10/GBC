@@ -1,5 +1,8 @@
 "use client";
+import { useRouter } from "next/navigation";
 import React, { useCallback, useEffect, useMemo, useState } from "react";
+
+import { useRestaurantStore } from "@/store/useRestaurantStore";
 
 import Basket from "./Basket";
 import MenuCard from "./MenuCard";
@@ -24,6 +27,21 @@ const Menu = ({ menu }: MenuProps) => {
       return saved ? JSON.parse(saved) : {};
     }
   );
+  const { filteredRestaurants } = useRestaurantStore();
+  const restaurantId = menu?.[0]?.restaurant_id;
+  const router = useRouter();
+
+  const restaurantExists = useMemo(() => {
+    return filteredRestaurants.some(
+      (restaurant) => restaurant.id === restaurantId
+    );
+  }, [filteredRestaurants, restaurantId]);
+
+  useEffect(() => {
+    if (!restaurantExists) {
+      router.replace("/restaurants");
+    }
+  }, [restaurantExists, router]);
 
   const uniqueCategories = useMemo(
     () => [

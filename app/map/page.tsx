@@ -40,7 +40,6 @@ const MapPage = () => {
         }));
 
         setRestaurants(formattedData);
-        setIsLoading(false);
       } catch (error) {
         console.error("Error fetching restaurants:", error);
       } finally {
@@ -48,12 +47,16 @@ const MapPage = () => {
       }
     };
 
-    if (restaurants.length === 0) fetchRestaurants();
+    if (restaurants.length === 0) {
+      fetchRestaurants();
+    } else {
+      setIsLoading(false);
+    }
   }, [restaurants.length, setRestaurants]);
 
   if (!process.env.NEXT_PUBLIC_GOOGLE_MAP_API_KEY) {
     console.log("Google API key is not defined");
-    return;
+    return null;
   }
 
   return (
@@ -62,7 +65,6 @@ const MapPage = () => {
         <div className="loading" />
       ) : restaurants.length > 0 ? (
         <>
-          {/* @TODO nadji nacin da ovo ne bude PUBLIC */}
           <APIProvider apiKey={process.env.NEXT_PUBLIC_GOOGLE_MAP_API_KEY}>
             <Map
               selectedRestaurant={selectedRestaurant}
