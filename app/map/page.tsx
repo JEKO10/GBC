@@ -6,6 +6,7 @@ import React, { useEffect, useState } from "react";
 
 import { getRestaurants } from "@/actions/restaurants";
 import Restaurants from "@/components/Map/Restaurants";
+import { useRestaurantStore } from "@/store/useRestaurantStore";
 
 const Map = dynamic(() => import("@/components/Map/Location"), {
   ssr: false,
@@ -19,12 +20,8 @@ export interface Restaurant {
   lng: number;
 }
 
-// @TODO prevent user from going /restaunrants/:id, only from map
 const MapPage = () => {
-  const [restaurants, setRestaurants] = useState<Restaurant[]>([]);
-  const [filteredRestaurants, setFilteredRestaurants] = useState<Restaurant[]>(
-    []
-  );
+  const { restaurants, setRestaurants } = useRestaurantStore();
   const [selectedRestaurant, setSelectedRestaurant] =
     useState<Restaurant | null>(null);
   const [isLoading, setIsLoading] = useState<boolean>(true);
@@ -43,8 +40,6 @@ const MapPage = () => {
         }));
 
         setRestaurants(formattedData);
-        setFilteredRestaurants(formattedData);
-
         setIsLoading(false);
       } catch (error) {
         console.error("Error fetching restaurants:", error);
@@ -53,11 +48,11 @@ const MapPage = () => {
       }
     };
 
-    fetchRestaurants();
-  }, []);
+    if (restaurants.length === 0) fetchRestaurants();
+  }, [restaurants.length, setRestaurants]);
 
   if (!process.env.NEXT_PUBLIC_GOOGLE_MAP_API_KEY) {
-    console.log("Google api key is not defined");
+    console.log("Google API key is not defined");
     return;
   }
 
@@ -70,17 +65,11 @@ const MapPage = () => {
           {/* @TODO nadji nacin da ovo ne bude PUBLIC */}
           <APIProvider apiKey={process.env.NEXT_PUBLIC_GOOGLE_MAP_API_KEY}>
             <Map
-              restaurants={restaurants}
-              filteredRestaurants={filteredRestaurants}
-              setFilteredRestaurants={setFilteredRestaurants}
               selectedRestaurant={selectedRestaurant}
               setSelectedRestaurant={setSelectedRestaurant}
             />
           </APIProvider>
-          <Restaurants
-            restaurants={filteredRestaurants}
-            selectedRestaurant={selectedRestaurant}
-          />
+          <Restaurants selectedRestaurant={selectedRestaurant} />
         </>
       ) : (
         <div className="text-center mt-10 text-gray-500">

@@ -111,7 +111,7 @@ const ProfilePage = () => {
             />
           </>
         ) : null}
-        <FormField
+        {/* <FormField
           label="House Number"
           type="text"
           registration={register("houseNumber")}
@@ -131,7 +131,7 @@ const ProfilePage = () => {
           registration={register("postcode")}
           placeholder="XXXX XXX"
           error={errors.postcode}
-        />
+        /> */}
         {user?.isOAuth === false ? (
           <FormField
             label="Two-Factor Authentication"

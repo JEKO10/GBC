@@ -1,5 +1,7 @@
 "use client";
 
+import { useMemo } from "react";
+
 import useFetchReviews from "@/hooks/useFetchReviews";
 
 import ReviewForm from "./ReviewForm";
@@ -15,20 +17,29 @@ export interface Review {
   };
 }
 
+// @TODO samo za te restorane napravi page, tako ne moras da restric URL change
 // @TODO design, mesage etc. return ugl
 const ReviewWrapper = ({ restaurantId }: { restaurantId: number }) => {
-  const { reviews, isLoading, message, setReviews, averageRating } =
-    useFetchReviews({
-      restaurantId,
-    });
+  const { reviews, isLoading, message, setReviews } = useFetchReviews({
+    restaurantId,
+  });
 
   const handleAddReview = (newReview: Review) => {
     setReviews((prevReviews) => [newReview, ...prevReviews]);
   };
 
+  const averageRating = useMemo(() => {
+    if (reviews.length === 0) return 0;
+
+    const totalRating = reviews.reduce((sum, review) => sum + review.rating, 0);
+    return totalRating / reviews.length;
+  }, [reviews]);
+
   return (
     <section>
-      {reviews.length > 0 ? (
+      {isLoading ? (
+        <div className="loading" />
+      ) : reviews.length > 0 ? (
         <p className="text-yellow-500 font-bold">
           ⭐ {averageRating.toFixed(1)} / 5
         </p>

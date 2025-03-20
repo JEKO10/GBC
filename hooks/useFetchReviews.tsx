@@ -19,7 +19,6 @@ const useFetchReviews = ({ restaurantId }: UseFetchReviewsOptions) => {
   const [reviews, setReviews] = useState<Review[]>([]);
   const [isLoading, setIsLoading] = useState<boolean>(true);
   const [message, setMessage] = useState<string>("");
-  const [averageRating, setAverageRating] = useState<number>(0);
 
   useEffect(() => {
     const fetchReviews = async () => {
@@ -40,14 +39,11 @@ const useFetchReviews = ({ restaurantId }: UseFetchReviewsOptions) => {
           }));
 
           setReviews(formattedReviews);
-          setAverageRating(data.averageRating || 0);
         } else {
           setMessage(data?.error ?? "Something went wrong.");
-          setAverageRating(0);
         }
       } catch {
         setMessage("An error occurred while fetching reviews.");
-        setAverageRating(0);
       } finally {
         setIsLoading(false);
       }
@@ -56,7 +52,7 @@ const useFetchReviews = ({ restaurantId }: UseFetchReviewsOptions) => {
     fetchReviews();
   }, [restaurantId]);
 
-  return { reviews, isLoading, message, setReviews, averageRating };
+  return { reviews, isLoading, message, setReviews };
 };
 
 export default useFetchReviews;

@@ -16,6 +16,7 @@ import { HiOutlineLocationMarker } from "react-icons/hi";
 import { setUserAddress } from "@/actions/settings";
 import { Restaurant } from "@/app/map/page";
 import marker from "@/public/marker.png";
+import { useRestaurantStore } from "@/store/useRestaurantStore";
 
 function filterRestaurantsBy(
   myLocation: { lat: number; lng: number },
@@ -36,22 +37,15 @@ function filterRestaurantsBy(
 }
 
 interface MapProps {
-  restaurants: Restaurant[];
-  filteredRestaurants: Restaurant[];
-  setFilteredRestaurants: React.Dispatch<React.SetStateAction<Restaurant[]>>;
   selectedRestaurant: Restaurant | null;
   setSelectedRestaurant: React.Dispatch<
     React.SetStateAction<Restaurant | null>
   >;
 }
 
-function Location({
-  restaurants,
-  filteredRestaurants,
-  setFilteredRestaurants,
-  selectedRestaurant,
-  setSelectedRestaurant,
-}: MapProps) {
+function Location({ selectedRestaurant, setSelectedRestaurant }: MapProps) {
+  const { restaurants, filteredRestaurants, setFilteredRestaurants } =
+    useRestaurantStore();
   const [myPosition, setMyPosition] = useState<{
     lat: number;
     lng: number;

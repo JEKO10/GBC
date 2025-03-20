@@ -1,15 +1,19 @@
+"use client";
+
 import React from "react";
 
 import { Restaurant } from "@/app/map/page";
+import { useRestaurantStore } from "@/store/useRestaurantStore";
 
 import RestaurantCard from "../Restaurant/RestaurantCard";
 
-interface RestaurantsProps {
-  restaurants: Restaurant[];
+const Restaurants = ({
+  selectedRestaurant,
+}: {
   selectedRestaurant: Restaurant | null;
-}
+}) => {
+  const { filteredRestaurants } = useRestaurantStore();
 
-const Restaurants = ({ restaurants, selectedRestaurant }: RestaurantsProps) => {
   return (
     <div>
       {selectedRestaurant?.name && (
@@ -18,10 +22,10 @@ const Restaurants = ({ restaurants, selectedRestaurant }: RestaurantsProps) => {
           <RestaurantCard name={selectedRestaurant.name} />
         </div>
       )}
-      Restaurants within 3 miles from your address:
-      {restaurants.length > 0 ? (
+      <h3>Restaurants within 3 miles from your address:</h3>
+      {filteredRestaurants.length > 0 ? (
         <section className="flex flex-wrap gap-10 justify-center my-10">
-          {restaurants.map((restaurant) => (
+          {filteredRestaurants.map((restaurant) => (
             <div key={restaurant.id}>
               <RestaurantCard name={restaurant.name} />
             </div>
