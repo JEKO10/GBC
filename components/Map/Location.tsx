@@ -69,9 +69,20 @@ function Location({ selectedRestaurant, setSelectedRestaurant }: MapProps) {
     const savedLocation = localStorage.getItem("userLocation");
 
     if (savedLocation) {
-      setMyPosition(JSON.parse(savedLocation));
-      setIsLoading(false);
-      return;
+      try {
+        const parsedLocation = JSON.parse(savedLocation);
+        if (
+          typeof parsedLocation?.lat === "number" &&
+          typeof parsedLocation?.lng === "number"
+        ) {
+          setMyPosition(parsedLocation);
+          setIsLoading(false);
+          return;
+        }
+      } catch (err) {
+        console.warn("Failed to parse user location from localStorage:", err);
+        localStorage.removeItem("userLocation");
+      }
     }
 
     if ("geolocation" in navigator) {

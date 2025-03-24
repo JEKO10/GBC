@@ -34,8 +34,6 @@ const Order = ({ order, orderedItems }: OrderProps) => {
     await deleteOrder(id);
   }, []);
 
-  console.log(order);
-
   return (
     <div key={order.id} className="border-2 border-white rounded-md p-3 my-3">
       <p>

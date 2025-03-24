@@ -12,6 +12,7 @@ export const authRoutes = [
 export const apiAuthPrefix = [
   "/api/auth",
   "/api/cron",
+  "/api/orders",
   "/api/stripe",
   "/api/payments",
   "/api/google-pay",

@@ -92,7 +92,6 @@ const RegisterForm = () => {
         <HCaptcha
           sitekey="5572ef8a-1ff8-4372-be86-dc464642d0e4"
           onVerify={(token) => {
-            console.log("Captcha token received:", token);
             setCaptchaToken(token);
             setValue("captchaToken", token);
             trigger("captchaToken");
