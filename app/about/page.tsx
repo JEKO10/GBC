@@ -1,4 +1,5 @@
 import Image from "next/image";
+import Link from "next/link";
 import React from "react";
 import { SiDeliveroo, SiJusteat, SiUbereats } from "react-icons/si";
 
@@ -38,6 +39,25 @@ const AboutPage = () => {
             className="w-full h-auto rounded-lg shadow-xl"
             loading="lazy"
           />
+        </div>
+      </article>
+      <article>
+        <h2 className="text-secondary text-2xl sm:text-3xl font-semibold text-center mt-16 md:mt-24 mb-10 md:mb-20">
+          Explore our menus now
+        </h2>
+        <div className="flex flex-col sm:flex-row justify-center sm:justify-around items-center w-full">
+          <Link
+            className="text-white text-xl bg-secondary font-semibold w-40 sm:w-auto text-center mb-5 sm:px-10 py-2 rounded-none rounded-r-2xl transition cursor-pointer hover:bg-primary"
+            href="/auth/register"
+          >
+            Register
+          </Link>
+          <Link
+            className="text-white text-xl bg-secondary font-semibold w-40 sm:w-auto text-center mb-5 sm:px-10 py-2 rounded-none rounded-r-2xl transition cursor-pointer hover:bg-primary"
+            href="/auth/login"
+          >
+            Login
+          </Link>
         </div>
       </article>
       <h2 className="text-secondary text-2xl sm:text-3xl font-semibold text-center mt-16 md:mt-24 mb-10 md:mb-20">

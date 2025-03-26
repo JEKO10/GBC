@@ -15,6 +15,7 @@ import { HiOutlineLocationMarker } from "react-icons/hi";
 
 import { setUserAddress } from "@/actions/settings";
 import { Restaurant } from "@/app/map/page";
+import { useCurrentUser } from "@/hooks/useCurrentUser";
 import marker from "@/public/marker.png";
 import { useRestaurantStore } from "@/store/useRestaurantStore";
 
@@ -46,10 +47,12 @@ interface MapProps {
 function Location({ selectedRestaurant, setSelectedRestaurant }: MapProps) {
   const { restaurants, filteredRestaurants, setFilteredRestaurants } =
     useRestaurantStore();
+  const user = useCurrentUser();
   const [myPosition, setMyPosition] = useState<{
     lat: number;
     lng: number;
   } | null>(null);
+  const [address, setAddress] = useState<string | undefined>(user?.address);
   const [isLoading, setIsLoading] = useState<boolean>(true);
   const inputRef = useRef(null);
   const placesLib = useMapsLibrary("places");
@@ -107,7 +110,10 @@ function Location({ selectedRestaurant, setSelectedRestaurant }: MapProps) {
   useEffect(() => {
     if (!placesLib || !inputRef.current) return;
     const autocomplete = new window.google.maps.places.Autocomplete(
-      inputRef.current
+      inputRef.current,
+      {
+        componentRestrictions: { country: "GB" },
+      }
     );
 
     autocomplete.addListener("place_changed", () => {
@@ -119,12 +125,18 @@ function Location({ selectedRestaurant, setSelectedRestaurant }: MapProps) {
         setMyPosition(latLngLiteral);
         localStorage.setItem("userLocation", JSON.stringify(latLngLiteral));
         map?.setCenter(latLngLiteral);
-        map?.setZoom(14);
+        map?.setZoom(12);
 
         (async () => {
-          if (place.formatted_address) {
-            // @TODO mozda da prikazem poruku, success address
-            await setUserAddress(place.formatted_address);
+          try {
+            if (place.formatted_address) {
+              // @TODO mozda da prikazem poruku, success address
+              await setUserAddress(place.formatted_address);
+              await setAddress(place.formatted_address);
+            }
+          } catch (err) {
+            // @TODO mozda da prikazem poruku, error address
+            console.error("Failed to update user address in session:", err);
           }
         })();
       }
@@ -135,6 +147,7 @@ function Location({ selectedRestaurant, setSelectedRestaurant }: MapProps) {
   if (!myPosition) return null;
   return (
     <div ref={containerRef}>
+      <p>{address}</p>
       <form
         onSubmit={(e) => e.preventDefault()}
         className="absolute z-10 bg-white p-3"
@@ -148,12 +161,12 @@ function Location({ selectedRestaurant, setSelectedRestaurant }: MapProps) {
       </form>
       <Map
         mapId={process.env.NEXT_PUBLIC_GOOGLE_MAP_ID}
-        className="w-[80vw] h-[80vh] my-0 mx-auto"
+        className="w-[50vw] h-[50vh] my-0 mx-auto"
         defaultCenter={{
           lat: myPosition.lat,
           lng: myPosition.lng,
         }}
-        defaultZoom={13}
+        defaultZoom={12}
         gestureHandling="greedy"
         disableDefaultUI={false}
         scaleControl={true}
@@ -161,7 +174,6 @@ function Location({ selectedRestaurant, setSelectedRestaurant }: MapProps) {
         <AdvancedMarker position={myPosition}>
           <HiOutlineLocationMarker className="text-5xl text-secondary" />
         </AdvancedMarker>
-
         {filteredRestaurants.map((restaurant) => (
           <AdvancedMarker
             key={restaurant.id}
@@ -173,7 +185,6 @@ function Location({ selectedRestaurant, setSelectedRestaurant }: MapProps) {
             </span>
           </AdvancedMarker>
         ))}
-
         {selectedRestaurant && (
           <InfoWindow
             position={{
