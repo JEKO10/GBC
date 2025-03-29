@@ -111,27 +111,6 @@ const ProfilePage = () => {
             />
           </>
         ) : null}
-        {/* <FormField
-          label="House Number"
-          type="text"
-          registration={register("houseNumber")}
-          placeholder="Enter your house number"
-          error={errors.houseNumber}
-        />
-        <FormField
-          label="Address"
-          type="text"
-          registration={register("address")}
-          placeholder="Enter your street address"
-          error={errors.address}
-        />
-        <FormField
-          label="Postcode"
-          type="text"
-          registration={register("postcode")}
-          placeholder="XXXX XXX"
-          error={errors.postcode}
-        /> */}
         {user?.isOAuth === false ? (
           <FormField
             label="Two-Factor Authentication"
