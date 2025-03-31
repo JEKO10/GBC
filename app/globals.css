@@ -42,3 +42,20 @@ body {
     transform: rotate(360deg);
   }
 }
+
+@keyframes slide {
+  0% {
+    transform: translateX(0);
+  }
+  100% {
+    transform: translateX(-50%);
+  }
+}
+
+.animate-slide {
+  animation: slide 15s linear infinite;
+}
+
+.logos-slide:hover {
+  animation-play-state: paused;
+}

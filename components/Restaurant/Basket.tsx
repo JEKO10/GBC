@@ -83,16 +83,12 @@ const Basket = ({ items, menu, handleQuantityChange }: BasketProps) => {
               <div className="flex justify-center items-center gap-2">
                 <button
                   className="text-xl"
-                  onClick={() => handleQuantityChange(name, quantity - 1)}
+                  onClick={() => handleQuantityChange(name, -1)}
                 >
                   -
                 </button>
                 <span>{quantity}</span>
-                <button
-                  onClick={() => handleQuantityChange(name, quantity + 1)}
-                >
-                  +
-                </button>
+                <button onClick={() => handleQuantityChange(name, 1)}>+</button>
               </div>
             </div>
           ))}

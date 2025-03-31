@@ -12,20 +12,22 @@ import { register as registerAction } from "@/actions/register";
 import Form from "@/components/Auth/Form";
 import FormField from "@/components/Auth/FormField";
 import Social from "@/components/Auth/Socials";
+import { useIsSmallScreen } from "@/hooks/useIsSmallScreen";
 import { RegisterSchema } from "@/schemas/auth";
 
 const RegisterForm = () => {
   const [message, setMessage] = useState<string | undefined>("");
   const [isPending, startTransition] = useTransition();
   const [captchaToken, setCaptchaToken] = useState("");
+  const isSmallScreen = useIsSmallScreen();
 
   const form = useForm<z.infer<typeof RegisterSchema>>({
     resolver: zodResolver(RegisterSchema),
     defaultValues: {
       name: "",
       email: "",
-      // phone: "",
       password: "",
+      confirmPassword: "",
     },
   });
   const { register, handleSubmit, formState, setValue, trigger } = form;
@@ -45,79 +47,88 @@ const RegisterForm = () => {
   };
 
   return (
-    <Form label="Sign up">
-      <form
-        className="flex items-start justify-center flex-col bg-secondary mt-2 px-5 sm:px-8 pt-7 pb-5 rounded-lg [&>p]:-mt-2 [&>p]:mb-3 [&>p]:text-white"
-        onSubmit={handleSubmit(onSubmit)}
-      >
-        <input
-          type="text"
-          {...register("nickname")}
-          className="hidden"
-          autoComplete="off"
-          tabIndex={-1}
-        />
-        <FormField
-          label="Name"
-          type="text"
-          registration={register("name")}
-          placeholder="Enter your name"
-          icon={<PiUserLight />}
-        />
-        <p>{errors.name?.message}</p>
-        <FormField
-          label="E-mail"
-          type="email"
-          registration={register("email")}
-          placeholder="Enter your e-mail address"
-          icon={<MdAlternateEmail />}
-        />
-        <p>{errors.email?.message}</p>
-        {/* <FormField
-          label="Phone number"
-          type="string"
-          registration={register("phone")}
-          placeholder="Enter your phone number"
-          icon={<LuPhone />}
-        />
-        <p>{errors.phone?.message}</p> */}
-        <FormField
-          label="Password"
-          type="password"
-          registration={register("password")}
-          placeholder="Password"
-          icon={<LuDoorClosed />}
-        />
-        <p>{errors.password?.message}</p>
-        <HCaptcha
-          sitekey="5572ef8a-1ff8-4372-be86-dc464642d0e4"
-          onVerify={(token) => {
-            setCaptchaToken(token);
-            setValue("captchaToken", token);
-            trigger("captchaToken");
-          }}
-        />
-        <p>{errors.captchaToken?.message}</p>
-        <Link
-          href="/auth/login"
-          className="text-md italic font-medium text-[#6eabda] underline -mt-1"
+    <section className="mb-10">
+      <Form label="Sign up">
+        <form
+          className="flex items-start justify-center flex-col bg-secondary mt-2 px-5 sm:px-8 pt-7 pb-5 rounded-lg"
+          onSubmit={handleSubmit(onSubmit)}
         >
-          Sign in to an existing account
-        </Link>
-        <button
-          type="submit"
-          className="flex items-center justify-between bg-primary mt-8 w-full text-white text-lg py-2 px-3 rounded-md transition hover:bg-primary/65"
-          disabled={isPending}
-        >
-          <span className="text-sm font-medium">
-            {isPending ? "Signing up..." : "Sign up"}
-          </span>
-          <LuDoorOpen />
-        </button>
-        {message && <p className="!mt-2 !text-white">{message}</p>}
-      </form>
+          <input
+            type="text"
+            {...register("nickname")}
+            className="hidden"
+            autoComplete="off"
+            tabIndex={-1}
+          />
+          <FormField
+            label="Name"
+            type="text"
+            registration={register("name")}
+            placeholder="Jacob"
+            icon={<PiUserLight />}
+          />
+          <p className="text-body mt-0.5 mb-2">{errors.name?.message}</p>
+          <FormField
+            label="E-mail"
+            type="email"
+            registration={register("email")}
+            placeholder="example@example.com"
+            icon={<MdAlternateEmail />}
+          />
+          <p className="text-body mt-0.5 mb-2">{errors.email?.message}</p>
+          <FormField
+            label="Password"
+            type="password"
+            registration={register("password")}
+            placeholder="******"
+            icon={<LuDoorClosed />}
+          />
+          <p className="text-body mt-0.5 mb-2">{errors.password?.message}</p>
+          <FormField
+            label="Confirm Password"
+            type="password"
+            registration={register("confirmPassword")}
+            placeholder="Re-enter password"
+            icon={<LuDoorClosed />}
+          />
+          <p className="text-body mt-0.5 mb-2">
+            {errors.confirmPassword?.message}
+          </p>
+          <div className="w-full flex justify-center items-center">
+            <HCaptcha
+              size={isSmallScreen ? "compact" : "normal"}
+              sitekey="5572ef8a-1ff8-4372-be86-dc464642d0e4"
+              onVerify={(token) => {
+                setCaptchaToken(token);
+                setValue("captchaToken", token);
+                trigger("captchaToken");
+              }}
+            />
+          </div>
+          <p className="text-body mt-0.5 mb-2">
+            {errors.captchaToken?.message}
+          </p>
+          <Link
+            href="/auth/login"
+            className="text-md italic font-medium text-primary underline mt-3"
+          >
+            Sign in to an existing account
+          </Link>
+          <button
+            type="submit"
+            className="flex items-center justify-between bg-primary mt-3 w-full text-white text-lg py-2 px-3 rounded-md transition hover:bg-primary/65"
+            disabled={isPending}
+          >
+            <span className="text-sm font-medium">
+              {isPending ? "Signing up..." : "Sign up"}
+            </span>
+            <LuDoorOpen />
+          </button>
+          {message && <p className="!mt-2 !text-white">{message}</p>}
+        </form>
+      </Form>
       <Social />
-    </Form>
+    </section>
   );
 };
 

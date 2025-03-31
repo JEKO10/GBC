@@ -20,7 +20,9 @@ const FormField = ({
 }: FormFieldProps) => {
   return (
     <div className="flex flex-col w-full">
-      <label className="text-sm font-medium text-gray-700">{label}</label>
+      <label className="text-sm font-medium text-gray-700 mb-0.5">
+        {label}
+      </label>
       <div
         className={`flex items-center bg-white border ${
           error ? "border-red-500" : "border-gray-300"

@@ -65,7 +65,8 @@ const Order = ({ order, orderedItems }: OrderProps) => {
       <p>
         <strong>Restaurant: </strong>
         <Link
-          href={`/restaurants/${order.restaurant.id}`}
+          // @TODO islo je na ID sad mora na decoded name
+          href={`/restaurants/${order.restaurant.name}`}
           className="text-blue-500"
         >
           {order.restaurant?.name || "Unknown Restaurant"}

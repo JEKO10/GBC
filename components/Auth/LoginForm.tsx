@@ -65,10 +65,10 @@ const LoginForm = () => {
   );
 
   return (
-    <div>
+    <section className="mb-10">
       <Form label="Log in">
         <form
-          className="flex items-start justify-center flex-col bg-secondary mt-2 px-5 sm:px-8 pt-7 pb-5 rounded-lg [&>p]:-mt-2 [&>p]:mb-3 [&>p]:text-white"
+          className="flex items-start justify-center flex-col bg-secondary mt-2 px-5 sm:px-8 pt-7 pb-5 rounded-lg"
           onSubmit={handleSubmit(onSubmit)}
         >
           {isTwoFactor ? (
@@ -88,32 +88,41 @@ const LoginForm = () => {
                 label="E-mail"
                 type="email"
                 registration={register("email")}
-                placeholder="Unesi e-mail adresu"
+                placeholder="example@example.com"
                 icon={<MdAlternateEmail />}
               />
-              <p>{errors.email?.message ?? ""}</p>
+              <p className="text-body mt-0.5 mb-2">
+                {errors.email?.message ?? ""}
+              </p>
               <FormField
                 label="Password"
                 type="password"
                 registration={register("password")}
-                placeholder="Unesi šifru"
+                placeholder="******"
                 icon={<LuDoorClosed />}
               />
-              <p>{errors.password?.message ?? ""}</p>
+              <p className="text-body mt-0.5 mb-2">
+                {errors.password?.message ?? ""}
+              </p>
             </>
           )}
-          <button className="text-md italic font-medium text-primary underline -mt-1 mb-5">
-            <Link href="/auth/reset">Forgot password?</Link>
-          </button>
-          <Link
-            href="/auth/register"
-            className="text-md italic font-medium text-primary underline -mt-1"
-          >
-            Create a new account
-          </Link>
+          <div className="flex flex-col mt-5">
+            <Link
+              href="/auth/reset"
+              className="text-md italic font-medium text-primary underline"
+            >
+              Forgot password?
+            </Link>
+            <Link
+              href="/auth/register"
+              className="text-md italic font-medium text-primary underline"
+            >
+              Create a new account
+            </Link>
+          </div>
           <button
             type="submit"
-            className="flex items-center justify-between bg-primary mt-8 w-full text-white text-lg py-2 px-3 rounded-md transition hover:bg-primary/65"
+            className="flex items-center justify-between bg-primary mt-3 w-full text-white text-lg py-2 px-3 rounded-md transition hover:bg-primary/65"
             disabled={isPending}
           >
             <span className="text-sm font-medium">
@@ -121,12 +130,11 @@ const LoginForm = () => {
             </span>
             <LuDoorOpen />
           </button>
-          {/* {message && <p className="!mt-2 !text-white">{message}</p>} */}
           <FormError message={message || urlError} />
         </form>
       </Form>
       <Social />
-    </div>
+    </section>
   );
 };
 

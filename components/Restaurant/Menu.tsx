@@ -58,11 +58,11 @@ const Menu = ({ menu }: MenuProps) => {
   );
 
   const handleQuantityChange = useCallback(
-    (itemName: string, quantity: number) => {
+    (itemName: string, delta: number) => {
       setBasketItems((prev) => {
         const updatedBasket = {
           ...prev,
-          [itemName]: (prev[itemName] || 0) + quantity,
+          [itemName]: (prev[itemName] || 0) + delta,
         };
 
         if (updatedBasket[itemName] <= 0) {

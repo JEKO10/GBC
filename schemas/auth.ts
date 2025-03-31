@@ -1,20 +1,28 @@
 import * as z from "zod";
 
-export const RegisterSchema = z.object({
-  name: z.string().trim().min(2, {
-    message: "Name is required!",
-  }),
-  email: z.string().trim().email({
-    message: "Email is required!",
-  }),
-  password: z.string().trim().min(6, {
-    message: "Minimum 6 characters required!",
-  }),
-  captchaToken: z.string().min(1, {
-    message: "Captcha verification is required!",
-  }),
-  nickname: z.string().optional(),
-});
+export const RegisterSchema = z
+  .object({
+    name: z.string().trim().min(2, {
+      message: "Name is required!",
+    }),
+    email: z.string().trim().email({
+      message: "Email is required!",
+    }),
+    password: z.string().trim().min(6, {
+      message: "Minimum 6 characters required!",
+    }),
+    confirmPassword: z.string().trim().min(6, {
+      message: "Please confirm your password!",
+    }),
+    captchaToken: z.string().min(1, {
+      message: "Captcha verification is required!",
+    }),
+    nickname: z.string().optional(),
+  })
+  .refine((data) => data.password === data.confirmPassword, {
+    message: "Passwords do not match!",
+    path: ["confirmPassword"],
+  });
 
 export const LoginSchema = z.object({
   email: z.string().trim().email({

@@ -15,18 +15,18 @@ const Social = () => {
   };
 
   return (
-    <div>
+    <div className="flex justify-center items-center gap-4">
       <button
         onClick={() => onClick("google")}
-        className="bg-white w-full border-primary py-1 rounded-sm mt-10"
+        className="bg-primary w-full border-primary py-2 rounded-md"
       >
         <FcGoogle className="text-2xl text-center w-full" />
       </button>
       <button
         onClick={() => onClick("facebook")}
-        className="bg-white w-full border-primary py-1 rounded-sm mt-10"
+        className="bg-primary w-full border-primary py-2 rounded-md"
       >
-        <FaSquareFacebook className="text-2xl text-center w-full" />
+        <FaSquareFacebook className="text-2xl text-center w-full text-white" />
       </button>
     </div>
   );
