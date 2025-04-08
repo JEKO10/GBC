@@ -17,7 +17,15 @@ function generateOrderId() {
   return Math.floor(1000 + Math.random() * 9000).toString();
 }
 
-// @TODO add paymentID func
+function generatePaymentId(length = 8) {
+  const chars =
+    "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789";
+  let result = "";
+  for (let i = 0; i < length; i++) {
+    result += chars.charAt(Math.floor(Math.random() * chars.length));
+  }
+  return result.toUpperCase();
+}
 
 export async function createPaymentIntent(
   paymentToken: string,
@@ -30,6 +38,7 @@ export async function createPaymentIntent(
 ) {
   const parsedToken = JSON.parse(paymentToken);
   const orderId = generateOrderId();
+  const paymentId = generatePaymentId();
   const user = await currentUser();
 
   if (!user) {
@@ -90,6 +99,7 @@ export async function createPaymentIntent(
       },
       metadata: {
         orderId: orderId.toString(),
+        paymentId: paymentId.toString(),
         userId: user.id.toString(),
         phone: user.phone,
         restaurantId: restaurantId.toString(),
@@ -170,6 +180,7 @@ export async function createOrder(
     }
 
     const orderId = Number(paymentIntent.metadata.orderId);
+    const paymentId = paymentIntent.metadata.paymentId;
     const userId = paymentIntent.metadata.userId;
     const restaurantId = Number(paymentIntent.metadata.restaurantId);
     const orderNote = paymentIntent.metadata.orderNote || "";
@@ -182,7 +193,7 @@ export async function createOrder(
       data: {
         orderNumber: orderId,
         amount: paymentIntent.amount,
-        stripeId: paymentIntent.id,
+        stripeId: paymentId,
         status: "pending",
         userId,
         restaurantId,

@@ -19,6 +19,7 @@ export interface Restaurant {
   name: string;
   lat: number;
   lng: number;
+  cuisine?: string;
 }
 
 const MapPage = () => {
@@ -42,6 +43,7 @@ const MapPage = () => {
           name: restaurant.name,
           lat: restaurant.lat ?? 0,
           lng: restaurant.lng ?? 0,
+          cuisine: restaurant.cuisine ?? "Not specified",
         }));
 
         setRestaurants(formattedData);
@@ -62,6 +64,7 @@ const MapPage = () => {
     if (saved) {
       try {
         const parsed = JSON.parse(saved);
+
         if (parsed?.lat && parsed?.lng) {
           setUserLocation(parsed);
         }

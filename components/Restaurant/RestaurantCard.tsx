@@ -4,9 +4,19 @@ import React from "react";
 
 import bilimoria from "@/public/bilimoria.png";
 
-const RestaurantCard = ({ name }: { name: string }) => {
+interface RestaurantCardProps {
+  name: string;
+  cuisine?: string;
+  estimatedTime?: string;
+}
+
+const RestaurantCard = ({
+  name,
+  cuisine,
+  estimatedTime = "Estimated order time 30–45 mins",
+}: RestaurantCardProps) => {
   return (
-    <article className="bg-white w-72 p-3 rounded-md cursor-pointer relative">
+    <article className="bg-white w-72 p-4 rounded-md cursor-pointer relative shadow-md">
       <Link href={`/restaurants/${name}`}>
         <Image
           className="w-full rounded-md"
@@ -14,7 +24,13 @@ const RestaurantCard = ({ name }: { name: string }) => {
           alt="Restaurant Image"
           priority
         />
-        <p>{name}</p>
+        <div>
+          <h4 className="text-lg font-semibold my-2">{name}</h4>
+          <p className="text-sm text-secondary mb-1">{estimatedTime}</p>
+          <p className="text-sm text-gray-600">
+            Cuisine: {cuisine ? cuisine : "Unknown"}
+          </p>
+        </div>
       </Link>
     </article>
   );
