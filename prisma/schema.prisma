@@ -7,7 +7,6 @@ datasource db {
   url      = env("DATABASE_URL")
 }
 
-// @TODO check if autoinc works
 model Restaurant {
   id       Int      @id @default(autoincrement())
   name     String   @unique @db.VarChar(255)
@@ -16,6 +15,7 @@ model Restaurant {
   isActive Boolean  @default(true)
   lat      Float?
   lng      Float?
+  cuisine  String?
   menus    Menu[]
   orders   Order[]
   reviews  Review[]
@@ -59,15 +59,15 @@ model User {
   email                 String                 @unique
   emailVerified         DateTime?              @map("email_verified")
   phone                 String?                @unique
-  address               String?
-  googleAddress         String?
   password              String?
-  createdAt             DateTime               @default(now())
   role                  UserRole               @default(USER)
+  isTwoFactorEnabled    Boolean                @default(false)
+  address               String?
+  createdAt             DateTime               @default(now())
+  googleAddress         String?
   accounts              Account[]
   orders                Order[]
   reviews               Review[]
-  isTwoFactorEnabled    Boolean                @default(false)
   twoFactorConfirmation TwoFactorConfirmation?
 
   @@map("users")
@@ -130,22 +130,21 @@ model TwoFactorConfirmation {
   @@map("two_factor_confirmations")
 }
 
-enum UserRole {
-  ADMIN
-  USER
-}
-
 model Review {
-  id           String   @id @default(cuid())
+  id           String     @id @default(cuid())
   userId       String
   restaurantId Int
-  rating       Int      @default(1)
+  rating       Int        @default(1)
   comment      String?
-  createdAt    DateTime @default(now())
-
-  user       User       @relation(fields: [userId], references: [id], onDelete: Cascade)
-  restaurant Restaurant @relation(fields: [restaurantId], references: [id], onDelete: Cascade)
+  createdAt    DateTime   @default(now())
+  restaurant   Restaurant @relation(fields: [restaurantId], references: [id], onDelete: Cascade)
+  user         User       @relation(fields: [userId], references: [id], onDelete: Cascade)
 
   @@unique([userId, restaurantId])
   @@map("reviews")
+}
+
+enum UserRole {
+  ADMIN
+  USER
 }

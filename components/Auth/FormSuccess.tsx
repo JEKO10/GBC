@@ -8,7 +8,7 @@ const FormSuccess = ({ message }: FormSuccessProps) => {
   if (!message) return null;
 
   return (
-    <div className="bg-green-400/15 p-3 rounded-md flex items-center gap-x-2 text-sm text-green-600">
+    <div className="text-center bg-green-700 tracking-wide p-3 rounded-md text-sm text-white">
       {message}
     </div>
   );

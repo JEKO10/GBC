@@ -25,7 +25,6 @@ const stripePromise = loadStripe(
   process.env.NEXT_PUBLIC_STRIPE_PUBLISHABLE_KEY || ""
 );
 
-// @TODO .toFixed(2) loader za google button
 const GoogleButton = ({
   items,
   menu,
@@ -81,7 +80,7 @@ const GoogleButton = ({
       );
 
       if (result?.paymentIntent?.status === "succeeded") {
-        await createOrder(result.paymentIntent.id);
+        await createOrder(result.paymentIntent.id, response.orderedItems);
 
         setErrorMessage("Payment successful! Redirecting...");
         localStorage.setItem("basketItems", JSON.stringify({}));

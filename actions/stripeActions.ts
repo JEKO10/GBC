@@ -5,6 +5,7 @@ import Stripe from "stripe";
 import { currentUser } from "@/lib/auth";
 import { calculateFees } from "@/lib/calculateFees";
 import db from "@/lib/db";
+import { pusher } from "@/lib/pusher";
 
 if (!process.env.STRIPE_SECRET) {
   console.log("Missing stripe secret variable!");
@@ -15,6 +16,8 @@ const stripe = new Stripe(process.env.STRIPE_SECRET || "");
 function generateOrderId() {
   return Math.floor(1000 + Math.random() * 9000).toString();
 }
+
+// @TODO add paymentID func
 
 export async function createPaymentIntent(
   paymentToken: string,
@@ -64,7 +67,6 @@ export async function createPaymentIntent(
       (sum, item) => sum + item.price * item.quantity,
       0
     );
-
     const { finalTotal } = calculateFees(totalAmount);
 
     const paymentMethod = await stripe.paymentMethods.create({
@@ -74,9 +76,7 @@ export async function createPaymentIntent(
       },
     });
 
-    // @TODO price reciving, front end or from db directyle
     const paymentIntent = await stripe.paymentIntents.create({
-      // @TODO check this
       amount: Math.round(finalTotal * 100),
       currency: "GBP",
       payment_method: paymentMethod.id,
@@ -94,7 +94,6 @@ export async function createPaymentIntent(
         phone: user.phone,
         restaurantId: restaurantId.toString(),
         orderNote: orderNote || "",
-        orderedItems: JSON.stringify(orderedItems),
       },
       receipt_email: user.email || "",
     });
@@ -107,6 +106,7 @@ export async function createPaymentIntent(
         clientSecret: paymentIntent.client_secret,
         orderId,
         nextActionUrl: paymentIntent.next_action.redirect_to_url.url,
+        orderedItems,
       };
     }
 
@@ -114,6 +114,7 @@ export async function createPaymentIntent(
       clientSecret: paymentIntent.client_secret,
       orderId,
       message: paymentIntent.status,
+      orderedItems,
     };
   } catch (error) {
     let errorMessage = "An unknown error occurred. Please try again.";
@@ -149,7 +150,10 @@ export async function createPaymentIntent(
   }
 }
 
-export async function createOrder(paymentIntentId: string) {
+export async function createOrder(
+  paymentIntentId: string,
+  orderedItems: { title: string; quantity: number; price: number }[] | undefined
+) {
   try {
     const paymentIntent = await stripe.paymentIntents.retrieve(paymentIntentId);
 
@@ -161,15 +165,14 @@ export async function createOrder(paymentIntentId: string) {
       return { error: true, message: "Metadata is missing in payment intent." };
     }
 
-    if (!paymentIntent.metadata.orderedItems) {
-      return { error: true, message: "Ordered items not found in metadata." };
+    if (!Array.isArray(orderedItems) || orderedItems.length === 0) {
+      return { error: true, message: "No ordered items provided." };
     }
 
     const orderId = Number(paymentIntent.metadata.orderId);
     const userId = paymentIntent.metadata.userId;
     const restaurantId = Number(paymentIntent.metadata.restaurantId);
     const orderNote = paymentIntent.metadata.orderNote || "";
-    const orderedItems = JSON.parse(paymentIntent.metadata.orderedItems);
 
     if (!Array.isArray(orderedItems)) {
       return { error: true, message: "Ordered items format is incorrect." };
@@ -186,7 +189,43 @@ export async function createOrder(paymentIntentId: string) {
         orderNote,
         items: orderedItems,
       },
+      include: {
+        user: {
+          select: {
+            name: true,
+            phone: true,
+            address: true,
+            googleAddress: true,
+          },
+        },
+      },
     });
+
+    const orderPayload = {
+      id: newOrder.id,
+      orderNumber: newOrder.orderNumber,
+      stripeId: newOrder.stripeId,
+      amount: newOrder.amount,
+      status: newOrder.status,
+      items: newOrder.items,
+      createdAt: newOrder.createdAt,
+      user: newOrder.user,
+    };
+
+    try {
+      await pusher.trigger(`restaurant-${restaurantId}`, "new-order", {
+        ...orderPayload,
+        restaurantId,
+      });
+    } catch (err) {
+      console.error("Pusher failed, so notify admin:", err);
+
+      return {
+        error: true,
+        message:
+          "Your order was saved but could not be sent to the restaurant!",
+      };
+    }
 
     return { success: true, orderId: newOrder.orderNumber };
   } catch {

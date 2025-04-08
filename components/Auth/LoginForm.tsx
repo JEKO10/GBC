@@ -16,6 +16,8 @@ import FormField from "@/components/Auth/FormField";
 import Social from "@/components/Auth/Socials";
 import { LoginSchema } from "@/schemas/auth";
 
+import FormSuccess from "./FormSuccess";
+
 const LoginForm = () => {
   const searchParams = useSearchParams();
   const urlError = useMemo(() => {
@@ -24,7 +26,8 @@ const LoginForm = () => {
       : "";
   }, [searchParams]);
   const [isTwoFactor, setIsTwoFactor] = useState(false);
-  const [message, setMessage] = useState<string | undefined>("");
+  const [success, setSuccess] = useState<string | undefined>("");
+  const [error, setError] = useState<string | undefined>("");
   const [isPending, startTransition] = useTransition();
   const { update } = useSession();
   const router = useRouter();
@@ -41,13 +44,14 @@ const LoginForm = () => {
 
   const onSubmit = useCallback(
     async (values: z.infer<typeof LoginSchema>) => {
-      setMessage("");
+      setSuccess("");
+      setError("");
 
       startTransition(() => {
         login(values).then(async (data) => {
-          if (data?.success || data?.error) {
-            form.reset();
-            setMessage(data?.error ?? data?.success);
+          if (data?.error) {
+            form.resetField("password");
+            setError(data?.error);
           }
 
           if (data?.twoFactor) {
@@ -55,8 +59,9 @@ const LoginForm = () => {
           }
 
           if (data?.success) {
+            setSuccess(data?.success);
             await update();
-            router.push("/profile");
+            router.push("/map");
           }
         });
       });
@@ -122,7 +127,7 @@ const LoginForm = () => {
           </div>
           <button
             type="submit"
-            className="flex items-center justify-between bg-primary mt-3 w-full text-white text-lg py-2 px-3 rounded-md transition hover:bg-primary/65"
+            className="flex items-center justify-between bg-primary mt-3 mb-3 w-full text-white text-lg py-2 px-3 rounded-md transition hover:bg-primary/65"
             disabled={isPending}
           >
             <span className="text-sm font-medium">
@@ -130,7 +135,13 @@ const LoginForm = () => {
             </span>
             <LuDoorOpen />
           </button>
-          <FormError message={message || urlError} />
+          <div className="text-center w-full">
+            {success ? (
+              <FormSuccess message={success} />
+            ) : (
+              <FormError message={error || urlError} />
+            )}
+          </div>
         </form>
       </Form>
       <Social />

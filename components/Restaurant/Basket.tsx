@@ -26,10 +26,10 @@ const Basket = ({ items, menu, handleQuantityChange }: BasketProps) => {
     return (
       menu?.reduce(
         (acc, item) => {
-          acc[item.title.toLowerCase().trim()] = item;
+          acc[item.id] = item;
           return acc;
         },
-        {} as Record<string, { id: number; price: number }>
+        {} as Record<number, (typeof menu)[0]>
       ) || {}
     );
   }, [menu]);
@@ -37,7 +37,7 @@ const Basket = ({ items, menu, handleQuantityChange }: BasketProps) => {
   const orderedItems = useMemo(() => {
     return Object.entries(items).reduce(
       (acc, [title, quantity]) => {
-        const menuItem = menuLookup[title.toLowerCase().trim()];
+        const menuItem = menu?.find((item) => item.title === title);
         if (menuItem) {
           acc.push({ id: menuItem.id, quantity });
         }
@@ -45,18 +45,18 @@ const Basket = ({ items, menu, handleQuantityChange }: BasketProps) => {
       },
       [] as { id: number; quantity: number }[]
     );
-  }, [items, menuLookup]);
+  }, [items, menu]);
 
   const totalPrice = useMemo(() => {
     return parseFloat(
-      Object.entries(items)
-        .reduce((acc, [title, quantity]) => {
-          const menuItem = menuLookup[title.toLowerCase().trim()];
+      orderedItems
+        .reduce((acc, { id, quantity }) => {
+          const menuItem = menuLookup[id];
           return acc + (menuItem?.price || 0) * quantity;
         }, 0)
         .toFixed(2)
     );
-  }, [items, menuLookup]);
+  }, [orderedItems, menuLookup]);
 
   const { deliveryFee, serviceFee, vat, finalTotal } =
     calculateFees(totalPrice);
@@ -75,23 +75,27 @@ const Basket = ({ items, menu, handleQuantityChange }: BasketProps) => {
           <p className="text-lg mt-2">Your basket is empty</p>
         </div>
       ) : (
-        <div className="bg-white p-6 w-1/2 rounded-md shadow-md h-fit">
+        <article className="bg-white p-6 w-1/2 rounded-md shadow-md h-fit">
           <h3 className="text-xl font-bold mb-4">Basket</h3>
-          {Object.entries(items).map(([name, quantity]) => (
-            <div key={name} className="flex justify-between mb-2">
-              <span>{name}</span>
-              <div className="flex justify-center items-center gap-2">
-                <button
-                  className="text-xl"
-                  onClick={() => handleQuantityChange(name, -1)}
-                >
-                  -
-                </button>
-                <span>{quantity}</span>
-                <button onClick={() => handleQuantityChange(name, 1)}>+</button>
+          <div className="max-h-44 py-2 overflow-auto">
+            {Object.entries(items).map(([name, quantity]) => (
+              <div key={name} className="flex justify-between mb-2">
+                <span>{name}</span>
+                <div className="flex justify-center items-center gap-2">
+                  <button
+                    className="text-xl"
+                    onClick={() => handleQuantityChange(name, -1)}
+                  >
+                    -
+                  </button>
+                  <span>{quantity}</span>
+                  <button onClick={() => handleQuantityChange(name, 1)}>
+                    +
+                  </button>
+                </div>
               </div>
-            </div>
-          ))}
+            ))}
+          </div>
           <hr className="my-3" />
           <p className="font-semibold">Total Items: {totalItems}</p>
           <p className="font-semibold">Total Price: £{totalPrice}</p>
@@ -105,7 +109,7 @@ const Basket = ({ items, menu, handleQuantityChange }: BasketProps) => {
             value={orderNote}
             onChange={(e) => setOrderNote(e.target.value)}
           />
-        </div>
+        </article>
       )}
       <div className="w-full absolute bottom-2 left-0 text-center">
         {totalPrice > 8 ? (

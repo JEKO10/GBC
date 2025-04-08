@@ -95,15 +95,33 @@ const Navbar = () => {
                 {user.name}
               </Link>
             ) : (
-              <Link
-                href="/auth/register"
-                onClick={() => setIsMobileMenuOpen(false)}
-                className="bg-secondary py-1 rounded-md font-semibold"
-              >
-                Sign up
-              </Link>
+              <>
+                <Link
+                  href="/auth/login"
+                  onClick={() => setIsMobileMenuOpen(false)}
+                  className="bg-secondary mt-10 py-1 rounded-md font-semibold"
+                >
+                  Log in
+                </Link>
+                <Link
+                  href="/auth/register"
+                  onClick={() => setIsMobileMenuOpen(false)}
+                  className="bg-secondary py-1 rounded-md font-semibold"
+                >
+                  Sign up
+                </Link>
+              </>
             )}
-            {user ? <button onClick={() => signOut()}>Sign Out</button> : ""}
+            {user ? (
+              <button
+                className="bg-secondary mt-10 py-1 rounded-md font-semibold"
+                onClick={() => signOut()}
+              >
+                Sign Out
+              </button>
+            ) : (
+              ""
+            )}
           </nav>
         </div>
       )}

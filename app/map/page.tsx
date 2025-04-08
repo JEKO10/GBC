@@ -5,12 +5,13 @@ import dynamic from "next/dynamic";
 import React, { useEffect, useState } from "react";
 
 import { getRestaurants } from "@/actions/restaurants";
+import LocationInput from "@/components/Map/LocationInput";
 import Restaurants from "@/components/Map/Restaurants";
 import { useRestaurantStore } from "@/store/useRestaurantStore";
 
-const Map = dynamic(() => import("@/components/Map/Location"), {
+const Map = dynamic(() => import("@/components/Map/LocationMap"), {
   ssr: false,
-  loading: () => <div className="loading" />,
+  loading: () => <div className="map-loader" />,
 });
 
 export interface Restaurant {
@@ -24,6 +25,10 @@ const MapPage = () => {
   const { restaurants, setRestaurants } = useRestaurantStore();
   const [selectedRestaurant, setSelectedRestaurant] =
     useState<Restaurant | null>(null);
+  const [userLocation, setUserLocation] = useState<{
+    lat: number;
+    lng: number;
+  } | null>(null);
   const [isLoading, setIsLoading] = useState<boolean>(true);
 
   useEffect(() => {
@@ -52,6 +57,29 @@ const MapPage = () => {
     } else {
       setIsLoading(false);
     }
+
+    const saved = localStorage.getItem("userLocation");
+    if (saved) {
+      try {
+        const parsed = JSON.parse(saved);
+        if (parsed?.lat && parsed?.lng) {
+          setUserLocation(parsed);
+        }
+      } catch {
+        console.warn("Failed to load user location from storage.");
+      }
+    }
+
+    if (!saved && "geolocation" in navigator) {
+      navigator.geolocation.getCurrentPosition((pos) => {
+        const coords = {
+          lat: pos.coords.latitude,
+          lng: pos.coords.longitude,
+        };
+        setUserLocation(coords);
+        localStorage.setItem("userLocation", JSON.stringify(coords));
+      });
+    }
   }, [restaurants.length, setRestaurants]);
 
   if (!process.env.NEXT_PUBLIC_GOOGLE_MAP_API_KEY) {
@@ -61,23 +89,35 @@ const MapPage = () => {
 
   return (
     <div>
-      {isLoading ? (
-        <div className="loading" />
-      ) : restaurants.length > 0 ? (
-        <>
-          <APIProvider apiKey={process.env.NEXT_PUBLIC_GOOGLE_MAP_API_KEY}>
-            <Map
-              selectedRestaurant={selectedRestaurant}
-              setSelectedRestaurant={setSelectedRestaurant}
+      {/* @TODO nekako na server .env */}
+      <APIProvider apiKey={process.env.NEXT_PUBLIC_GOOGLE_MAP_API_KEY}>
+        {isLoading ? (
+          <div className="loading" />
+        ) : (
+          <>
+            <LocationInput
+              onLocationSelect={(coords) => {
+                setUserLocation(coords);
+                localStorage.setItem("userLocation", JSON.stringify(coords));
+              }}
             />
-          </APIProvider>
-          <Restaurants selectedRestaurant={selectedRestaurant} />
-        </>
-      ) : (
-        <div className="text-center mt-10 text-gray-500">
-          No restaurants found.
-        </div>
-      )}
+            {restaurants.length > 0 ? (
+              <>
+                <Map
+                  selectedRestaurant={selectedRestaurant}
+                  setSelectedRestaurant={setSelectedRestaurant}
+                  userLocation={userLocation}
+                />
+                <Restaurants selectedRestaurant={selectedRestaurant} />
+              </>
+            ) : (
+              <div className="text-center mt-10 text-gray-500">
+                No restaurants found.
+              </div>
+            )}
+          </>
+        )}
+      </APIProvider>
     </div>
   );
 };

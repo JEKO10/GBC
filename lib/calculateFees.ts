@@ -24,13 +24,13 @@ export const calculateFees = (orderValue: number): FeeCalculationResult => {
   }
 
   // @TODO WAT nakon ili prije delivery
-  const subtotal = orderValue + serviceFee;
-  const vat = subtotal * 0.2;
-  const finalTotal = subtotal + vat + deliveryFee;
+  // const subtotal = orderValue + serviceFee;
+  // const vat = subtotal * 0.2;
+  // const finalTotal = subtotal + vat + deliveryFee;
 
-  // const totalCost = orderValue + deliveryFee + serviceFee;
-  // const vat = totalCost * 0.2;
-  // const finalTotal = totalCost + vat;
+  const totalCost = orderValue + deliveryFee + serviceFee;
+  const vat = totalCost * 0.2;
+  const finalTotal = totalCost + vat;
 
   return {
     deliveryFee: parseFloat(deliveryFee.toFixed(2)),
