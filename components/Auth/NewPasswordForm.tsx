@@ -15,8 +15,11 @@ import FormError from "@/components/Auth/FormError";
 import FormField from "@/components/Auth/FormField";
 import { NewPasswordSchema } from "@/schemas/auth";
 
+import FormSuccess from "./FormSuccess";
+
 const NewPasswordForm = () => {
-  const [message, setMessage] = useState<string | undefined>("");
+  const [success, setSuccess] = useState<string | undefined>("");
+  const [error, setError] = useState<string | undefined>("");
   const [isPending, startTransition] = useTransition();
   const searchParams = useSearchParams();
   const token = searchParams.get("token");
@@ -31,11 +34,18 @@ const NewPasswordForm = () => {
   const { errors } = formState;
 
   const onSubmit = async (values: z.infer<typeof NewPasswordSchema>) => {
-    setMessage("");
+    setError("");
+    setSuccess("");
 
     startTransition(() => {
       newPassword(values, token).then((data) => {
-        setMessage(data?.success || data?.error);
+        if (data?.error) {
+          setError(data?.error);
+        }
+
+        if (data?.success) {
+          setSuccess(data?.success);
+        }
       });
     });
   };
@@ -70,7 +80,13 @@ const NewPasswordForm = () => {
           <span className="text-sm font-medium">Reset password</span>
           <LuDoorOpen />
         </button>
-        <FormError message={message} />
+        <div className="text-center w-full mt-3">
+          {success ? (
+            <FormSuccess message={success} />
+          ) : (
+            <FormError message={error} />
+          )}
+        </div>
       </form>
     </Form>
   );

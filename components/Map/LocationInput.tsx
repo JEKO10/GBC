@@ -71,9 +71,9 @@ const LocationInput = ({ onLocationSelect }: LocationInputProps) => {
   }, []);
 
   return (
-    <div className="absolute z-10 bg-white p-3 shadow-lg rounded-lg">
+    <div className="w-full lg:w-1/2 mt-5 bg-secondary p-3 shadow-lg rounded-lg">
       {locationDenied && (
-        <div className="mb-3 text-sm text-red-600">
+        <div className="mb-3 text-sm text-body">
           <p className="mb-2">📍 Location access was denied.</p>
           <p>
             To see nearby restaurants, please enable location access in your
@@ -91,9 +91,9 @@ const LocationInput = ({ onLocationSelect }: LocationInputProps) => {
           ref={inputRef}
           type="text"
           placeholder="Enter your location"
-          className="mr-3 p-2 rounded border border-gray-300 w-64"
+          className="bg-primary text-body mr-3 p-2 rounded w-full outline-none"
         />
-        {address && <p className="text-sm text-gray-600 mt-2">{address}</p>}
+        {address && <p className="text-sm text-body mt-2">{address}</p>}
       </form>
     </div>
   );

@@ -13,6 +13,8 @@ export const apiAuthPrefix = [
   "/api/auth",
   "/api/cron",
   "/api/orders",
+  "/api/orders/[orderId]",
+  "/api/login",
   "/api/stripe",
   "/api/payments",
   "/api/google-pay",

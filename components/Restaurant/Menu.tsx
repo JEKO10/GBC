@@ -2,6 +2,7 @@
 import { useRouter } from "next/navigation";
 import React, { useCallback, useEffect, useMemo, useState } from "react";
 
+import { capitalize } from "@/helpers/capitalize";
 import { useRestaurantStore } from "@/store/useRestaurantStore";
 
 import Basket from "./Basket";
@@ -15,18 +16,25 @@ interface MenuProps {
     category: string | null;
     price: number;
     description: string | null;
+    imageUrl: string | null;
   }[];
 }
 
 const Menu = ({ menu }: MenuProps) => {
-  const [selectedCategory, setSelectedCategory] = useState<string | null>(null);
-  // @TODO error na serveru
+  const [selectedCategory, setSelectedCategory] = useState<string | null>(
+    "All"
+  );
+  const [toasts, setToasts] = useState<string[]>([]);
   const [basketItems, setBasketItems] = useState<{ [key: string]: number }>(
     () => {
-      const saved = localStorage.getItem("basketItems");
-      return saved ? JSON.parse(saved) : {};
+      if (typeof window !== "undefined") {
+        const saved = localStorage.getItem("basketItems");
+        return saved ? JSON.parse(saved) : {};
+      }
+      return {};
     }
   );
+  const [isBasketOpen, setIsBasketOpen] = useState(false);
   const { filteredRestaurants } = useRestaurantStore();
   const restaurantId = menu?.[0]?.restaurant_id;
   const router = useRouter();
@@ -49,13 +57,12 @@ const Menu = ({ menu }: MenuProps) => {
     ],
     [menu]
   );
-  const filteredMenu = useMemo(
-    () =>
-      selectedCategory && selectedCategory !== "All"
-        ? menu?.filter((item) => item.category === selectedCategory)
-        : menu,
-    [menu, selectedCategory]
-  );
+  const filteredMenu = useMemo(() => {
+    const sortedMenu = [...(menu || [])].sort((a, b) => a.id - b.id);
+    return selectedCategory && selectedCategory !== "All"
+      ? sortedMenu.filter((item) => item.category === selectedCategory)
+      : sortedMenu;
+  }, [menu, selectedCategory]);
 
   const handleQuantityChange = useCallback(
     (itemName: string, delta: number) => {
@@ -71,6 +78,15 @@ const Menu = ({ menu }: MenuProps) => {
 
         return updatedBasket;
       });
+
+      if (delta > 0) {
+        const newToast = `${itemName} added to basket`;
+        setToasts((prev) => [...prev, newToast]);
+
+        setTimeout(() => {
+          setToasts((prev) => prev.slice(1));
+        }, 1500);
+      }
     },
     []
   );
@@ -94,14 +110,22 @@ const Menu = ({ menu }: MenuProps) => {
     }
   }, [menu]);
 
+  useEffect(() => {
+    document.body.style.overflow = isBasketOpen ? "hidden" : "auto";
+  }, [isBasketOpen]);
+
   return (
-    <div>
-      <div className="p-6 max-w-[60rem]">
+    <div className="font-outfit w-full max-w-7xl mx-auto px-4">
+      <div className="my-14">
         <h3 className="text-xl font-semibold mb-4">Filter by Category</h3>
         <div className="flex flex-wrap gap-2">
           <button
             onClick={() => setSelectedCategory("All")}
-            className={`px-4 py-2 rounded-md ${selectedCategory === "All" ? "bg-blue-500 text-white" : "bg-gray-200 text-gray-700"}`}
+            className={`px-4 py-2 rounded-md ${
+              selectedCategory === "All"
+                ? "bg-secondary text-white"
+                : "bg-primary text-white"
+            }`}
           >
             All
           </button>
@@ -111,35 +135,66 @@ const Menu = ({ menu }: MenuProps) => {
               onClick={() => setSelectedCategory(category)}
               className={`px-4 py-2 rounded-md ${
                 selectedCategory === category
-                  ? "bg-blue-500 text-white"
-                  : "bg-gray-200 text-gray-700"
+                  ? "bg-secondary text-white"
+                  : "bg-primary text-white"
               }`}
             >
-              {category}
+              {capitalize(category)}
             </button>
           ))}
         </div>
       </div>
-      <div className="flex justify-between items-center">
-        <section className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 justify-items-center px-6 my-10">
-          {filteredMenu?.map((menuItem) => (
-            <MenuCard
-              key={menuItem.id}
-              name={menuItem.title}
-              price={menuItem.price}
-              category={menuItem.category ?? "Uncategorized"}
-              description={menuItem.description ?? "No description available"}
-              quantity={basketItems[menuItem.title] || 0}
-              onQuantityChange={handleQuantityChange}
-            />
-          ))}
-        </section>
-        <Basket
-          items={basketItems}
-          menu={menu}
-          handleQuantityChange={handleQuantityChange}
-        />
+
+      <section className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6 my-10">
+        {filteredMenu?.map((menuItem) => (
+          <MenuCard
+            key={menuItem.id}
+            name={menuItem.title}
+            price={menuItem.price}
+            category={menuItem.category ?? "Uncategorized"}
+            description={menuItem.description ?? "No description available"}
+            image={menuItem.imageUrl}
+            quantity={basketItems[menuItem.title] || 0}
+            onQuantityChange={handleQuantityChange}
+          />
+        ))}
+      </section>
+      <div className="fixed top-5 left-1/2 transform -translate-x-1/2 flex flex-col gap-2 z-[9999]">
+        {toasts.map((msg, i) => (
+          <div
+            key={i}
+            className="bg-secondary text-white px-4 py-2 rounded-md shadow-md animate-fade"
+          >
+            {msg}
+          </div>
+        ))}
       </div>
+
+      {Object.keys(basketItems).length > 0 && (
+        <button
+          onClick={() => setIsBasketOpen(true)}
+          className="fixed bottom-4 left-1/2 transform -translate-x-1/2 bg-secondary text-white font-semibold px-6 py-3 rounded-full shadow-lg z-50"
+        >
+          View Basket ({Object.values(basketItems).reduce((a, b) => a + b, 0)})
+        </button>
+      )}
+      {isBasketOpen && (
+        <div className="fixed inset-0 bg-black bg-opacity-50 z-50 flex justify-center items-center">
+          <div className="relative w-full max-w-lg mx-auto bg-white rounded-lg shadow-lg p-6">
+            <button
+              onClick={() => setIsBasketOpen(false)}
+              className="absolute top-2 right-4 text-2xl font-bold"
+            >
+              ×
+            </button>
+            <Basket
+              items={basketItems}
+              menu={menu}
+              handleQuantityChange={handleQuantityChange}
+            />
+          </div>
+        </div>
+      )}
     </div>
   );
 };

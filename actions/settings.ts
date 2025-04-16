@@ -4,7 +4,6 @@ import bcrypt from "bcryptjs";
 import * as z from "zod";
 
 import { getUserByEmail, getUserById } from "@/data/user";
-import { filterPrismaFields } from "@/helpers/filterPrismaFields";
 import { currentUser } from "@/lib/auth";
 import db from "@/lib/db";
 import { sendVerificationEmail } from "@/lib/mail";
@@ -41,7 +40,10 @@ export const settings = async (formData: z.infer<typeof SettingsSchema>) => {
       verificationToken.token
     );
 
-    return { success: "Verification email sent!" };
+    return {
+      success:
+        "Verification email sent! If you can't find it, check spam folder!",
+    };
   }
 
   if (formData.password && formData.newPassword && dbUser.password) {
@@ -54,15 +56,17 @@ export const settings = async (formData: z.infer<typeof SettingsSchema>) => {
       return { error: "Incorrect password!" };
     }
 
-    formData.password = await bcrypt.hash(formData.newPassword, 10);
-    formData.newPassword = undefined;
+    const hashedPasswrod = await bcrypt.hash(formData.newPassword, 10);
+
+    formData.password = hashedPasswrod;
   }
 
-  const updatedData = filterPrismaFields(formData, ["houseNumber", "postcode"]);
+  // eslint-disable-next-line no-unused-vars
+  const { newPassword, ...safeData } = formData;
 
   await db.user.update({
     where: { id: dbUser.id },
-    data: updatedData,
+    data: safeData,
   });
 
   return { success: "Settings updated!" };

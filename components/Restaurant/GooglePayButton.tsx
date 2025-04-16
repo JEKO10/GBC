@@ -6,6 +6,7 @@ import React, { useState } from "react";
 import { setUserGoogleAddress, setUserPhoneNumber } from "@/actions/settings";
 import { createOrder, createPaymentIntent } from "@/actions/stripeActions";
 import { useCurrentUser } from "@/hooks/useCurrentUser";
+import { useCheckoutStore } from "@/store/useCheckoutStore";
 
 interface GoogleButtonProps {
   items: { id: number; quantity: number }[];
@@ -60,7 +61,6 @@ const GoogleButton = ({
         );
       }
 
-      // @TODO check
       const response = await createPaymentIntent(
         token,
         orderedItems,
@@ -84,9 +84,14 @@ const GoogleButton = ({
 
         setErrorMessage("Payment successful! Redirecting...");
         localStorage.setItem("basketItems", JSON.stringify({}));
+
         setTimeout(() => {
           router.push(`/payment-success`);
         }, 1500);
+
+        setTimeout(() => {
+          useCheckoutStore.getState().clearCheckout();
+        }, 2500);
       } else if (result?.error) {
         setErrorMessage(result.error.message || "Payment failed. Try again.");
       }

@@ -17,7 +17,6 @@ export interface Review {
   };
 }
 
-// @TODO samo za te restorane napravi page, tako ne moras da restric URL change
 // @TODO design, mesage etc. return ugl
 const ReviewWrapper = ({ restaurantId }: { restaurantId: number }) => {
   const { reviews, isLoading, message, setReviews } = useFetchReviews({
@@ -30,26 +29,31 @@ const ReviewWrapper = ({ restaurantId }: { restaurantId: number }) => {
 
   const averageRating = useMemo(() => {
     if (reviews.length === 0) return 0;
-
     const totalRating = reviews.reduce((sum, review) => sum + review.rating, 0);
     return totalRating / reviews.length;
   }, [reviews]);
 
   return (
-    <section>
-      {isLoading ? (
-        <div className="loading" />
-      ) : reviews.length > 0 ? (
-        <p className="text-yellow-500 font-bold">
-          ⭐ {averageRating.toFixed(1)} / 5
-        </p>
-      ) : (
-        <p className="text-gray-500 italic">No ratings yet.</p>
-      )}
-      <ReviewForm
-        restaurantId={restaurantId}
-        handleAddReview={handleAddReview}
-      />
+    <section className="w-full max-w-3xl mx-auto my-12 px-4">
+      <div className="mb-6 text-center">
+        {isLoading ? (
+          <div className="animate-pulse text-gray-400">Loading reviews...</div>
+        ) : reviews.length > 0 ? (
+          <p className="text-yellow-500 text-2xl font-semibold">
+            ⭐ {averageRating.toFixed(1)} / 5
+          </p>
+        ) : (
+          <p className="text-gray-500 italic text-lg">No ratings yet.</p>
+        )}
+      </div>
+
+      <div className="mb-8">
+        <ReviewForm
+          restaurantId={restaurantId}
+          handleAddReview={handleAddReview}
+        />
+      </div>
+
       <ReviewList
         reviews={reviews}
         isLoading={isLoading}

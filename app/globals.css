@@ -25,7 +25,7 @@ body {
 .map-loader {
   width: 120px;
   height: 120px;
-  margin: 2rem auto 25rem;
+  margin: 2rem 8rem;
   border-radius: 50%;
   border: 3px solid rgb(var(--primary));
   border-top-color: rgb(var(--secondary));
@@ -64,8 +64,4 @@ body {
 
 .animate-slide {
   animation: slide 15s linear infinite;
-}
-
-.logos-slide:hover {
-  animation-play-state: paused;
 }

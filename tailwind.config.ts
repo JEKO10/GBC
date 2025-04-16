@@ -16,6 +16,17 @@ export default {
       fontFamily: {
         outfit: ["var(--font-outfit)", "sans-serif"],
       },
+      keyframes: {
+        fade: {
+          "0%": { opacity: "0" },
+          "10%": { opacity: "1" },
+          "90%": { opacity: "1" },
+          "100%": { opacity: "0" },
+        },
+      },
+      animation: {
+        fade: "fade 1.5s ease-in-out",
+      },
     },
   },
   plugins: [],

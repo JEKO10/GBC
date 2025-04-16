@@ -1,40 +1,61 @@
 "use client";
 
+import Link from "next/link";
 import { useSearchParams } from "next/navigation";
 import React, { useEffect, useState } from "react";
 
 import { newVerification } from "@/actions/newVerification";
 
 import FormError from "./FormError";
+import FormSuccess from "./FormSuccess";
 
 const NewVerificationForm = () => {
-  const [message, setMessage] = useState<string | undefined>("");
+  const [success, setSuccess] = useState<string | undefined>("");
+  const [error, setError] = useState<string | undefined>("");
   const searchParams = useSearchParams();
   const token = searchParams.get("token");
 
   useEffect(() => {
-    if (message) return;
+    if (success || error) return;
 
     if (!token) {
-      setMessage("Missing token!");
+      setError("Missing token!");
       return;
     }
 
     newVerification(token)
       .then((data) => {
-        setMessage(data.success || data.error);
+        if (data?.error) {
+          setError(data.error);
+        } else if (data?.success) {
+          setSuccess(data.success);
+        } else {
+          setError("Something went wrong!");
+        }
       })
       .catch(() => {
-        setMessage("Something went wrong!");
+        setError("Something went wrong!");
       });
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [token]);
+  }, [token, success, error]);
 
   return (
-    <div>
-      <p>Confirming your verification...</p>
-      {!message && <div className="loading"></div>}
-      <FormError message={message} />
+    <div className="flex flex-col items-center bg-secondary text-white mt-10 px-5 sm:px-8 pt-7 pb-5 rounded-lg max-w-xl mx-auto shadow-md">
+      <p className="mb-6 text-lg font-medium">
+        {success || error
+          ? "Verification Result"
+          : "Confirming your verification..."}
+      </p>
+      {!error && !success && <div className="loading" />}
+      <div className="w-full mt-5">
+        {success && <FormSuccess message={success} />}
+        {error && <FormError message={error} />}
+      </div>
+      <Link
+        href="/auth/login"
+        className="text-md italic font-medium text-primary underline mt-3"
+      >
+        Back to log in page
+      </Link>
     </div>
   );
 };

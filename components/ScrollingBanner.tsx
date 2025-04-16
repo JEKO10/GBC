@@ -4,14 +4,14 @@ import Image from "next/image";
 import Link from "next/link";
 
 const images: string[] = [
-  "/scrolling/approved.jpg",
-  "/scrolling/hot.jpg",
-  "/scrolling/naan-hori.jpg",
-  "/scrolling/naan-vert.jpg",
-  "/scrolling/general-man.png",
-  "/scrolling/general-woman.png",
+  "/scrolling/approved.png",
+  "/scrolling/hot.png",
+  "/scrolling/naan-hori.png",
+  "/scrolling/naan-vert.png",
+  "/scrolling/man.png",
+  "/scrolling/woman.png",
   "/scrolling/unc.png",
-  "/scrolling/naan-vert.jpg",
+  "/scrolling/all.png",
 ];
 
 // @TODO mozda manje slike na manje ekrane

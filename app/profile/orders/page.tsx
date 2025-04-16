@@ -11,33 +11,48 @@ export interface OrderedItem {
 const OrdersPage = async () => {
   const user = await currentUser();
   if (!user) {
-    return <p>Please log in to view your orders.</p>;
+    return (
+      <div className="flex items-center justify-center h-[60vh] text-gray-600 text-lg">
+        Please log in to view your orders.
+      </div>
+    );
   }
 
   const orders = await getUserOrders(user.id);
   if (!Array.isArray(orders)) {
-    return <p>Error loading orders...</p>;
+    return (
+      <div className="flex items-center justify-center h-[60vh] text-red-500 text-lg">
+        Error loading orders...
+      </div>
+    );
   }
 
   return (
-    <div>
-      <h1>Your Orders</h1>
+    <div className="w-full max-w-5xl mx-auto px-4 py-12">
+      <h1 className="text-3xl font-bold mb-8 text-center text-gray-800">
+        Your Orders
+      </h1>
+
       {orders.length > 0 ? (
-        orders.map((order) => {
-          let orderedItems: OrderedItem[] = [];
+        <div className="space-y-6">
+          {orders.map((order) => {
+            let orderedItems: OrderedItem[] = [];
 
-          if (Array.isArray(order.items)) {
-            orderedItems = order.items as unknown as OrderedItem[];
-          } else {
-            console.error("Unexpected order items format:", order.items);
-          }
+            if (Array.isArray(order.items)) {
+              orderedItems = order.items as unknown as OrderedItem[];
+            } else {
+              console.error("Unexpected order items format:", order.items);
+            }
 
-          return (
-            <Order key={order.id} order={order} orderedItems={orderedItems} />
-          );
-        })
+            return (
+              <Order key={order.id} order={order} orderedItems={orderedItems} />
+            );
+          })}
+        </div>
       ) : (
-        <p>No orders found.</p>
+        <div className="text-center text-gray-500 text-lg">
+          You haven&apos;t placed any orders yet.
+        </div>
       )}
     </div>
   );

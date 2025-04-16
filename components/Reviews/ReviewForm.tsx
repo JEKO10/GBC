@@ -3,6 +3,7 @@
 import { zodResolver } from "@hookform/resolvers/zod";
 import React, { useCallback, useState, useTransition } from "react";
 import { useForm } from "react-hook-form";
+import { FaStar } from "react-icons/fa";
 import * as z from "zod";
 
 import { createReview } from "@/actions/reviews";
@@ -10,7 +11,6 @@ import { ReviewSchema } from "@/schemas/menu";
 
 import { Review } from "./ReviewsWrapper";
 
-// @TODO design, mesage etc. return ugl
 const ReviewForm = ({
   restaurantId,
   handleAddReview,
@@ -22,20 +22,26 @@ const ReviewForm = ({
   const [isPending, startTransition] = useTransition();
   const [message, setMessage] = useState<string | undefined>("");
 
-  const form = useForm<z.infer<typeof ReviewSchema>>({
+  const {
+    register,
+    handleSubmit,
+    setValue,
+    watch,
+    reset,
+    formState: { errors },
+  } = useForm<z.infer<typeof ReviewSchema>>({
     resolver: zodResolver(ReviewSchema),
     defaultValues: {
       rating: 0,
       comment: "",
     },
   });
-  const { register, handleSubmit, formState } = form;
-  const { errors } = formState;
+
+  const selectedRating = watch("rating");
 
   const onSubmit = useCallback(
     async (values: z.infer<typeof ReviewSchema>) => {
       setMessage("");
-
       startTransition(() => {
         createReview(restaurantId, values.rating, values.comment).then(
           (data) => {
@@ -44,9 +50,8 @@ const ReviewForm = ({
                 ...data.review,
                 createdAt: new Date(data.review.createdAt).toISOString(),
               };
-
               handleAddReview(newReview);
-              form.reset();
+              reset();
               setMessage(data.success);
             } else {
               setMessage(data?.error ?? "Something went wrong.");
@@ -55,54 +60,83 @@ const ReviewForm = ({
         );
       });
     },
-
-    [form, restaurantId]
+    [restaurantId, handleAddReview, reset]
   );
 
   return (
-    <div className="p-4 border rounded-lg shadow-md">
-      {/* <h2 className="text-lg font-semibold">
-        {existingReview ? "Edit" : "Leave"} a Review
-      </h2> */}
-      <form onSubmit={handleSubmit(onSubmit)}>
-        <label className="block mt-3">
-          Rating:
-          <select
-            {...register("rating")}
-            className="block w-full p-2 border rounded"
-          >
-            {[1, 2, 3, 4, 5].map((num) => (
-              <option key={num} value={num}>
-                {num} Stars
-              </option>
+    <div className="p-6 bg-white border border-gray-200 rounded-lg shadow-sm">
+      <h3 className="text-lg font-semibold mb-4">Leave a Review</h3>
+      <form onSubmit={handleSubmit(onSubmit)} className="space-y-4">
+        {/* Star Rating Input */}
+        <div>
+          <label className="block text-sm font-medium text-gray-700 mb-2">
+            Rating:
+          </label>
+          <div className="flex gap-1">
+            {[1, 2, 3, 4, 5].map((star) => (
+              <button
+                key={star}
+                type="button"
+                onClick={() =>
+                  setValue("rating", star, { shouldValidate: true })
+                }
+                className="text-2xl"
+              >
+                <FaStar
+                  className={`transition ${
+                    selectedRating >= star ? "text-yellow-400" : "text-gray-300"
+                  }`}
+                />
+              </button>
             ))}
-          </select>
-        </label>
-        <p>{errors.rating?.message}</p>
-        <label className="block mt-3">
-          Comment:
+          </div>
+          {errors.rating && (
+            <p className="text-sm text-red-500 mt-1">{errors.rating.message}</p>
+          )}
+        </div>
+
+        {/* Comment */}
+        <div>
+          <label
+            htmlFor="comment"
+            className="block text-sm font-medium text-gray-700 mb-1"
+          >
+            Comment:
+          </label>
           <textarea
             {...register("comment")}
-            className="block w-full p-2 border rounded"
-            rows={3}
+            className="w-full p-3 border rounded-md focus:outline-none focus:ring-2 focus:ring-blue-400"
+            rows={4}
             placeholder="Write your review..."
           />
-        </label>
-        <p>{errors.comment?.message}</p>
-        {message && <p>{message}</p>}
-        {/* {errorMessage && <p className="text-red-500 mt-2">{errorMessage}</p>} */}
+          {errors.comment && (
+            <p className="text-sm text-red-500 mt-1">
+              {errors.comment.message}
+            </p>
+          )}
+        </div>
+        {message && (
+          <div
+            className={`p-2 rounded text-sm ${
+              message.toLowerCase().includes("success")
+                ? "bg-green-100 text-green-700"
+                : "bg-red-100 text-red-600"
+            }`}
+          >
+            {message}
+          </div>
+        )}
+
         <button
           type="submit"
-          // disabled={loading}
           disabled={isPending}
-          className="mt-4 px-4 py-2 bg-blue-500 text-white rounded hover:bg-blue-600"
+          className={`w-full py-2 px-4 text-white rounded-md transition ${
+            isPending
+              ? "bg-primary cursor-not-allowed"
+              : "bg-secondary hover:bg-secondary/90"
+          }`}
         >
-          Submit
-          {/* {loading
-          ? "Submitting..."
-          : existingReview
-          ? "Update Review"
-          : "Submit Review"} */}
+          {isPending ? "Submitting..." : "Submit Review"}
         </button>
       </form>
     </div>

@@ -1,137 +1,39 @@
 "use client";
 
-import { zodResolver } from "@hookform/resolvers/zod";
-import { signOut, useSession } from "next-auth/react";
-import React, { useState, useTransition } from "react";
-import { useForm } from "react-hook-form";
-import * as z from "zod";
+import { signOut } from "next-auth/react";
+import React from "react";
 
-import { settings } from "@/actions/settings";
-import FormField from "@/components/Auth/FormField";
+import ProfileForm from "@/components/Reviews/ProfileForm";
 import UserReviews from "@/components/Reviews/UserReviews";
-import parseAddress from "@/helpers/parseAddress";
 import { useCurrentUser } from "@/hooks/useCurrentUser";
-import { SettingsSchema } from "@/schemas/auth";
 
 const ProfilePage = () => {
-  const [message, setMessage] = useState("");
-  const [isPending, startTransition] = useTransition();
-  const { update } = useSession();
   const user = useCurrentUser();
-  const { houseNumber, address, postcode } = parseAddress(user?.address);
 
-  const form = useForm<z.infer<typeof SettingsSchema>>({
-    resolver: zodResolver(SettingsSchema),
-    defaultValues: {
-      name: user?.name || undefined,
-      email: user?.email || undefined,
-      houseNumber: houseNumber,
-      address: address,
-      postcode: postcode,
-      password: undefined,
-      newPassword: undefined,
-      isTwoFactorEnabled: user?.isTwoFactorEnabled || undefined,
-    },
-  });
-
-  const { register, handleSubmit, formState } = form;
-  const { errors } = formState;
-
-  const onSubmit = (formData: z.infer<typeof SettingsSchema>) => {
-    const formattedAddress =
-      formData.houseNumber && formData.address && formData.postcode
-        ? `${formData.houseNumber} ${formData.address}, ${formData.postcode}`
-        : "";
-
-    startTransition(async () => {
-      try {
-        const data = await settings({
-          ...formData,
-          // phone: formattedPhone,
-          address: formattedAddress,
-        });
-        setMessage(data.error ?? data.success);
-        if (data.success) {
-          update();
-        }
-      } catch (error) {
-        setMessage(
-          error instanceof Error ? error.message : "Something went wrong!"
-        );
-      }
-    });
-  };
-
-  // @TODO DB INDEXES
   return (
-    <div className="flex flex-col gap-10">
-      <span>{user?.name ?? "No name available"}</span>
-      <span>{user?.address ?? ""}</span>
-      <form onSubmit={handleSubmit(onSubmit)}>
-        <FormField
-          label="Update name"
-          type="text"
-          registration={register("name")}
-          placeholder="Update name"
-        />
-        {user?.isOAuth === false ? (
-          <>
-            <FormField
-              label="Email"
-              type="email"
-              registration={register("email", {
-                required: "Email is required",
-              })}
-              placeholder="Enter your email"
-              error={errors.email}
-            />
-            <FormField
-              label="Password"
-              type="password"
-              registration={register("password", {
-                minLength: {
-                  value: 6,
-                  message: "Must be at least 6 characters",
-                },
-              })}
-              placeholder="******"
-              error={errors.password}
-            />
-            <FormField
-              label="New password"
-              type="password"
-              registration={register("newPassword", {
-                minLength: {
-                  value: 6,
-                  message: "Must be at least 6 characters",
-                },
-              })}
-              placeholder="******"
-              error={errors.newPassword}
-            />
-          </>
-        ) : null}
-        {user?.isOAuth === false ? (
-          <FormField
-            label="Two-Factor Authentication"
-            type="checkbox"
-            registration={register("isTwoFactorEnabled")}
-            error={errors.isTwoFactorEnabled}
-          />
-        ) : null}
-        <button type="submit" disabled={isPending}>
-          {isPending ? "Saving..." : "Save"}
+    <section className="max-w-3xl mx-auto px-4 sm:px-8 py-10">
+      <h2 className="text-2xl sm:text-3xl font-bold text-center text-secondary mb-6">
+        Your Profile
+      </h2>
+      <article className="text-center mb-6">
+        <p className="text-lg font-medium">
+          {user?.name ?? "No name available"}
+        </p>
+        <p className="text-gray-600">{user?.address ?? ""}</p>
+      </article>
+      <ProfileForm />
+      <div className="mt-10">
+        <UserReviews />
+      </div>
+      <div className="mt-10 text-center">
+        <button
+          onClick={() => signOut()}
+          className="text-red-500 font-medium hover:underline"
+        >
+          Sign Out
         </button>
-        <div className="flex flex-col gap-10">
-          <p>{message}</p> <p>{errors.password?.message} </p>
-          <p>{errors.newPassword?.message}</p>
-        </div>
-      </form>
-      <UserReviews />
-      {/* @TODO */}
-      {/* <button>Two factor auth {user?.isTwoFactorEnabled ? "ON" : "OFF"}</button> */}
-      <button onClick={() => signOut()}>Sign Out</button>
-    </div>
+      </div>
+    </section>
   );
 };
 

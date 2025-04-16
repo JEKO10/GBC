@@ -2,6 +2,7 @@ import "./globals.css";
 
 import type { Metadata } from "next";
 import { Outfit } from "next/font/google";
+import Script from "next/script";
 import { SessionProvider } from "next-auth/react";
 
 import { auth } from "@/auth";
@@ -29,6 +30,18 @@ export default async function RootLayout({
     <SessionProvider session={session}>
       <html lang="en">
         <body className={`${outfit.variable} antialiased`}>
+          <Script
+            src="https://www.googletagmanager.com/gtag/js?id=AW-16773442177"
+            strategy="afterInteractive"
+          />
+          <Script id="google-ads" strategy="afterInteractive">
+            {`
+              window.dataLayer = window.dataLayer || [];
+              function gtag(){dataLayer.push(arguments);}
+              gtag('js', new Date());
+              gtag('config', 'AW-16773442177');
+            `}
+          </Script>
           <Navbar />
           {children}
         </body>

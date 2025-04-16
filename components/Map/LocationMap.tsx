@@ -5,10 +5,10 @@ import { AdvancedMarker, InfoWindow, Map } from "@vis.gl/react-google-maps";
 import Image from "next/image";
 import Link from "next/link";
 import { useEffect, useMemo, useRef } from "react";
-import { HiOutlineLocationMarker } from "react-icons/hi";
 
 import { Restaurant } from "@/app/map/page";
 import marker from "@/public/marker.png";
+import userLoc from "@/public/userLoc.png";
 import { useRestaurantStore } from "@/store/useRestaurantStore";
 
 function filterRestaurantsBy(
@@ -60,7 +60,7 @@ function Location({
     <div ref={containerRef}>
       <Map
         mapId={process.env.NEXT_PUBLIC_GOOGLE_MAP_ID}
-        className="w-[50vw] h-[50vh] my-0 mx-auto"
+        className="w-[90vw] lg:w-[32vw] h-[405px] my-0 mx-auto"
         defaultCenter={{
           lat: userLocation.lat,
           lng: userLocation.lng,
@@ -76,7 +76,12 @@ function Location({
         keyboardShortcuts={false}
       >
         <AdvancedMarker position={userLocation}>
-          <HiOutlineLocationMarker className="text-5xl text-secondary" />
+          <Image
+            src={userLoc}
+            alt="Marker to show User Location"
+            width={28}
+            height={29}
+          />
         </AdvancedMarker>
         {filteredRestaurants.map((restaurant) => (
           <AdvancedMarker
@@ -85,7 +90,12 @@ function Location({
             onClick={() => setSelectedRestaurant(restaurant)}
           >
             <span>
-              <Image src={marker} alt="food" width={50} height={50} />
+              <Image
+                src={marker}
+                alt="Marker to show General's Bilimoria Canteen Location"
+                width={34}
+                height={31}
+              />
             </span>
           </AdvancedMarker>
         ))}

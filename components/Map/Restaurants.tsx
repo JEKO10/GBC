@@ -41,7 +41,7 @@ const Restaurants = ({
         </div>
       )}
       <div className="text-center mb-6">
-        <h3 className="text-lg font-medium mb-2">
+        <h3 className="text-2xl font-medium my-10 font-outfit">
           Restaurants within 3 miles from your address:
         </h3>
         {cuisines.length > 0 && (
@@ -50,8 +50,8 @@ const Restaurants = ({
               onClick={() => setSelectedCuisine("")}
               className={`px-4 py-2 rounded-md ${
                 selectedCuisine === ""
-                  ? "bg-blue-500 text-white"
-                  : "bg-gray-200 text-gray-700"
+                  ? "bg-secondary text-white"
+                  : "bg-primary text-white"
               }`}
             >
               All cuisines
@@ -62,8 +62,8 @@ const Restaurants = ({
                 onClick={() => setSelectedCuisine(cuisine)}
                 className={`px-4 py-2 rounded-md ${
                   selectedCuisine === cuisine
-                    ? "bg-blue-500 text-white"
-                    : "bg-gray-200 text-gray-700"
+                    ? "bg-secondary text-white"
+                    : "bg-primary text-white"
                 }`}
               >
                 {cuisine}

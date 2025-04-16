@@ -15,7 +15,6 @@ const formatDate = (dateString: string) => {
   });
 };
 
-// @TODO design, mesage etc. return ugl
 const ReviewList = ({
   reviews,
   isLoading,
@@ -48,9 +47,9 @@ const ReviewList = ({
               key={review.id}
               className="p-4 border rounded-lg bg-white shadow"
             >
-              <div className="flex justify-between">
+              <div className="flex justify-between flex-wrap">
                 <p className="font-bold text-lg">{review.user.name}</p>
-                <p className="text-gray-500 text-sm">
+                <p className="text-gray-500 text-sm my-2">
                   {formatDate(review.createdAt)}
                 </p>
               </div>

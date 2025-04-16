@@ -15,8 +15,12 @@ import Social from "@/components/Auth/Socials";
 import { useIsSmallScreen } from "@/hooks/useIsSmallScreen";
 import { RegisterSchema } from "@/schemas/auth";
 
+import FormError from "./FormError";
+import FormSuccess from "./FormSuccess";
+
 const RegisterForm = () => {
-  const [message, setMessage] = useState<string | undefined>("");
+  const [success, setSuccess] = useState<string | undefined>("");
+  const [error, setError] = useState<string | undefined>("");
   const [isPending, startTransition] = useTransition();
   const [captchaToken, setCaptchaToken] = useState("");
   const isSmallScreen = useIsSmallScreen();
@@ -34,14 +38,23 @@ const RegisterForm = () => {
   const { errors } = formState;
 
   const onSubmit = (values: z.infer<typeof RegisterSchema>) => {
+    setSuccess("");
+    setError("");
+
     if (!captchaToken) {
-      setMessage("Please complete the captcha.");
+      setError("Please complete the captcha.");
       return;
     }
 
     startTransition(() => {
       registerAction({ ...values, captchaToken }).then((data) => {
-        setMessage(data?.success || data?.error);
+        if (data?.error) {
+          setError(data?.error);
+        }
+
+        if (data?.success) {
+          setSuccess(data?.success);
+        }
       });
     });
   };
@@ -124,7 +137,13 @@ const RegisterForm = () => {
             </span>
             <LuDoorOpen />
           </button>
-          {message && <p className="!mt-2 !text-white">{message}</p>}
+          <div className="text-center w-full mt-5">
+            {success ? (
+              <FormSuccess message={success} />
+            ) : (
+              <FormError message={error} />
+            )}
+          </div>
         </form>
       </Form>
       <Social />

@@ -1,5 +1,7 @@
 "use server";
 
+import { revalidatePath } from "next/cache";
+
 import db from "@/lib/db";
 
 export const getRestaurants = async () => {
@@ -35,4 +37,20 @@ export const getRestaurantWithMenu = async (name: string) => {
       price: menu.price ? menu.price.toNumber() : 0,
     })),
   };
+};
+
+export const updateRestaurantStatus = async (id: number) => {
+  const restaurant = await db.restaurant.findUnique({
+    where: { id },
+  });
+  if (!restaurant) {
+    return { error: "Restaurant not found!" };
+  }
+
+  await db.restaurant.update({
+    where: { id },
+    data: { isActive: !restaurant.isActive },
+  });
+
+  revalidatePath("/admin");
 };

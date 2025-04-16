@@ -12,8 +12,11 @@ import FormError from "@/components/Auth/FormError";
 import FormField from "@/components/Auth/FormField";
 import { ResetSchema } from "@/schemas/auth";
 
+import FormSuccess from "./FormSuccess";
+
 const ResetPasswordForm = () => {
-  const [message, setMessage] = useState<string | undefined>("");
+  const [success, setSuccess] = useState<string | undefined>("");
+  const [error, setError] = useState<string | undefined>("");
   const [isPending, startTransition] = useTransition();
 
   const form = useForm<z.infer<typeof ResetSchema>>({
@@ -26,11 +29,18 @@ const ResetPasswordForm = () => {
   const { errors } = formState;
 
   const onSubmit = async (values: z.infer<typeof ResetSchema>) => {
-    setMessage("");
+    setSuccess("");
+    setError("");
 
     startTransition(() => {
       reset(values).then((data) => {
-        setMessage(data?.success || data?.error);
+        if (data?.error) {
+          setError(data?.error);
+        }
+
+        if (data?.success) {
+          setSuccess(data?.success);
+        }
       });
     });
   };
@@ -63,7 +73,13 @@ const ResetPasswordForm = () => {
           <span className="text-sm font-medium">Send reset email</span>
           <LuDoorOpen />
         </button>
-        <FormError message={message} />
+        <div className="text-center w-full mt-5">
+          {success ? (
+            <FormSuccess message={success} />
+          ) : (
+            <FormError message={error} />
+          )}
+        </div>
       </form>
     </Form>
   );

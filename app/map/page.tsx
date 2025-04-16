@@ -2,11 +2,14 @@
 
 import { APIProvider } from "@vis.gl/react-google-maps";
 import dynamic from "next/dynamic";
+import Image from "next/image";
 import React, { useEffect, useState } from "react";
 
 import { getRestaurants } from "@/actions/restaurants";
 import LocationInput from "@/components/Map/LocationInput";
 import Restaurants from "@/components/Map/Restaurants";
+import ScrollingBanner from "@/components/ScrollingBanner";
+import General from "@/public/map.png";
 import { useRestaurantStore } from "@/store/useRestaurantStore";
 
 const Map = dynamic(() => import("@/components/Map/LocationMap"), {
@@ -38,13 +41,15 @@ const MapPage = () => {
         setIsLoading(true);
         const response = await getRestaurants();
 
-        const formattedData = response.map((restaurant) => ({
-          id: restaurant.id,
-          name: restaurant.name,
-          lat: restaurant.lat ?? 0,
-          lng: restaurant.lng ?? 0,
-          cuisine: restaurant.cuisine ?? "Not specified",
-        }));
+        const formattedData = response
+          .filter((restaurant) => restaurant.isActive)
+          .map((restaurant) => ({
+            id: restaurant.id,
+            name: restaurant.name,
+            lat: restaurant.lat ?? 0,
+            lng: restaurant.lng ?? 0,
+            cuisine: restaurant.cuisine ?? "Not specified",
+          }));
 
         setRestaurants(formattedData);
       } catch (error) {
@@ -97,7 +102,7 @@ const MapPage = () => {
         {isLoading ? (
           <div className="loading" />
         ) : (
-          <>
+          <section className="flex flex-col items-center justify-center px-5">
             <LocationInput
               onLocationSelect={(coords) => {
                 setUserLocation(coords);
@@ -106,11 +111,20 @@ const MapPage = () => {
             />
             {restaurants.length > 0 ? (
               <>
-                <Map
-                  selectedRestaurant={selectedRestaurant}
-                  setSelectedRestaurant={setSelectedRestaurant}
-                  userLocation={userLocation}
-                />
+                <div className="flex items-center gap-x-6 my-5">
+                  <Map
+                    selectedRestaurant={selectedRestaurant}
+                    setSelectedRestaurant={setSelectedRestaurant}
+                    userLocation={userLocation}
+                  />
+                  <Image
+                    src={General}
+                    title="General Faridoon Bilimoria - The Inspiration Behind GBC"
+                    alt="Lieutenant General Faridoon Bilimoria (center) standing in full ceremonial military uniform, flanked by two high-ranking officers."
+                    className="w-[250px] h-full hidden lg:block"
+                    loading="lazy"
+                  />
+                </div>
                 <Restaurants selectedRestaurant={selectedRestaurant} />
               </>
             ) : (
@@ -118,9 +132,10 @@ const MapPage = () => {
                 No restaurants found.
               </div>
             )}
-          </>
+          </section>
         )}
       </APIProvider>
+      <ScrollingBanner />
     </div>
   );
 };

@@ -2,13 +2,12 @@ import Image from "next/image";
 import React from "react";
 import { FaPlus } from "react-icons/fa6";
 
-import bilimoria from "@/public/bilimoria.png";
-
 interface MenuCardProps {
   name: string;
   category: string | null;
   price: number;
   description: string | null;
+  image: string | null;
   quantity: number;
   // eslint-disable-next-line no-unused-vars
   onQuantityChange: (name: string, quantity: number) => void;
@@ -19,33 +18,42 @@ const MenuCard = ({
   category,
   price,
   description,
+  image,
   onQuantityChange,
 }: MenuCardProps) => {
+  const imageSrc =
+    image && image !== "null"
+      ? `/menus/${image}`
+      : "https://upload.wikimedia.org/wikipedia/commons/3/3f/Placeholder_view_vector.svg";
+
   return (
-    <article className="bg-white w-72 p-3 rounded-md shadow-md flex flex-col h-full">
-      <Image
-        className="w-full rounded-md select-none"
-        src={bilimoria}
-        alt="Logo for General Bilimoria's Canteen, featuring a vintage-style design with text reading 'GENERAL' curved at the top, 'BILIMORIA'S CANTEEN' in bold capital letters, and 'ESTD. 2023, LONDON, UK' at the bottom."
-        priority
-      />
-      <div className="flex flex-col justify-between h-full">
-        <div className="flex justify-between items-start flex-col mt-3 select-none">
-          <p>{name}</p>
-          <p>Category: {category}</p>
+    <article className="bg-white w-full rounded-xl shadow-md flex flex-col h-full overflow-hidden transition hover:scale-[1.01]">
+      <div className="relative w-full h-48">
+        <Image
+          src={imageSrc}
+          alt={`Image of ${name} - ${description || "a menu item"} from General Bilimoria's Canteen`}
+          fill
+          className="object-cover select-none"
+          priority
+        />
+      </div>
+
+      <div className="flex flex-col justify-between flex-grow p-4">
+        <div>
+          <h3 className="text-lg font-semibold text-gray-900 mb-1">{name}</h3>
+          <p className="text-sm text-gray-500 mb-2">Category: {category}</p>
+          <p className="text-sm text-gray-700 line-clamp-3">{description}</p>
         </div>
-        <p className="mt-5 select-none">{description}</p>
-        <article className="flex justify-between items-start mt-5">
-          <p>{price}£</p>
-          <div className="flex justify-center items-center">
-            <button
-              onClick={() => onQuantityChange(name, 1)}
-              className="cursor-pointer bg-blue-500 text-white px-3 py-1 rounded-md flex items-center gap-2"
-            >
-              <FaPlus />
-            </button>
-          </div>
-        </article>
+
+        <div className="mt-4 flex items-center justify-between border-t-2 border-gray pt-2">
+          <span className="text-base font-bold text-gray-800">{price}£</span>
+          <button
+            onClick={() => onQuantityChange(name, 1)}
+            className="cursor-pointer bg-secondary text-white px-3 py-1.5 rounded-md flex items-center gap-2 hover:bg-secondary-dark"
+          >
+            <FaPlus className="text-sm" />
+          </button>
+        </div>
       </div>
     </article>
   );

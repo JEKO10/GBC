@@ -13,8 +13,10 @@ if (!process.env.STRIPE_SECRET) {
 
 const stripe = new Stripe(process.env.STRIPE_SECRET || "");
 
-function generateOrderId() {
-  return Math.floor(1000 + Math.random() * 9000).toString();
+function generateOrderId(restaurantId: number) {
+  const random = Math.floor(Math.random() * 9000);
+  const padded = String(random).padStart(4, "0");
+  return `${restaurantId}-${padded}`;
 }
 
 function generatePaymentId(length = 8) {
@@ -37,7 +39,7 @@ export async function createPaymentIntent(
   orderNote: string
 ) {
   const parsedToken = JSON.parse(paymentToken);
-  const orderId = generateOrderId();
+  const orderId = generateOrderId(restaurantId);
   const paymentId = generatePaymentId();
   const user = await currentUser();
 
@@ -94,13 +96,13 @@ export async function createPaymentIntent(
       return_url: `https://www.gbcanteen.com/payment-success`,
       payment_method_options: {
         card: {
-          request_three_d_secure: "any",
+          request_three_d_secure: "automatic",
         },
       },
       metadata: {
-        orderId: orderId.toString(),
-        paymentId: paymentId.toString(),
-        userId: user.id.toString(),
+        orderId,
+        paymentId,
+        userId: user.id,
         phone: user.phone,
         restaurantId: restaurantId.toString(),
         orderNote: orderNote || "",
@@ -179,7 +181,7 @@ export async function createOrder(
       return { error: true, message: "No ordered items provided." };
     }
 
-    const orderId = Number(paymentIntent.metadata.orderId);
+    const orderId = paymentIntent.metadata.orderId;
     const paymentId = paymentIntent.metadata.paymentId;
     const userId = paymentIntent.metadata.userId;
     const restaurantId = Number(paymentIntent.metadata.restaurantId);

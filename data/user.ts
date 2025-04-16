@@ -1,7 +1,5 @@
 "use server";
 
-import { revalidatePath } from "next/cache";
-
 import db from "@/lib/db";
 
 export const getUserByEmail = async (email: string) => {
@@ -57,22 +55,5 @@ export const getUserOrders = async (userId: string) => {
     return orders;
   } catch {
     return [];
-  }
-};
-
-export const deleteOrder = async (orderId: string) => {
-  if (!orderId) {
-    return { error: "Order does not exist!" };
-  }
-
-  try {
-    await db.order.delete({
-      where: { id: orderId },
-    });
-
-    revalidatePath("/profile/orders");
-    return { success: "Order deleted!" };
-  } catch {
-    return { error: "Error deleting order!" };
   }
 };

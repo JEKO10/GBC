@@ -27,9 +27,13 @@ const SingleRestaurantPage = async ({
 
   return (
     <div>
-      <h2 className="text-2xl pt-14 px-14">{restaurant.name}</h2>
-      <p className="px-14">{restaurant.address}</p>
-      <p className="px-14 text-secondary">Estimated order time 30-45 mins</p>
+      <h2 className="text-3xl font-bold pt-10 px-4 lg:px-14 text-center lg:text-left">
+        {restaurant.name}
+      </h2>
+      <p className="my-5 md:my-2 px-4 lg:px-14">{restaurant.address}</p>
+      <p className="px-4 md:px-14 text-secondary">
+        Estimated order time 30-45 mins
+      </p>
       <Menu menu={restaurant?.menus} />
       <ReviewsWrapper restaurantId={restaurant.id} />
     </div>
