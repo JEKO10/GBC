@@ -1,22 +1,33 @@
 "use client";
 
 import Image from "next/image";
+import Link from "next/link";
 import { useRouter } from "next/navigation";
-import { useEffect, useMemo } from "react";
+import { useEffect, useMemo, useState } from "react";
 
 import GoogleButton from "@/components/Restaurant/GooglePayButton";
+import UserLocationMap from "@/components/Restaurant/UserLocationMap";
 import { calculateFees } from "@/lib/calculateFees";
 import { useCheckoutStore } from "@/store/useCheckoutStore";
+import { useUserLocationStore } from "@/store/useUserLocationStore";
 
 const CheckoutPage = () => {
   const { items, note, total, menu } = useCheckoutStore();
   const router = useRouter();
+  const { coords, address } = useUserLocationStore();
+  const [hydrated, setHydrated] = useState(false);
+
+  useEffect(() => {
+    setHydrated(true);
+  }, []);
+
+  const shouldRedirect = hydrated && (items.length === 0 || menu.length === 0);
 
   useEffect(() => {
     if (items.length === 0 || menu.length === 0) {
       router.replace("/map");
     }
-  }, [items, menu, router]);
+  }, [items, menu, router, shouldRedirect]);
 
   const menuLookup = useMemo(() => {
     return menu.reduce(
@@ -29,6 +40,8 @@ const CheckoutPage = () => {
   }, [menu]);
 
   const { deliveryFee, serviceFee, vat, finalTotal } = calculateFees(total);
+
+  if (!hydrated || shouldRedirect) return null;
 
   return (
     <div className="max-w-4xl mx-auto px-4 py-10 font-outfit">
@@ -99,6 +112,23 @@ const CheckoutPage = () => {
           <h3 className="font-medium mb-2">Order Note:</h3>
           <p className="bg-gray-100 p-3 rounded text-sm text-gray-700">
             {note}
+          </p>
+        </div>
+      )}
+
+      {coords && (
+        <div className="mt-6">
+          <h3 className="font-semibold mb-2">Your Delivery address:</h3>
+          <p>{address}</p>
+
+          <UserLocationMap userCoords={coords} />
+          <p className="mt-2">
+            If you want it delivered somewhere else, come back to
+            <Link href="/map" className="text-secondary hover:text-primary">
+              {" "}
+              MAP{" "}
+            </Link>
+            and enter your full delivery location :)
           </p>
         </div>
       )}

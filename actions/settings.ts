@@ -124,11 +124,11 @@ export const setUserGoogleAddress = async (
   }
 };
 
-export const setUserAddress = async (googleAddress: string | undefined) => {
+export const setUserAddress = async (address: string | undefined) => {
   const user = await currentUser();
   if (!user) return { error: "Unauthorized!" } as const;
 
-  if (!googleAddress) return { error: "No google address!" } as const;
+  if (!address) return { error: "No address!" } as const;
 
   try {
     const dbUser = await getUserById(user.id);
@@ -138,7 +138,7 @@ export const setUserAddress = async (googleAddress: string | undefined) => {
 
     await db.user.update({
       where: { id: dbUser.id },
-      data: { address: googleAddress },
+      data: { address: address },
     });
 
     return { success: "Address updated!" } as const;

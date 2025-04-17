@@ -4,7 +4,7 @@ import { useMap, useMapsLibrary } from "@vis.gl/react-google-maps";
 import { useEffect, useRef, useState } from "react";
 
 import { setUserAddress } from "@/actions/settings";
-import { useCurrentUser } from "@/hooks/useCurrentUser";
+import { useUserLocationStore } from "@/store/useUserLocationStore";
 
 interface LocationInputProps {
   // eslint-disable-next-line no-unused-vars
@@ -15,9 +15,8 @@ const LocationInput = ({ onLocationSelect }: LocationInputProps) => {
   const inputRef = useRef<HTMLInputElement>(null);
   const placesLib = useMapsLibrary("places");
   const map = useMap();
-  const user = useCurrentUser();
-  const [address, setAddress] = useState<string | undefined>(user?.address);
   const [locationDenied, setLocationDenied] = useState<boolean>(false);
+  const { setCoords, address, setAddress } = useUserLocationStore();
 
   useEffect(() => {
     if (!placesLib || !inputRef.current) return;
@@ -36,7 +35,7 @@ const LocationInput = ({ onLocationSelect }: LocationInputProps) => {
       if (location) {
         const latLng = { lat: location.lat(), lng: location.lng() };
         onLocationSelect(latLng);
-        localStorage.setItem("userLocation", JSON.stringify(latLng));
+        setCoords(latLng);
         setLocationDenied(false);
         map?.setCenter(latLng);
         map?.setZoom(12);
@@ -53,7 +52,7 @@ const LocationInput = ({ onLocationSelect }: LocationInputProps) => {
         })();
       }
     });
-  }, [placesLib, map, onLocationSelect]);
+  }, [placesLib, map, onLocationSelect, setCoords, setAddress]);
 
   useEffect(() => {
     if (!navigator.geolocation) return;
@@ -89,8 +88,9 @@ const LocationInput = ({ onLocationSelect }: LocationInputProps) => {
       <form onSubmit={(e) => e.preventDefault()}>
         <input
           ref={inputRef}
+          defaultValue={address}
           type="text"
-          placeholder="Enter your location"
+          placeholder="Enter your delivery location"
           className="bg-primary text-body mr-3 p-2 rounded w-full outline-none"
         />
         {address && <p className="text-sm text-body mt-2">{address}</p>}

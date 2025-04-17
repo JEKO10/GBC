@@ -18,6 +18,39 @@ const Home = () => {
           Welcome to General Bilimoria&apos;s Canteen
         </h1>
 
+        <section className="flex flex-col lg:flex-row items-center justify-between bg-[#f5f5f5] p-6 sm:p-10 rounded-xl shadow-md mt-8">
+          <div className="flex-1 text-center lg:text-left space-y-6">
+            <h2 className="text-2xl sm:text-3xl md:text-4xl font-bold text-secondary">
+              Restaurants, takeaways, supermarkets and shops. Delivered.
+            </h2>
+            <div className="flex justify-center lg:justify-start">
+              <form className="flex bg-white shadow-lg rounded-full overflow-hidden max-w-md w-full">
+                <input
+                  type="text"
+                  placeholder="e.g. EC4R 3TE"
+                  className="flex-grow px-4 py-3 text-gray-700 focus:outline-none"
+                />
+                <button
+                  type="submit"
+                  className="bg-secondary text-white px-6 py-3 font-semibold hover:bg-primary transition"
+                >
+                  Search
+                </button>
+              </form>
+            </div>
+          </div>
+
+          <div className="flex-1 mt-10 lg:mt-0 flex justify-center">
+            <Image
+              src="/mnt/data/7b0846c2-38ed-417b-9d19-a1be46757a9e.png"
+              alt="Hero Banner Burger"
+              width={450}
+              height={450}
+              className="rounded-lg shadow-xl object-cover"
+            />
+          </div>
+        </section>
+
         <h2 className="text-secondary text-3xl sm:text-4xl font-semibold text-center mt-16 md:mt-24 mb-10">
           Our Story
         </h2>

@@ -1,14 +1,23 @@
 "use client";
 
 import { signOut } from "next-auth/react";
-import React from "react";
+import React, { useEffect, useState } from "react";
 
 import ProfileForm from "@/components/Reviews/ProfileForm";
 import UserReviews from "@/components/Reviews/UserReviews";
 import { useCurrentUser } from "@/hooks/useCurrentUser";
+import { useUserLocationStore } from "@/store/useUserLocationStore";
 
 const ProfilePage = () => {
   const user = useCurrentUser();
+  const { address } = useUserLocationStore();
+  const [hydrated, setHydrated] = useState(false);
+
+  useEffect(() => {
+    setHydrated(true);
+  }, []);
+
+  if (!hydrated) return null;
 
   return (
     <section className="max-w-3xl mx-auto px-4 sm:px-8 py-10">
@@ -19,7 +28,7 @@ const ProfilePage = () => {
         <p className="text-lg font-medium">
           {user?.name ?? "No name available"}
         </p>
-        <p className="text-gray-600">{user?.address ?? ""}</p>
+        <p className="text-gray-600">{address ?? ""}</p>
       </article>
       <ProfileForm />
       <div className="mt-10">

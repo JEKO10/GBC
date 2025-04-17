@@ -14,7 +14,6 @@ const images: string[] = [
   "/scrolling/all.png",
 ];
 
-// @TODO mozda manje slike na manje ekrane
 export default function LogosSlider() {
   return (
     <article className="mt-10 w-full relative overflow-hidden py-5 bg-secondary">
