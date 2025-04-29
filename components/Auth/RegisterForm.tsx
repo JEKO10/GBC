@@ -14,6 +14,7 @@ import FormField from "@/components/Auth/FormField";
 import Social from "@/components/Auth/Socials";
 import { useIsSmallScreen } from "@/hooks/useIsSmallScreen";
 import { RegisterSchema } from "@/schemas/auth";
+import { useUserLocationStore } from "@/store/useUserLocationStore";
 
 import FormError from "./FormError";
 import FormSuccess from "./FormSuccess";
@@ -23,6 +24,7 @@ const RegisterForm = () => {
   const [error, setError] = useState<string | undefined>("");
   const [isPending, startTransition] = useTransition();
   const [captchaToken, setCaptchaToken] = useState("");
+  const { reset } = useUserLocationStore();
   const isSmallScreen = useIsSmallScreen();
 
   const form = useForm<z.infer<typeof RegisterSchema>>({
@@ -54,6 +56,8 @@ const RegisterForm = () => {
 
         if (data?.success) {
           setSuccess(data?.success);
+
+          reset();
         }
       });
     });

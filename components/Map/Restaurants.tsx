@@ -85,7 +85,7 @@ const Restaurants = ({
           ))}
         </section>
       ) : (
-        <p className="text-gray-500 text-center mt-5">
+        <p className="font-outfit text-gray-500 text-center mt-5">
           No restaurants match this cuisine in your area.
         </p>
       )}

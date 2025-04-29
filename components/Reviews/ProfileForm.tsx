@@ -60,7 +60,7 @@ const ProfileForm = () => {
   return (
     <form
       onSubmit={handleSubmit(onSubmit)}
-      className="space-y-6 bg-white shadow-md p-6 rounded-lg"
+      className="space-y-6 bg-white shadow-md p-6 rounded-tr-lg rounded-br-lg rounded-bl-lg"
     >
       <FormField
         label="Update name"

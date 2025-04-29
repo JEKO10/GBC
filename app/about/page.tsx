@@ -3,9 +3,8 @@ import Link from "next/link";
 import React from "react";
 import { SiDeliveroo, SiJusteat, SiUbereats } from "react-icons/si";
 
-import ScrollingBanner from "@/components/ScrollingBanner";
+import ScrollingBanner from "@/components/Home/ScrollingBanner";
 import Food from "@/public/aboutUs/food.png";
-import General from "@/public/aboutUs/general.png";
 import Karan from "@/public/contact/karan.png";
 import Office from "@/public/contact/office.png";
 import Logo from "@/public/small-logo.png";
@@ -15,59 +14,8 @@ const AboutPage = () => {
     <>
       <section className="font-outfit px-5 sm:px-8 md:px-16 my-5 sm:my-10">
         <h1 className="text-secondary text-3xl md:text-4xl font-semibold text-center my-8 sm:my-12 md:mb-20">
-          Welcome to General Bilimoria&apos;s Canteen
+          About General Bilimoria&apos;s Canteen
         </h1>
-
-        <h2 className="text-secondary text-3xl sm:text-4xl font-semibold text-center mt-16 md:mt-24 mb-5 lg:mb-10">
-          Our Story
-        </h2>
-        <article className="text-gray-800 mb-10 md:mb-24 lg:mb-36">
-          <p className="text-lg lg:text-xl leading-relaxed">
-            For generations, the Bilimoria name has been synonymous with
-            resilience, leadership, and an unwavering passion for excellence.
-            General Bilimoria’s Canteen (GBC) is not just a food delivery
-            service – it is a tribute to this legacy, a testament to the belief
-            that food is more than sustenance; it is comfort, connection, and
-            heritage.
-          </p>
-
-          <p className="text-lg lg:text-xl mt-8 leading-relaxed">
-            Lieutenant General Faridoon &quot;Billy&quot; Bilimoria, a decorated
-            officer of the Indian Army, lived a life of discipline and duty. His
-            years in the forces were marked by the hardships of training,
-            fighting and the sacrifices of service, yet amidst the rigors of
-            military life, he found solace in food. In every corner of the world
-            where he was stationed, he discovered the power of a well-cooked
-            meal to bring people together, to heal, and to provide a moment of
-            respite from the challenges of life. From the bustling markets of
-            India to the distant lands he travelled, he nurtured a deep
-            appreciation for flavours that carried stories of history, culture,
-            and tradition.
-          </p>
-
-          <div className="w-full my-8">
-            <Image
-              src={General}
-              title="General Faridoon Bilimoria - The Inspiration Behind GBC"
-              alt="Lieutenant General Faridoon Bilimoria (center) standing in full ceremonial military uniform, flanked by two high-ranking officers."
-              className="w-full md:w-1/2 mx-auto rounded-lg shadow-xl"
-              loading="lazy"
-            />
-          </div>
-
-          <p className="text-lg lg:text-xl leading-relaxed">
-            Lord Karan Bilimoria, his son, inherited this love for food. After
-            witnessing firsthand how food could be both a necessity and a source
-            of joy, he envisioned a way to carry forward his father’s
-            legacy—creating something that would bring people not just meals,
-            but comfort and quality they could trust. Having founded Cobra Beer,
-            he now brings this same commitment to excellence with General
-            Bilimoria’s Canteen. GBC isn’t just about delivering meals – it is
-            about delivering experiences that evoke warmth, nostalgia, and
-            delight.
-          </p>
-        </article>
-
         <h2 className="text-secondary text-3xl sm:text-4xl font-semibold text-center mt-16 md:mt-24 mb-5 lg:mb-10">
           Our Founder
         </h2>

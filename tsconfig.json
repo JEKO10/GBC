@@ -27,7 +27,8 @@
     "**/*.ts",
     "**/*.tsx",
     ".next/types/**/*.ts",
-    "middleware.ts"
+    "middleware.ts",
+    "lib/pass.js"
   ],
   "exclude": ["node_modules"]
 }

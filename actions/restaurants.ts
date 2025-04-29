@@ -54,3 +54,40 @@ export const updateRestaurantStatus = async (id: number) => {
 
   revalidatePath("/admin");
 };
+
+export const getOrders = async () => {
+  const orders = await db.order.findMany({
+    orderBy: {
+      createdAt: "desc",
+    },
+    select: {
+      id: true,
+      orderNumber: true,
+      amount: true,
+      status: true,
+      stripeId: true,
+      orderNote: true,
+      createdAt: true,
+      userId: true,
+      restaurantId: true,
+      items: true,
+      restaurant: {
+        select: {
+          id: true,
+          name: true,
+        },
+      },
+      user: {
+        select: {
+          name: true,
+          email: true,
+          phone: true,
+          address: true,
+          googleAddress: true,
+        },
+      },
+    },
+  });
+
+  return orders;
+};

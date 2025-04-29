@@ -14,7 +14,10 @@ const UserLocationMap = ({ userCoords }: UserLocationMapProps) => {
   if (!process.env.NEXT_PUBLIC_GOOGLE_MAP_API_KEY) return null;
 
   return (
-    <APIProvider apiKey={process.env.NEXT_PUBLIC_GOOGLE_MAP_API_KEY}>
+    <APIProvider
+      apiKey={process.env.NEXT_PUBLIC_GOOGLE_MAP_API_KEY}
+      language="en"
+    >
       <div className="rounded-lg overflow-hidden shadow-md">
         <Map
           mapId={process.env.NEXT_PUBLIC_GOOGLE_MAP_ID}

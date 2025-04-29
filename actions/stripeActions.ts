@@ -1,5 +1,6 @@
 "use server";
 
+import { JsonValue } from "@prisma/client/runtime/library";
 import Stripe from "stripe";
 
 import { currentUser } from "@/lib/auth";
@@ -9,6 +10,25 @@ import { pusher } from "@/lib/pusher";
 
 if (!process.env.STRIPE_SECRET) {
   console.log("Missing stripe secret variable!");
+}
+
+export interface Order {
+  id: string;
+  userId: string;
+  restaurantId: number;
+  orderNote: string;
+  amount: number;
+  orderNumber: string;
+  stripeId: string;
+  createdAt: Date;
+  status: string;
+  items: JsonValue;
+  user: {
+    name: string;
+    phone: string | null;
+    address: string | null;
+    googleAddress: string | null;
+  };
 }
 
 const stripe = new Stripe(process.env.STRIPE_SECRET || "");
@@ -196,7 +216,7 @@ export async function createOrder(
         orderNumber: orderId,
         amount: paymentIntent.amount,
         stripeId: paymentId,
-        status: "pending",
+        status: "Pending",
         userId,
         restaurantId,
         orderNote,
@@ -214,37 +234,54 @@ export async function createOrder(
       },
     });
 
-    const orderPayload = {
-      id: newOrder.id,
-      orderNumber: newOrder.orderNumber,
-      stripeId: newOrder.stripeId,
-      amount: newOrder.amount,
-      status: newOrder.status,
-      items: newOrder.items,
-      createdAt: newOrder.createdAt,
-      user: newOrder.user,
-    };
+    await triggerPusherOrder(newOrder);
 
-    try {
-      await pusher.trigger(`restaurant-${restaurantId}`, "new-order", {
-        ...orderPayload,
-        restaurantId,
-      });
-    } catch (err) {
-      console.error("Pusher failed, so notify admin:", err);
-
-      return {
-        error: true,
-        message:
-          "Your order was saved but could not be sent to the restaurant!",
-      };
-    }
-
-    return { success: true, orderId: newOrder.orderNumber };
+    return { success: true, newOrder };
   } catch {
     return {
       error: true,
       message: "Failed to verify payment or create order.",
+    };
+  }
+}
+
+export async function triggerPusherOrder(order: Order | undefined) {
+  try {
+    if (!order) {
+      return {
+        error: true,
+        message: "No order to send!",
+      };
+    }
+
+    const restaurantId = order.restaurantId;
+
+    const payload = {
+      id: order.id,
+      orderNumber: order.orderNumber,
+      stripeId: order.stripeId,
+      amount: order.amount,
+      status: order.status,
+      items: order.items,
+      createdAt: order.createdAt,
+      user: order.user,
+      restaurantId,
+    };
+
+    // setTimeout(async () => {
+    await pusher.trigger(
+      `restaurant-${String(restaurantId)}`,
+      "new-order",
+      payload
+    );
+    // }, 1000);
+
+    return { success: true };
+  } catch (err) {
+    console.error("❌ Pusher trigger failed:", err);
+    return {
+      error: true,
+      message: "Order saved but notification failed",
     };
   }
 }

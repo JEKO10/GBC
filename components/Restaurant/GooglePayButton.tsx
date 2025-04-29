@@ -80,18 +80,22 @@ const GoogleButton = ({
       );
 
       if (result?.paymentIntent?.status === "succeeded") {
-        await createOrder(result.paymentIntent.id, response.orderedItems);
+        const orderResponse = await createOrder(
+          result.paymentIntent.id,
+          response.orderedItems
+        );
 
-        setErrorMessage("Payment successful! Redirecting...");
-        localStorage.setItem("basketItems", JSON.stringify({}));
+        if (orderResponse?.success) {
+          localStorage.setItem("basketItems", JSON.stringify({}));
+          setErrorMessage("Payment successful! Redirecting...");
 
-        setTimeout(() => {
-          router.push(`/payment-success`);
-        }, 1500);
-
-        setTimeout(() => {
-          useCheckoutStore.getState().clearCheckout();
-        }, 2500);
+          setTimeout(() => {
+            useCheckoutStore.getState().clearCheckout();
+            router.push("/payment-success");
+          }, 1000);
+        } else {
+          setErrorMessage("Payment succeeded but order creation failed!");
+        }
       } else if (result?.error) {
         setErrorMessage(result.error.message || "Payment failed. Try again.");
       }

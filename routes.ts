@@ -1,4 +1,10 @@
-export const publicRoutes = ["/", "/about", "/contact"];
+export const publicRoutes = [
+  "/",
+  "/about",
+  "/contact",
+  "/map",
+  "/restaurants/:name",
+];
 
 export const authRoutes = [
   "/auth/register",
@@ -19,6 +25,7 @@ export const apiAuthPrefix = [
   "/api/payments",
   "/api/google-pay",
   "/api/create-payment-intent",
+  "/api/reverse-geocode",
 ];
 
 export const DEFAULT_LOGIN_REDIRECT = "/profile";

@@ -14,11 +14,11 @@ export default function ToggleStatus({
   };
 
   return (
-    <span
-      className={`${isActive ? "bg-green-400" : "bg-red-400"} cursor-pointer`}
+    <div
+      className={`text-center font-outfit text-xl text-white ${isActive ? "bg-green-400 text-black" : "bg-red-400"} px-5 rounded-sm cursor-pointer`}
       onClick={handleClick}
     >
-      {isActive ? "Active" : "Inactive"}
-    </span>
+      <p>{isActive ? "Active" : "Inactive"}</p>
+    </div>
   );
 }

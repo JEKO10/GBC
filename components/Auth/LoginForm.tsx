@@ -15,6 +15,7 @@ import FormError from "@/components/Auth/FormError";
 import FormField from "@/components/Auth/FormField";
 import Social from "@/components/Auth/Socials";
 import { LoginSchema } from "@/schemas/auth";
+import { useUserLocationStore } from "@/store/useUserLocationStore";
 
 import FormSuccess from "./FormSuccess";
 
@@ -29,6 +30,7 @@ const LoginForm = () => {
   const [success, setSuccess] = useState<string | undefined>("");
   const [error, setError] = useState<string | undefined>("");
   const [isPending, startTransition] = useTransition();
+  const { reset } = useUserLocationStore();
   const { update } = useSession();
   const router = useRouter();
 
@@ -61,12 +63,14 @@ const LoginForm = () => {
           if (data?.success) {
             setSuccess(data?.success);
             await update();
+
+            reset();
             router.push("/map");
           }
         });
       });
     },
-    [form, update, router]
+    [form, update, router, reset]
   );
 
   return (

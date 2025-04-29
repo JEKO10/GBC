@@ -17,7 +17,6 @@ export interface Review {
   };
 }
 
-// @TODO design, mesage etc. return ugl
 const ReviewWrapper = ({ restaurantId }: { restaurantId: number }) => {
   const { reviews, isLoading, message, setReviews } = useFetchReviews({
     restaurantId,

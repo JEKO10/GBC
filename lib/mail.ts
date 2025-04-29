@@ -17,7 +17,7 @@ export const sendVerificationEmail = async (email: string, token: string) => {
     subject: "Confirm your email!",
     html: `
       <div style="font-family: Arial, sans-serif; max-width: 600px; margin: auto;">
-        <img src="https://www.gbcanteen.com/logo.png" alt="Logo" style="width: 120px; margin: 0 auto; display: block;" />
+        <img src="https://www.gbcanteen.com/logo.png" alt="Logo" style="width: 220px; margin: 0 auto; display: block;" />
         <h2 style="color: #333;">Welcome to General Bilimoria’s Canteen!</h2>
         <p style="font-size: 16px; color: #555;">
           Please confirm your email address to complete your sign-up. We’re excited to have you on board!

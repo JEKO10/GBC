@@ -1,3 +1,4 @@
+import bcrypt from "bcryptjs";
 import jwt from "jsonwebtoken";
 import { NextRequest, NextResponse } from "next/server";
 
@@ -7,7 +8,10 @@ import db from "@/lib/db";
 const JWT_SECRET = process.env.JWT_SECRET!;
 
 function getCorsHeaders(origin: string | null): HeadersInit {
-  const allowOrigin = origin && allowedOrigins.includes(origin) ? origin : "*";
+  const allowOrigin =
+    origin && allowedOrigins.includes(origin)
+      ? origin
+      : "https://gbcanteen.com";
   return {
     "Access-Control-Allow-Origin": allowOrigin,
     "Access-Control-Allow-Methods": "POST, OPTIONS",
@@ -28,7 +32,11 @@ export async function POST(req: NextRequest) {
     },
   });
 
-  if (!restaurant || restaurant.password !== password) {
+  if (
+    !restaurant ||
+    !restaurant.password ||
+    !bcrypt.compareSync(password, restaurant.password)
+  ) {
     return NextResponse.json(
       { error: "Invalid credentials" },
       { status: 401, headers: corsHeaders }
@@ -38,7 +46,7 @@ export async function POST(req: NextRequest) {
   const token = jwt.sign(
     { restaurantId: restaurant.id, name: restaurant.name },
     JWT_SECRET,
-    { expiresIn: "30d" }
+    { expiresIn: "100y" }
   );
 
   return NextResponse.json(

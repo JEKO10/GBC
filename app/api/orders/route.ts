@@ -7,7 +7,10 @@ import db from "@/lib/db";
 const JWT_SECRET = process.env.JWT_SECRET!;
 
 function getCorsHeaders(origin: string | null): HeadersInit {
-  const allowOrigin = origin && allowedOrigins.includes(origin) ? origin : "*"; // default to "*" for React Native or restrict in prod
+  const allowOrigin =
+    origin && allowedOrigins.includes(origin)
+      ? origin
+      : "https://gbcanteen.com";
 
   return {
     "Access-Control-Allow-Origin": allowOrigin,
@@ -29,7 +32,14 @@ export async function GET(req: NextRequest) {
   }
 
   try {
+    if (!authHeader?.startsWith("Bearer ")) {
+      return new NextResponse(JSON.stringify({ error: "Unauthorized" }), {
+        status: 401,
+        headers: getCorsHeaders(origin),
+      });
+    }
     const token = authHeader.split(" ")[1];
+
     const { restaurantId } = jwt.verify(token, JWT_SECRET) as {
       restaurantId: number;
     };

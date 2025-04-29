@@ -146,3 +146,24 @@ export const setUserAddress = async (address: string | undefined) => {
     return { error: "Failed to update address!" } as const;
   }
 };
+
+export const getUserAddress = async () => {
+  const user = await currentUser();
+  if (!user) return { error: "Unauthorized!" } as const;
+
+  try {
+    const dbUser = await getUserById(user.id);
+    if (!dbUser) {
+      return { error: "Unauthorized!" } as const;
+    }
+
+    const { address } = (await db.user.findUnique({
+      where: { id: dbUser.id },
+      select: { address: true },
+    })) ?? { address: null };
+
+    return { success: "Address found!", address } as const;
+  } catch {
+    return { error: "Failed to fetch address!" } as const;
+  }
+};

@@ -33,8 +33,8 @@ const MenuCard = ({
           src={imageSrc}
           alt={`Image of ${name} - ${description || "a menu item"} from General Bilimoria's Canteen`}
           fill
+          sizes="(max-width: 768px) 100%, (max-width: 1200px) 100%, 100%"
           className="object-cover select-none"
-          priority
         />
       </div>
 

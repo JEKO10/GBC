@@ -40,9 +40,9 @@ const Order = ({ order, orderedItems }: OrderProps) => {
         </div>
         <span
           className={`px-3 py-1 text-sm rounded-full font-medium ${
-            order.status === "completed"
+            order.status === "Completed" || order.status === "Ready"
               ? "bg-green-100 text-green-700"
-              : order.status === "pending"
+              : order.status === "Pending"
                 ? "bg-yellow-100 text-yellow-700"
                 : "bg-gray-200 text-gray-800"
           }`}

@@ -1,4 +1,5 @@
 "use client";
+import dynamic from "next/dynamic";
 import { useRouter } from "next/navigation";
 import React, { useCallback, useEffect, useMemo, useState } from "react";
 
@@ -6,7 +7,11 @@ import { capitalize } from "@/helpers/capitalize";
 import { useRestaurantStore } from "@/store/useRestaurantStore";
 
 import Basket from "./Basket";
-import MenuCard from "./MenuCard";
+import CardSkeleton from "./CardSkeleton";
+
+const MenuCard = dynamic(() => import("./MenuCard"), {
+  loading: () => <CardSkeleton />,
+});
 
 interface MenuProps {
   menu?: {

@@ -13,6 +13,16 @@ import {
   publicRoutes,
 } from "@/routes";
 
+function matchRoute(pathname: string, route: string): boolean {
+  if (route.includes(":")) {
+    const routeRegex = new RegExp(
+      "^" + route.replace(/:[^/]+/g, "[^/]+") + "$"
+    );
+    return routeRegex.test(pathname);
+  }
+  return route === pathname;
+}
+
 export default auth(async (req) => {
   const { nextUrl } = req;
   const isLoggedIn = !!req.auth;
@@ -20,7 +30,9 @@ export default auth(async (req) => {
   const isApiRoute = apiAuthPrefix.some((prefix) =>
     nextUrl.pathname.startsWith(prefix)
   );
-  const isPublicRoute = publicRoutes.includes(nextUrl.pathname);
+  const isPublicRoute = publicRoutes.some((route) =>
+    matchRoute(nextUrl.pathname, route)
+  );
   const isAuthRoute = authRoutes.includes(nextUrl.pathname);
 
   if (isApiRoute) return;

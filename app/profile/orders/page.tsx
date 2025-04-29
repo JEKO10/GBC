@@ -1,3 +1,5 @@
+import Link from "next/link";
+
 import Order from "@/components/Restaurant/Order";
 import { getUserOrders } from "@/data/user";
 import { currentUser } from "@/lib/auth";
@@ -28,11 +30,16 @@ const OrdersPage = async () => {
   }
 
   return (
-    <div className="w-full max-w-5xl mx-auto px-4 py-12">
-      <h1 className="text-3xl font-bold mb-8 text-center text-gray-800">
+    <div className="font-outfit w-full max-w-5xl mx-auto px-4 py-12">
+      <Link
+        className="w-full mt-14 py-2 px-4 bg-secondary text-white font-semibold rounded hover:bg-primary transition"
+        href={"/profile"}
+      >
+        Back to your profile
+      </Link>
+      <h1 className="text-3xl font-bold mt-10 mb-5 sm:mt-0 text-center text-gray-800">
         Your Orders
       </h1>
-
       {orders.length > 0 ? (
         <div className="space-y-6">
           {orders.map((order) => {

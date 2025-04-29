@@ -36,8 +36,15 @@ export async function PATCH(
   }
 
   try {
-    const { orderId } = await params;
+    if (!authHeader?.startsWith("Bearer ")) {
+      return new NextResponse(JSON.stringify({ error: "Unauthorized" }), {
+        status: 401,
+        headers: getCorsHeaders(origin),
+      });
+    }
     const token = authHeader.split(" ")[1];
+
+    const { orderId } = await params;
     const { restaurantId } = jwt.verify(token, JWT_SECRET) as {
       restaurantId: number;
     };

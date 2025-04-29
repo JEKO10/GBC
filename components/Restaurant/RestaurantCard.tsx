@@ -2,7 +2,7 @@ import Image from "next/image";
 import Link from "next/link";
 import React from "react";
 
-import bilimoria from "@/public/bilimoria.png";
+import Bilimoria from "@/public/bilimoria.png";
 
 interface RestaurantCardProps {
   name: string;
@@ -20,7 +20,7 @@ const RestaurantCard = ({
       <Link href={`/restaurants/${name}`}>
         <Image
           className="w-full rounded-md"
-          src={bilimoria}
+          src={Bilimoria}
           alt="Restaurant Image"
           priority
         />

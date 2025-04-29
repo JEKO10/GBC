@@ -17,6 +17,14 @@ export const metadata: Metadata = {
   title: "General Bilimoria's Canteen",
   description:
     "Personal favourites from the General’s postings across India. Authentic Flavours. Quality & Quantity.",
+  icons: {
+    icon: [{ url: "/favicon.ico" }],
+  },
+};
+
+export const viewport = {
+  width: "device-width",
+  initialScale: 1,
 };
 
 export default async function RootLayout({
@@ -27,8 +35,15 @@ export default async function RootLayout({
   const session = await auth();
 
   return (
-    <SessionProvider session={session}>
+    <SessionProvider
+      session={session}
+      refetchInterval={0}
+      refetchOnWindowFocus={false}
+    >
       <html lang="en">
+        <head>
+          <link rel="icon" href="/favicon.ico" />
+        </head>
         <body className={`${outfit.variable} antialiased`}>
           <Script
             src="https://www.googletagmanager.com/gtag/js?id=AW-16773442177"

@@ -6,11 +6,12 @@ import Image from "next/image";
 import React, { useEffect, useState } from "react";
 
 import { getRestaurants } from "@/actions/restaurants";
+import ScrollingBanner from "@/components/Home/ScrollingBanner";
 import LocationInput from "@/components/Map/LocationInput";
 import Restaurants from "@/components/Map/Restaurants";
-import ScrollingBanner from "@/components/ScrollingBanner";
 import General from "@/public/map.png";
 import { useRestaurantStore } from "@/store/useRestaurantStore";
+import { useUserLocationStore } from "@/store/useUserLocationStore";
 
 const Map = dynamic(() => import("@/components/Map/LocationMap"), {
   ssr: false,
@@ -29,10 +30,8 @@ const MapPage = () => {
   const { restaurants, setRestaurants } = useRestaurantStore();
   const [selectedRestaurant, setSelectedRestaurant] =
     useState<Restaurant | null>(null);
-  const [userLocation, setUserLocation] = useState<{
-    lat: number;
-    lng: number;
-  } | null>(null);
+  const { coords: userLocation, setCoords } = useUserLocationStore();
+
   const [isLoading, setIsLoading] = useState<boolean>(true);
 
   useEffect(() => {
@@ -65,30 +64,16 @@ const MapPage = () => {
       setIsLoading(false);
     }
 
-    const saved = localStorage.getItem("userLocation");
-    if (saved) {
-      try {
-        const parsed = JSON.parse(saved);
-
-        if (parsed?.lat && parsed?.lng) {
-          setUserLocation(parsed);
-        }
-      } catch {
-        console.warn("Failed to load user location from storage.");
-      }
-    }
-
-    if (!saved && "geolocation" in navigator) {
+    if (!userLocation && "geolocation" in navigator) {
       navigator.geolocation.getCurrentPosition((pos) => {
         const coords = {
           lat: pos.coords.latitude,
           lng: pos.coords.longitude,
         };
-        setUserLocation(coords);
-        localStorage.setItem("userLocation", JSON.stringify(coords));
+        setCoords(coords);
       });
     }
-  }, [restaurants.length, setRestaurants]);
+  }, [restaurants.length, setRestaurants, setCoords, userLocation]);
 
   if (!process.env.NEXT_PUBLIC_GOOGLE_MAP_API_KEY) {
     console.log("Google API key is not defined");
@@ -97,16 +82,17 @@ const MapPage = () => {
 
   return (
     <div>
-      {/* @TODO nekako na server .env */}
-      <APIProvider apiKey={process.env.NEXT_PUBLIC_GOOGLE_MAP_API_KEY}>
+      <APIProvider
+        apiKey={process.env.NEXT_PUBLIC_GOOGLE_MAP_API_KEY}
+        language="en"
+      >
         {isLoading ? (
           <div className="loading" />
         ) : (
           <section className="flex flex-col items-center justify-center px-5">
             <LocationInput
               onLocationSelect={(coords) => {
-                setUserLocation(coords);
-                localStorage.setItem("userLocation", JSON.stringify(coords));
+                setCoords(coords);
               }}
             />
             {restaurants.length > 0 ? (

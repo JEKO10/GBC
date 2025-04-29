@@ -8,10 +8,12 @@ import { RxHamburgerMenu } from "react-icons/rx";
 
 import { useCurrentUser } from "@/hooks/useCurrentUser";
 import Logo from "@/public/logo.png";
+import { useUserLocationStore } from "@/store/useUserLocationStore";
 
 const Navbar = () => {
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
   const user = useCurrentUser();
+  const { reset } = useUserLocationStore();
 
   useEffect(() => {
     document.body.style.overflow = isMobileMenuOpen ? "hidden" : "auto";
@@ -40,7 +42,7 @@ const Navbar = () => {
             priority
           />
         </Link>
-        <ul className="hidden sm:flex justify-between items-center text-white">
+        <ul className="hidden md:flex justify-between items-center text-white">
           <li className="hidden md:block lg:hidden cursor-pointer text-lg ml-9 xl:ml-20 2xl:ml-28 transition hover:text-secondary">
             About us
           </li>
@@ -115,7 +117,10 @@ const Navbar = () => {
             {user ? (
               <button
                 className="bg-secondary mt-10 py-1 rounded-md font-semibold"
-                onClick={() => signOut()}
+                onClick={() => {
+                  reset();
+                  signOut();
+                }}
               >
                 Sign Out
               </button>
