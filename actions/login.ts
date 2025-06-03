@@ -16,7 +16,10 @@ import {
 } from "@/lib/tokens";
 import { LoginSchema } from "@/schemas/auth";
 
-export const login = async (formData: z.infer<typeof LoginSchema>) => {
+export const login = async (
+  formData: z.infer<typeof LoginSchema>,
+  callbackUrl: string
+) => {
   const validateFields = LoginSchema.safeParse(formData);
 
   if (!validateFields.success) {
@@ -99,8 +102,10 @@ export const login = async (formData: z.infer<typeof LoginSchema>) => {
       email,
       password,
       redirect: false,
+      callbackUrl: callbackUrl,
     });
-    return { success: "You are logged in! Redirecting..." };
+
+    return { success: "You are logged in! Redirecting...", callbackUrl };
   } catch (error) {
     if (error instanceof AuthError) {
       switch (error.type) {

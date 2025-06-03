@@ -17,6 +17,9 @@ model Restaurant {
   lat      Float?
   lng      Float?
   cuisine  String?
+  uberEatsUrl  String?
+  justEatUrl   String?
+  deliverooUrl String?
   menus    Menu[]
   orders   Order[]
   reviews  Review[]

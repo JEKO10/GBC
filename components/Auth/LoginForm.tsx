@@ -15,7 +15,6 @@ import FormError from "@/components/Auth/FormError";
 import FormField from "@/components/Auth/FormField";
 import Social from "@/components/Auth/Socials";
 import { LoginSchema } from "@/schemas/auth";
-import { useUserLocationStore } from "@/store/useUserLocationStore";
 
 import FormSuccess from "./FormSuccess";
 
@@ -30,9 +29,9 @@ const LoginForm = () => {
   const [success, setSuccess] = useState<string | undefined>("");
   const [error, setError] = useState<string | undefined>("");
   const [isPending, startTransition] = useTransition();
-  const { reset } = useUserLocationStore();
   const { update } = useSession();
   const router = useRouter();
+  const callbackUrl = searchParams.get("callbackUrl") || "/profile";
 
   const form = useForm<z.infer<typeof LoginSchema>>({
     resolver: zodResolver(LoginSchema),
@@ -50,7 +49,7 @@ const LoginForm = () => {
       setError("");
 
       startTransition(() => {
-        login(values).then(async (data) => {
+        login(values, callbackUrl).then(async (data) => {
           if (data?.error) {
             form.resetField("password");
             setError(data?.error);
@@ -61,16 +60,15 @@ const LoginForm = () => {
           }
 
           if (data?.success) {
-            setSuccess(data?.success);
+            setSuccess(data.success);
             await update();
 
-            reset();
-            router.push("/map");
+            router.push(data.callbackUrl || "/profile");
           }
         });
       });
     },
-    [form, update, router, reset]
+    [form, update, router, callbackUrl]
   );
 
   return (

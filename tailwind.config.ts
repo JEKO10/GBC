@@ -15,6 +15,7 @@ export default {
       },
       fontFamily: {
         outfit: ["var(--font-outfit)", "sans-serif"],
+        arvo: ["var(--font-arvo)", "serif"],
       },
       keyframes: {
         fade: {

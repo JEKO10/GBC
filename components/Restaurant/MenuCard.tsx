@@ -23,7 +23,7 @@ const MenuCard = ({
 }: MenuCardProps) => {
   const imageSrc =
     image && image !== "null"
-      ? `/menus/${image}`
+      ? `https://storage.googleapis.com/gbc-menu/${image}`
       : "https://upload.wikimedia.org/wikipedia/commons/3/3f/Placeholder_view_vector.svg";
 
   return (

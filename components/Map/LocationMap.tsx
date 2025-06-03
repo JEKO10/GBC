@@ -110,7 +110,7 @@ function Location({
           >
             <Link
               className="text-blue-500"
-              href={`/restaurants/${selectedRestaurant.id}`}
+              href={`/restaurants/${selectedRestaurant.name}`}
             >
               {selectedRestaurant.name}
             </Link>

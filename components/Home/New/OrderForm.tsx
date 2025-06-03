@@ -1,7 +1,5 @@
-"use client";
-
 import { useRouter } from "next/navigation";
-import React, { useEffect, useRef, useState } from "react";
+import React, { useRef, useState } from "react";
 
 import { setUserAddress } from "@/actions/settings";
 import { useUserLocationStore } from "@/store/useUserLocationStore";
@@ -13,16 +11,27 @@ interface Suggestion {
   id: string;
 }
 
-const HeroForm = () => {
+interface OrderFormProps {
+  suggestions: Suggestion[];
+  setSuggestions: React.Dispatch<React.SetStateAction<Suggestion[]>>;
+  query: string;
+  setQuery: React.Dispatch<React.SetStateAction<string>>;
+  containerRef: React.RefObject<HTMLDivElement | null>;
+}
+
+const OrderForm = ({
+  suggestions,
+  setSuggestions,
+  query,
+  setQuery,
+  containerRef,
+}: OrderFormProps) => {
   const router = useRouter();
   const inputRef = useRef<HTMLInputElement>(null);
-  const [suggestions, setSuggestions] = useState<Suggestion[]>([]);
-  const [query, setQuery] = useState("");
   const [loading, setLoading] = useState(false);
   const [errorMessage, setErrorMessage] = useState<string | null>(null);
-  const containerRef = useRef<HTMLDivElement>(null);
-  const debounceTimeout = useRef<NodeJS.Timeout | null>(null);
   const { setCoords, setAddress } = useUserLocationStore();
+  const debounceTimeout = useRef<NodeJS.Timeout | null>(null);
 
   const handleInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     setErrorMessage(null);
@@ -93,40 +102,8 @@ const HeroForm = () => {
     }
   };
 
-  useEffect(() => {
-    const handleClickOutside = (event: MouseEvent) => {
-      if (
-        containerRef.current &&
-        !containerRef.current.contains(event.target as Node)
-      ) {
-        setSuggestions([]);
-      }
-    };
-
-    document.addEventListener("mousedown", handleClickOutside);
-    return () => {
-      document.removeEventListener("mousedown", handleClickOutside);
-    };
-  }, []);
-
-  useEffect(() => {
-    const storedAddress = localStorage.getItem("userAddress");
-    if (storedAddress) {
-      setQuery(storedAddress);
-    }
-  }, []);
-
   return (
-    <div
-      ref={containerRef}
-      className="relative w-full lg:max-w-3xl xl:max-w-4xl mt-5 md:mt-0 xl:mt-20"
-    >
-      <h2 className="text-center md:text-start text-3xl sm:text-3xl md:text-5xl xl:text-6xl font-bold text-primary">
-        Eat like a <span className="text-secondary">General!</span>
-      </h2>
-      <p className="text-start text-lg md:text-xl leading-6 mt-10 mb-3">
-        Enter a postcode to discover our restaurants near you!
-      </p>
+    <div className="relative w-full" ref={containerRef}>
       <form
         onSubmit={async (e) => {
           e.preventDefault();
@@ -140,7 +117,7 @@ const HeroForm = () => {
             setErrorMessage("Please enter a valid postcode.");
           }
         }}
-        className="md:w-[45%] lg:w-2/3 xl:w-[70%] flex flex-col lg:flex-row gap-2 bg-white shadow-lg rounded-xl w-full p-2"
+        className="w-full xl:w-[80%] flex flex-col lg:flex-row gap-4 bg-white shadow-lg rounded-xl p-3"
       >
         <input
           ref={inputRef}
@@ -149,24 +126,24 @@ const HeroForm = () => {
           onChange={handleInputChange}
           type="text"
           placeholder="E.G. EC4R 3TE"
-          className="lg:text-xl flex-grow px-4 py-3 text-gray-700 focus:outline-none uppercase rounded-md sm:rounded-l-md sm:rounded-r-none border border-gray-300"
+          className="text-md lg:text-xl flex-grow px-4 py-3 text-gray-700 focus:outline-none uppercase rounded-md lg:rounded-l-md border border-gray-300"
         />
         <button
           type="submit"
-          className="bg-secondary text-white px-6 py-3 font-semibold hover:bg-primary transition rounded-md sm:rounded-r-md sm:rounded-l-none"
+          className="bg-secondary text-white px-6 py-3 font-semibold hover:bg-primary transition rounded-md lg:rounded-r-md"
         >
           Order now
         </button>
       </form>
 
       {loading && (
-        <div className="absolute top-full mt-1 w-full bg-white text-gray-600 text-sm px-4 py-2 border border-gray-200 shadow z-10 rounded-md">
+        <div className="absolute top-full mt-2 w-full bg-white text-gray-600 text-sm px-4 py-2 border border-gray-200 shadow z-10 rounded-md">
           Loading suggestions...
         </div>
       )}
 
       {!loading && suggestions.length > 0 && (
-        <ul className="absolute top-full mt-1 w-full md:w-[45%] lg:w-[65%] xl:w-[60%] max-h-[160px] bg-white shadow-lg z-10 rounded-md overflow-y-auto border border-gray-200">
+        <ul className="absolute top-[4rem] mt-2 w-full lg:w-[80%] max-h-40 bg-white shadow-lg z-10 rounded-md overflow-y-auto border border-gray-200">
           {suggestions.map((sugg, index) => (
             <li
               key={index}
@@ -188,4 +165,4 @@ const HeroForm = () => {
   );
 };
 
-export default HeroForm;
+export default OrderForm;

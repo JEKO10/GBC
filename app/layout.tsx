@@ -2,6 +2,7 @@ import "./globals.css";
 
 import type { Metadata } from "next";
 import { Outfit } from "next/font/google";
+import { Arvo } from "next/font/google";
 import Script from "next/script";
 import { SessionProvider } from "next-auth/react";
 
@@ -11,6 +12,12 @@ import Navbar from "@/components/Navbar";
 const outfit = Outfit({
   variable: "--font-outfit",
   subsets: ["latin"],
+});
+
+const arvo = Arvo({
+  variable: "--font-arvo",
+  subsets: ["latin"],
+  weight: ["400", "700"],
 });
 
 export const metadata: Metadata = {
@@ -44,7 +51,7 @@ export default async function RootLayout({
         <head>
           <link rel="icon" href="/favicon.ico" />
         </head>
-        <body className={`${outfit.variable} antialiased`}>
+        <body className={`${outfit.variable} ${arvo.variable} antialiased`}>
           <Script
             src="https://www.googletagmanager.com/gtag/js?id=AW-16773442177"
             strategy="afterInteractive"

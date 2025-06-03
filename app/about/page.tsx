@@ -1,5 +1,5 @@
 import Image from "next/image";
-import Link from "next/link";
+// import Link from "next/link";
 import React from "react";
 import { SiDeliveroo, SiJusteat, SiUbereats } from "react-icons/si";
 
@@ -7,7 +7,7 @@ import ScrollingBanner from "@/components/Home/ScrollingBanner";
 import Food from "@/public/aboutUs/food.png";
 import Karan from "@/public/contact/karan.png";
 import Office from "@/public/contact/office.png";
-import Logo from "@/public/small-logo.png";
+// import Logo from "@/public/small-logo.png";
 
 const AboutPage = () => {
   return (
@@ -157,11 +157,8 @@ const AboutPage = () => {
             />
           </div>
         </article>
-        <p className="uppercase text-center text-lg md:text-xl font-semibold mt-10 sm:mt-16 px-4 sm:px-0">
-          <span className="text-secondary">
-            At GBC, <br />
-          </span>
-          quality is our priority- every meal, every time.
+        <p className="text-[#FB521E] uppercase text-center text-lg md:text-2xl font-semibold mt-10 sm:mt-16 px-4 sm:px-0">
+          Eat like a General!
         </p>
         <article className="flex justify-center items-center flex-col w-full mt-16 md:mt-20 mb-24 md:px-10">
           <p className="uppercase text-secondary font-bold text-center text-2xl sm:text-3xl mb-5 lg:mb-10">
@@ -190,7 +187,7 @@ const AboutPage = () => {
               <SiDeliveroo className="text-[#00CDBC] text-4xl lg:text-6xl cursor-pointer" />
             </a>
           </div>
-          <p className="uppercase text-secondary font-bold text-center text-md mt-5 mb-1">
+          {/* <p className="uppercase text-secondary font-bold text-center text-md mt-5 mb-1">
             Or
           </p>
           <div>
@@ -208,7 +205,7 @@ const AboutPage = () => {
                 Order directly from GBC
               </button>
             </Link>
-          </div>
+          </div> */}
         </article>
       </section>
       <ScrollingBanner />

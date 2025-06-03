@@ -28,12 +28,34 @@ interface CheckoutStore {
   clearCheckout: () => void;
 }
 
-export const useCheckoutStore = create<CheckoutStore>((set) => ({
-  items: [],
-  note: "",
-  total: 0,
-  menu: [],
-  setCheckoutData: ({ items, note, total, menu }) =>
-    set({ items, note, total, menu }),
-  clearCheckout: () => set({ items: [], note: "", total: 0, menu: [] }),
-}));
+const storageKey = "checkoutData";
+
+export const useCheckoutStore = create<CheckoutStore>((set) => {
+  if (typeof window !== "undefined") {
+    const stored = localStorage.getItem(storageKey);
+    if (stored) {
+      try {
+        const parsed = JSON.parse(stored);
+        set(parsed);
+      } catch {
+        console.warn("Failed to parse checkout data.");
+      }
+    }
+  }
+
+  return {
+    items: [],
+    note: "",
+    total: 0,
+    menu: [],
+    setCheckoutData: ({ items, note, total, menu }) => {
+      const newState = { items, note, total, menu };
+      localStorage.setItem(storageKey, JSON.stringify(newState));
+      set(newState);
+    },
+    clearCheckout: () => {
+      localStorage.removeItem(storageKey);
+      set({ items: [], note: "", total: 0, menu: [] });
+    },
+  };
+});

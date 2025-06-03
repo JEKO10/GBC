@@ -89,7 +89,7 @@ const MapPage = () => {
         {isLoading ? (
           <div className="loading" />
         ) : (
-          <section className="flex flex-col items-center justify-center px-5">
+          <section className="flex flex-col items-center justify-center px-5 mb-10">
             <LocationInput
               onLocationSelect={(coords) => {
                 setCoords(coords);

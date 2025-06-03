@@ -64,7 +64,6 @@ const LocationInput = ({ onLocationSelect }: LocationInputProps) => {
           const localAddress = address.trim();
 
           if (dbAddress === localAddress && localAddress.length > 0) {
-            console.log("Addresses match, no need to geocode again.");
             return;
           }
 

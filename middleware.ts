@@ -46,7 +46,10 @@ export default auth(async (req) => {
   }
 
   if (!isLoggedIn && !isPublicRoute) {
-    return Response.redirect(new URL("/auth/login", nextUrl));
+    const callbackUrl = nextUrl.pathname + nextUrl.search;
+    const loginUrl = new URL("/auth/login", nextUrl.origin);
+    loginUrl.searchParams.set("callbackUrl", callbackUrl);
+    return Response.redirect(loginUrl);
   }
 
   return NextResponse.next();
